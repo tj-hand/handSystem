@@ -1,7 +1,57 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	]
+  "folders": [
+    {
+      "path": "/var/www/handSystem/frontend"
+    },
+    {
+      "path": "/var/www/handSystem/backend"
+    }
+  ],
+  "settings": {
+    "window.zoomLevel": 1,
+    "editor.fontSize": 14,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeLens": true,
+    "eslint.validate": ["vue", "javascript"],
+    "editor.semanticHighlighting.enabled": true,
+    "eslint.run": "onSave",
+    "eslint.lintTask.enable": true,
+    "folder-color.pathColors": [
+      {
+        "folderPath": "frontend/",
+        "color": "foldercolorizer.color_ffcc00",
+        "badge": "V"
+      },
+      {
+        "folderPath": "/var/www/handSystem/backend/",
+        "color": "foldercolorizer.color_00cc33",
+        "badge": "L"
+      }
+    ],
+    "javascript.validate.enable": true,
+
+    "[vue]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.tabSize": 4,
+      "editor.insertSpaces": false,
+      "editor.showUnused": true,
+      "editor.formatOnSave": true
+    },
+
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.showUnused": true,
+      "editor.formatOnSave": true
+    },
+
+    "[php]": {
+      "editor.defaultFormatter": "bmewburn.vscode-intelephense-client",
+      "editor.formatOnSave": true,
+      "editor.tabSize": 4,
+      "editor.insertSpaces": false
+    }
+  }
 }
