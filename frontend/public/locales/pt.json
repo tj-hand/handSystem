@@ -1,0 +1,70 @@
+{
+	"public": {
+		"token": {
+			"error": {
+				"invalid_credentials_format": "Formato Inválido",
+				"invalid_credentials_data": "Credenciais Inválidas"
+			}
+		},
+		"login": {
+			"welcome": "Boas-vindas ao",
+			"subtitle": "Para acessar, informe suas credenciais",
+			"label": {
+				"email": "Informe seu email",
+				"password": "Informe sua senha",
+				"access": "Acessar",
+				"forgotPassword": " Esqueci minha senha!"
+			}
+		},
+		"password": {
+			"error": {
+				"invalid_token": "Token inválido",
+				"invalid_reset_rules": "Dados inválidos"
+			}
+		},
+		"forgot_password": {
+			"title": "Esqueci minha senha!",
+			"label": {
+				"email": "Informe seu email",
+				"request_password_reset": "Solicitar redefinição de senha",
+				"back_to_login": "Voltar para o login"
+			},
+			"success": "Verifique seu email."
+		},
+		"reset_password": {
+			"title": "Redefinir senha",
+			"label": {
+				"password": "Informe sua nova senha",
+				"confirm_password": "Confirme sua nova senha",
+				"reset_password": "Redefinir senha"
+			},
+			"success": "Senha redefinida!",
+			"error": {
+				"invalid_password_reset_rules": "Senha inválida",
+				"invalid_password_reset_token": "Token inválido."
+			}
+		}
+	},
+	"auth": {
+		"login": {
+			"error": {
+				"user_blocked": " Usuário sem acesso",
+				"no_login_options": "Ambiente não identificado"
+			}
+		}
+	},
+	"validation": {
+		"required": "Por favor, preencha esse campo",
+		"invalid_email": "Por favor, informe um email válido",
+		"min_required": "O campo {label} deve ter pelo menos {parameter} caracteres.",
+		"max_exceeded": "O campo {label} deve ter no máximo {parameter} caracteres.",
+		"invalid_CNPJ": "O campo {label} deve conter um CNPJ válido.",
+		"invalid_password": "A senha deve conter pelo menos 8 caracteres, sendo uma letra maiúscula, uma letra minúscula, um número e um símbolo.",
+		"confirm": "A confirmação está diferente da senha informada"
+	},
+	"generic": {
+		"server_error": "Erro no Servidor",
+		"invalid_email": "E-mail inválido",
+		"user_not_found": "Usuário não encontrado"
+	}
+}

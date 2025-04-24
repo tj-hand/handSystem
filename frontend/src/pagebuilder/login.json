@@ -1,0 +1,36 @@
+[
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": 100,
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "text-field",
+						"label": "public.login.label.email",
+						"db_name": "email",
+						"validations": ["required", "email"]
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": 100,
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "password-field",
+						"label": "public.login.label.password",
+						"db_name": "password",
+						"validations": ["required"]
+					}
+				}
+			}
+		]
+	}
+]

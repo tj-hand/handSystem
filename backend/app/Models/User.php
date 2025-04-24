@@ -46,4 +46,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function userAccountProperties()
+    {
+        return $this->hasMany(UserAccountProperties::class, 'user_id');
+    }
+
+    public function userClientProperties()
+    {
+        return $this->hasMany(UserClientProperties::class, 'user_id');
+    }
+
+    public function userGlobalProperties()
+    {
+        return $this->hasOne(UserGlobalProperties::class, 'user_id');
+    }
+
+    public function getLogName(): string
+    {
+        return $this->name ?? 'Unnamed';
+    }
 }

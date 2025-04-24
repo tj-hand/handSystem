@@ -17,9 +17,9 @@ return [
 
     'paths' => ['api/*', 'oauth/*'],
 
-    'allowed_methods' => ['https://hand.dotmkt.com.br'],
+    'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['https://hand.dotmkt.com.br'],
 
     'allowed_origins_patterns' => [],
 

@@ -1,0 +1,151 @@
+@use 'variables';
+
+.view-wrapper {
+	width: 100% * variables.$phi;
+	margin: 1rem * variables.$phi-double 0;
+
+	.header-wrapper {
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+		justify-content: center;
+
+		.logo-wrapper {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 100% * variables.$phi;
+			margin: 1rem * variables.$phi-double auto;
+
+			.logo {
+				width: 100% * variables.$phi;
+			}
+		}
+
+		.title-wrapper {
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			margin-bottom: 1rem * variables.$phi-double;
+
+			.icon {
+				font-size: calc(2rem + 1vw);
+				color: variables.$primary-color;
+				margin-right: 1rem * variables.$phi-down;
+			}
+
+			.title {
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-end;
+
+				h1 {
+					margin: 0;
+					line-height: 1em;
+					font-weight: 100;
+					font-size: calc(1rem + 0.5vw);
+				}
+				p {
+					margin: 0;
+					font-size: calc(1rem - 0.3vw);
+				}
+			}
+		}
+	}
+
+	.form-wrapper {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+
+		.button {
+			align-self: flex-end;
+			width: 100% * variables.$phi;
+			margin-top: 1rem * variables.$phi-up;
+
+			&.primary-link {
+				width: inherit;
+				margin-bottom: 2rem;
+			}
+		}
+
+		.login-error {
+			color: variables.$error-color;
+		}
+	}
+
+	.error {
+		text-align: center;
+		line-height: 1.35rem;
+		color: variables.$error-color;
+	}
+}
+
+.outside-option {
+	display: flex;
+	justify-content: flex-end;
+	width: 100% * variables.$phi;
+	margin-bottom: 1rem;
+	div:first-of-type {
+		width: 100% * variables.$phi;
+		.button {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 1rem * variables.$phi 0;
+			padding: 1rem * variables.$phi 0;
+		}
+	}
+}
+
+@media (width <= 768px) {
+	.view-wrapper {
+		height: auto;
+		width: calc(100% - 3rem);
+
+		.header-wrapper {
+			height: auto;
+			.logo-wrapper {
+				height: auto;
+			}
+			.title-wrapper {
+				height: auto;
+				padding: 2rem 0;
+				text-align: center;
+				flex-direction: column;
+			}
+		}
+
+		.form-wrapper {
+			margin-top: 1rem;
+			.button {
+				align-self: center;
+				margin-top: 1rem * variables.$phi-up;
+			}
+		}
+	}
+
+	.outside-option {
+		div:first-of-type {
+			width: 100%;
+			margin-top: 2rem * variables.$phi-double;
+		}
+	}
+}
+
+@media (orientation: landscape) and (max-width: 1280px) {
+	.view-wrapper {
+		height: auto;
+		.header-wrapper {
+			height: auto;
+			padding: (1rem * variables.$phi-up) 0;
+			.logo-wrapper {
+				padding: (1rem * variables.$phi-up) 0;
+			}
+		}
+		.form-wrapper {
+			height: auto;
+		}
+	}
+}

@@ -1,0 +1,22 @@
+@forward 'forms';
+@forward 'buttons';
+@forward 'variables';
+@forward 'scrollbars';
+@forward 'transictions';
+
+@use '@/styles/fonts' as *;
+
+html {
+	font-size: 18px;
+
+	body {
+		margin: 0;
+		padding: 0;
+		background-color: #fff;
+		font-family: 'Fira Sans', sans-serif;
+	}
+}
+
+.icon {
+	font-family: 'Material Symbols Rounded', sans-serif;
+}
