@@ -1,12 +1,18 @@
 const endpoints = {
 	auth: {
-		getTokens: '/api/auth/token',
-		logout: '/api/auth/logout',
-		login: '/api/user/login',
+		requestTokens: '/api/auth/request-tokens',
+		revokeTokens: '/api/auth/revoke-tokens',
 	},
 	password: {
 		reset: '/api/password/reset',
 		requestReset: '/api/password/reset-request',
+	},
+	user: {
+		requestEnviroment: 'api/user/request-enviroment',
+		updateScope: '/api/user/update-scope',
+	},
+	account: {
+		show: 'api/account/show',
 	},
 };
 

@@ -19,6 +19,7 @@
 <script>
 import { computed } from 'vue';
 import { defineComponent } from 'vue';
+import { mobile } from '@/tools/screenSizes';
 import { useUIStore } from '@/stores/useUIStore';
 
 export default defineComponent({
@@ -31,6 +32,7 @@ export default defineComponent({
 		});
 
 		const toogleMenu = () => {
+			if (mobile() && !expandedMenu.value) uiStore.setScopeSelector(false);
 			uiStore.toggleExpandedMenu();
 		};
 
@@ -50,8 +52,8 @@ export default defineComponent({
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
+	font-size: 1rem;
 	color: rgba(255, 255, 255, 0.35);
-	// font-size: calc(1em / list.nth($gr, 1));
 	.expanded-content {
 		display: flex;
 		flex-direction: row;
@@ -60,20 +62,21 @@ export default defineComponent({
 		.toogle-text {
 			width: 0;
 			margin-left: 0;
+			padding-top: 3px;
 			overflow: hidden;
 			white-space: nowrap;
 			transition: width 0.5s ease;
-			// font-size: calc(1em * list.nth($gr, 2));
 		}
 	}
 }
 
-.expanded-menu {
+.expanded {
 	.toogle-menu {
-		padding-left: 1em;
+		padding: 0 1rem;
 		justify-content: flex-start;
 		.toogle-text {
 			width: 100%;
+			font-size: 1rem * $phi;
 			transition: width 0.5s ease 0.5s;
 		}
 	}

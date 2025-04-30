@@ -3,14 +3,11 @@ import apiRequest from '@/api/apiRequest';
 
 const apiService = {
 	auth: {
-		getTokens(credentials) {
-			return apiRequest('POST', endpoints.auth.getTokens, credentials);
+		requestTokens(credentials) {
+			return apiRequest('POST', endpoints.auth.requestTokens, credentials);
 		},
-		login() {
-			return apiRequest('POST', endpoints.auth.login);
-		},
-		logout() {
-			return apiRequest('POST', endpoints.auth.logout);
+		revokeTokens() {
+			return apiRequest('POST', endpoints.auth.revokeTokens);
 		},
 	},
 	password: {
@@ -19,6 +16,19 @@ const apiService = {
 		},
 		reset(data) {
 			return apiRequest('POST', endpoints.password.reset, data);
+		},
+	},
+	user: {
+		requestEnviroment() {
+			return apiRequest('POST', endpoints.user.requestEnviroment);
+		},
+		updateScope(data) {
+			return apiRequest('POST', endpoints.user.updateScope, data);
+		},
+	},
+	account: {
+		show(id) {
+			return apiRequest('POST', endpoints.account.show, id);
 		},
 	},
 };

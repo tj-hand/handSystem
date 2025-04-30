@@ -72,7 +72,7 @@ export default defineComponent({
 		const router = useRouter();
 		const formGeneratorRef = ref(null);
 		const token = ref(route.params.token);
-		let formData = { email: '', password: '', password_confirmation: '', token: token.value };
+		let formData = { email: '', password: '', token: token.value };
 
 		const backToLogin = () => {
 			router.push({ name: 'Login' });
@@ -80,11 +80,10 @@ export default defineComponent({
 
 		const resetPassword = async () => {
 			const validationResult = formGeneratorRef.value.validate();
-			formData.password_confirmation = formData.password;
 			if (validationResult) {
 				const response = await apiService.password.reset(formData);
 				if (response.success) {
-					formData = { email: '', password: '', password_confirmation: '', token: route.params.token };
+					formData = { email: '', password: '', token: route.params.token };
 					builderKey.value++;
 					showToast(response.message, { autoClose: 5000 });
 				} else {

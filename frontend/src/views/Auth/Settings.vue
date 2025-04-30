@@ -1,8 +1,8 @@
 <template>
-	<div class="welcome">
+	<div class="settings">
 		<PageBuilder
 			:grow="true"
-			:schema="welcome"
+			:schema="settings"
 			:formData="formData"
 			ref="formGeneratorRef"
 		/>
@@ -11,24 +11,25 @@
 
 <script>
 import { defineComponent } from 'vue';
-import welcome from '@/pagebuilder/welcome.json';
+import settings from '@/pagebuilder/settings.json';
 import PageBuilder from '@/components/PageBuilder/index.vue';
 
 export default defineComponent({
-	name: 'Welcome',
+	name: 'Settings',
 	components: {
 		PageBuilder,
 	},
 	setup() {
 		const formData = [];
-		return { welcome, formData };
+		return { formData, settings };
 	},
 });
 </script>
 
 <style scoped lang="scss">
-.welcome {
+.settings {
 	width: 100%;
+	display: flex;
 	box-sizing: border-box;
 }
 </style>

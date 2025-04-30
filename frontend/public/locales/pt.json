@@ -51,6 +51,44 @@
 				"user_blocked": " Usuário sem acesso",
 				"no_login_options": "Ambiente não identificado"
 			}
+		},
+		"logout": {
+			"exiting": "Saindo com segurança ..."
+		},
+		"left_menu": {
+			"collapse": "Recolher Menu",
+			"modules": {
+				"bis": "Power BI",
+				"data_profiles": "Perfis",
+				"scoped_users": "Usuários",
+				"devices": "Dispositivos",
+				"broadcast": "Transmissões",
+				"logs": "Logs",
+				"admin": "Administração",
+				"ais": "Inteligências",
+				"repository": "Arquivos"
+			},
+			"user_menu": {
+				"personal_info": "Informações pessoais",
+				"change_my_password": "Alterar minha senha",
+				"safely_logout": "Sair com segurança"
+			}
+		},
+		"welcome": {
+			"title": "Boas-vindas ao HandBi"
+		},
+		"settings": {
+			"title": "Administração",
+			"vertical_submenu": {
+				"title": "Opções"
+			}
+		},
+		"account": {
+			"title_placeholder": "Nome da Conta",
+			"subtitle_placeholder": "Identificador da conta",
+			"label": {
+				"account_name": "Nome da Conta"
+			}
 		}
 	},
 	"validation": {
@@ -63,8 +101,20 @@
 		"confirm": "A confirmação está diferente da senha informada"
 	},
 	"generic": {
+		"search": "Procurar",
 		"server_error": "Erro no Servidor",
 		"invalid_email": "E-mail inválido",
-		"user_not_found": "Usuário não encontrado"
+		"user_not_found": "Usuário não encontrado",
+		"clients": "Clientes",
+		"groups": "Grupos",
+		"users": "Usuários",
+		"account": "Conta",
+		"active_a": "Ativa",
+		"yes": "Sim",
+		"no": "Não",
+		"description": "Descrição",
+		"custom": {
+			"workspaces": "Workspaces"
+		}
 	}
 }

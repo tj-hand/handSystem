@@ -45,8 +45,8 @@ import { useRoute, useRouter } from 'vue-router';
 import { useUIStore } from '@/stores/useUIStore';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { showToast } from '@/services/toastMessageService';
-import { getProfile } from '@/services/userProfileService';
 import PageBuilder from '@/components/PageBuilder/index.vue';
+import { requestEnviroment } from '@/services/requestEnviromentService';
 
 export default defineComponent({
 	name: 'Login',
@@ -73,22 +73,24 @@ export default defineComponent({
 		const autheticate = async () => {
 			const validationResult = formGeneratorRef.value.validate();
 			if (validationResult) {
-				const response = await apiService.auth.getTokens({
+				const response = await apiService.auth.requestTokens({
 					username: formData.email,
 					password: formData.password,
 				});
-				response.success ? await login() : showToast(response.message, { type: 'error', autoClose: false });
+				response.success
+					? await enviroment()
+					: showToast(response.message, { type: 'error', autoClose: false });
 			}
 		};
 
-		const login = async () => {
+		const enviroment = async () => {
 			uiStore.fromLogin();
-			const response = await getProfile(router);
+			const response = await requestEnviroment(router);
 			if (!response.success) {
 				showToast(response.message, { type: 'error', autoClose: false });
 				return;
 			}
-			router.push({ name: authStore.profileData.home_page });
+			router.push({ name: authStore.profileData?.home_page || 'Welcome' });
 		};
 
 		watch(

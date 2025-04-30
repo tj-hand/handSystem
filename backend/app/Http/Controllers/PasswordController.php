@@ -61,7 +61,7 @@ class PasswordController extends Controller
 		if (!$validator->fails()) $token = DB::table('password_reset_tokens')->where('email', $this->user->email)->where('token', $request->token)->first() ?? null;
 		if ($validator->fails() || !$token) return Que::passa(false, 'public.password.error.invalid_token', '', $this->user);
 
-		$validator = Validator::make($request->all(), ['password' => 'required|min:8|confirmed']);
+		$validator = Validator::make($request->all(), ['password' => 'required|min:8']);
 		if ($validator->fails()) return Que::passa(false, 'public.password.error.invalid_reset_rules', '', $this->user);
 
 		try {

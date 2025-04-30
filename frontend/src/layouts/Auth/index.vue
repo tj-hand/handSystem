@@ -2,7 +2,10 @@
 	<div class="auth-layout">
 		<Spinner />
 		<LeftMenu />
-		<RouterView />
+		<main class="content">
+			<RouterView />
+		</main>
+		<ScopeSelector />
 	</div>
 </template>
 
@@ -13,20 +16,22 @@ import { useRouter } from 'vue-router';
 import Spinner from '@/components/Spinner.vue';
 import { useUIStore } from '@/stores/useUIStore';
 import LeftMenu from '@/layouts/Auth/LeftMenu/index.vue';
-import { getProfile } from '@/services/userProfileService';
+import ScopeSelector from '@/layouts/Auth/ScopeSelector/index.vue';
+import { requestEnviroment } from '@/services/requestEnviromentService';
 
 export default defineComponent({
 	name: 'AuthLayout',
 	components: {
 		Spinner,
 		LeftMenu,
+		ScopeSelector,
 	},
 	setup() {
 		const router = useRouter();
 		const uiStore = useUIStore();
 
 		onMounted(async () => {
-			uiStore.isLogin ? uiStore.exitLoginProcess() : await getProfile(router);
+			uiStore.isLogin ? uiStore.exitLoginProcess() : await requestEnviroment(router);
 		});
 	},
 });
@@ -39,5 +44,10 @@ export default defineComponent({
 	height: 100vh;
 	position: relative;
 	background-color: $background-color;
+
+	.content {
+		flex: 1;
+		overflow: auto;
+	}
 }
 </style>

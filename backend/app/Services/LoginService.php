@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Services;
 
 use Exception;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\Account;
+use App\Services\PermissionService;
 use Illuminate\Support\Facades\Auth;
 use App\Services\SystemLogService as Que;
 
-class LoginController extends Controller
+class LoginService
 {
-
 	private $user;
 	private $client;
 	private $account;
@@ -27,58 +27,75 @@ class LoginController extends Controller
 
 		if ($this->user) {
 			$this->userGlobalProperties = $this->user->userGlobalProperties;
-			$this->userAccountProperties = $this->user->userAccountProperties()->where('account_id', $this->userGlobalProperties->current_account)->first();
-			$this->userClientProperties = $this->user->userClientProperties()->where('client_id', $this->userAccountProperties->current_client)->first();
+			$this->userAccountProperties = $this->user->userAccountProperties()
+				->where('account_id', $this->userGlobalProperties->current_account)
+				->first();
+			$this->userClientProperties = $this->user->userClientProperties()
+				->where('client_id', $this->userAccountProperties->current_client)
+				->first();
 		}
 
 		$this->setAccount();
 		$this->setClient();
 	}
 
-	public function index()
+	public function handleLogin()
 	{
 		if (!$this->userGlobalProperties) return $this->accessDenied('generic.user_not_found', 'auth.login.error');
 		if ($this->userGlobalProperties->is_blocked) return $this->accessDenied('auth.login.error.user_blocked');
-		if ($this->userGlobalProperties->is_superuser) return $this->accessGranted();
+		if ($this->userGlobalProperties->is_superuser && $this->checkScopeConsistency()) return $this->accessGranted();
 
 		if (
 			$this->userAccountProperties->is_account_admin
-			&& $this->userAccountProperties->is_active_to_account
+			&& $this->userAccountProperties?->is_active_to_account
 			&& $this->account->is_active
+			&& $this->checkScopeConsistency()
 		) return $this->accessGranted();
 
 		if (
 			$this->account->is_active
 			&& $this->client->is_active
-			&& $this->userAccountProperties->is_active_to_account
-			&& $this->userClientProperties->is_active_to_client
+			&& $this->userAccountProperties?->is_active_to_account
+			&& $this->userClientProperties?->is_active_to_client
+			&& $this->checkScopeConsistency()
 		) return $this->accessGranted();
 
-		if ($this->setValidScenario()) return $this->accessGranted();
+		if ($this->setValidScope()) return $this->accessGranted();
 
 		return Que::Passa(false, 'auth.login.error.no_login_options');
 	}
 
+	private function checkScopeConsistency()
+	{
+		$accountId = $this->userGlobalProperties->current_account;
+		$clientId = $this->userAccountProperties->current_client;
+		$exists = Client::where('id', $clientId)->where('account_id', $accountId)->exists();
+		return $exists;
+	}
+
 	private function setAccount()
 	{
-		$this->account = $this->userGlobalProperties->current_account ? Account::find($this->userGlobalProperties->current_account) : null;
+		$this->account = $this->userGlobalProperties->current_account
+			? Account::find($this->userGlobalProperties->current_account)
+			: null;
 	}
 
 	private function setClient()
 	{
-		$this->client = $this->userAccountProperties->current_client ? Client::find($this->userAccountProperties->current_client) : null;
+		$this->client = $this->userAccountProperties->current_client
+			? Client::find($this->userAccountProperties->current_client)
+			: null;
 	}
 
-	private function setValidScenario()
+	private function setValidScope()
 	{
-		if ($this->setAdminScenario()) return true;
-		if ($this->setBasicScenario()) return true;
+		if ($this->setAdminScope()) return true;
+		if ($this->setBasicScope()) return true;
 		return false;
 	}
 
-	private function setAdminScenario()
+	private function setAdminScope()
 	{
-
 		try {
 			$searchForAdminScenario = User::where('users.id', $this->user->id)
 				->join('users_global_properties', 'users.id', '=', 'users_global_properties.user_id')
@@ -89,7 +106,9 @@ class LoginController extends Controller
 				->where('admin_accounts.is_active', true)
 				->select('admin_account_id')
 				->first();
+
 			if (!$searchForAdminScenario) return false;
+
 			$this->userGlobalProperties->current_account = $searchForAdminScenario->admin_account_id;
 			$this->userGlobalProperties->save();
 			$this->setAccount();
@@ -99,7 +118,7 @@ class LoginController extends Controller
 		}
 	}
 
-	private function setBasicScenario()
+	private function setBasicScope()
 	{
 		try {
 			$searchForBasicScenario = User::where('users.id', $this->user->id)
@@ -113,7 +132,9 @@ class LoginController extends Controller
 				->where('admin_accounts.is_active', true)
 				->where('admin_clients.is_active', true)
 				->first();
+
 			if (!$searchForBasicScenario) return false;
+
 			$this->userGlobalProperties->current_account = $searchForBasicScenario->account_id;
 			$this->userAccountProperties->current_client = $searchForBasicScenario->client_id;
 			$this->userGlobalProperties->save();
@@ -133,10 +154,11 @@ class LoginController extends Controller
 
 	private function accessGranted()
 	{
-
+		$modules = PermissionService::modules();
 		return Que::Passa(true, 'auth.login.success', '', null, [
 			'profile' => $this->getProfile(),
-			'scenarios' => $this->getScenarios()
+			'scopes' => $this->getScopes(),
+			'modules' => $modules
 		]);
 	}
 
@@ -145,27 +167,27 @@ class LoginController extends Controller
 		return [
 			'user_id' => $this->user->id,
 			'user_uuid' => $this->userGlobalProperties->id,
-			'user_name' => $this->userGlobalProperties ? $this->userGlobalProperties->user_name : null,
-			'user_lastname' => $this->userGlobalProperties ? $this->userGlobalProperties->user_lastname : null,
-			'account_id' => $this->account ? $this->account->id : null,
-			'account_name' => $this->account ? $this->account->name : null,
-			'client_id' => $this->client ? $this->client->id : null,
-			'client_name' => $this->client ? $this->client->name : null,
-			'home_page' => $this->userClientProperties->home_page
+			'user_name' => $this->userGlobalProperties?->user_name,
+			'user_lastname' => $this->userGlobalProperties?->user_lastname,
+			'account_id' => $this->account?->id,
+			'account_name' => $this->account?->name,
+			'client_id' => $this->client?->id,
+			'client_name' => $this->client?->name,
+			'home_page' => $this->userClientProperties?->home_page
 		];
 	}
 
-	private function getScenarios()
+	private function getScopes()
 	{
-		$scenarios = [];
+		$scopes = [];
 		$accounts = $this->getAccounts();
 		foreach ($accounts as $account) {
 			$clients = $this->getClientsForAccount($account);
 			$account->clients = $clients;
 			$isAdmin = $this->userGlobalProperties->is_superuser || ($account->is_account_admin == true);
-			if ($isAdmin || $clients->isNotEmpty()) $scenarios[] = $account;
+			if ($isAdmin || $clients->isNotEmpty()) $scopes[] = $account;
 		}
-		return $scenarios;
+		return $scopes;
 	}
 
 	private function getAccounts()
@@ -174,7 +196,7 @@ class LoginController extends Controller
 			->select('admin_accounts.id', 'admin_accounts.name')
 			->orderBy('admin_accounts.name');
 
-		if (!$this->userGlobalProperties->superuser) {
+		if (!$this->userGlobalProperties->is_superuser) {
 			$query
 				->join('users_accounts_properties', 'admin_accounts.id', '=', 'users_accounts_properties.account_id')
 				->where('users_accounts_properties.user_id', $this->user->id)

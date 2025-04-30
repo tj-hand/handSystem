@@ -4,9 +4,9 @@
 	.label {
 		display: block;
 		font-weight: 700;
-		padding-left: 1rem;
 		color: variables.$text-color;
-		font-size: 1rem * variables.$phi;
+		padding-left: 1rem * variables.$phi;
+		font-size: 1rem * variables.$phi-sr;
 
 		&.max {
 			font-size: calc(1rem - 2px);
@@ -59,6 +59,18 @@
 
 			&:focus-within {
 				border-color: variables.$primary-color;
+			}
+
+			.text-area {
+				border: 0;
+				outline: 0;
+				width: 100%;
+				font-size: 1rem;
+				color: variables.$text-color;
+				border-radius: 1rem;
+				line-height: 1.25rem;
+				padding: 1rem * variables.$phi-down;
+				font-family: 'Fira Sans', sans-serif;
 			}
 		}
 

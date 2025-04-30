@@ -1,0 +1,68 @@
+[
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "page-title",
+						"label": "auth.settings.title"
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "horizontal-submenu",
+						"title": "auth.settings.vertical_submenu.title",
+						"items": [
+							{
+								"label": "generic.account",
+								"link_to": "Account"
+							},
+							{
+								"label": "generic.clients",
+								"link_to": "Clients"
+							},
+							{
+								"label": "generic.groups",
+								"link_to": "Groups"
+							},
+							{
+								"label": "generic.users",
+								"link_to": "Users"
+							},
+							{
+								"label": "generic.custom.workspaces",
+								"link_to": "Workspaces"
+							}
+						]
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "virtualRouter"
+					}
+				}
+			}
+		]
+	}
+]

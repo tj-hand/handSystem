@@ -1,0 +1,17 @@
+[
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": 100,
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "page-title",
+						"label": "auth.welcome.title"
+					}
+				}
+			}
+		]
+	}
+]

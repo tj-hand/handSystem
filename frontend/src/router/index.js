@@ -37,6 +37,50 @@ const routes = [
 				component: () => import('@/views/Auth/Welcome.vue'),
 				meta: { requiresAuthentication: true },
 			},
+			{
+				path: 'logout',
+				name: 'Logout',
+				component: () => import('@/views/Auth/Logout.vue'),
+				meta: { requiresAuthentication: true },
+			},
+			{
+				path: 'settings',
+				name: 'Settings',
+				component: () => import('@/views/Auth/Settings.vue'),
+				meta: { requiresAuthentication: true },
+				children: [
+					{
+						path: 'account',
+						name: 'Account',
+						component: () => import('@/views/Auth/Account.vue'),
+						meta: { requiresAuthentication: true },
+					},
+					{
+						path: 'clients',
+						name: 'Clients',
+						component: () => import('@/views/Auth/Clients.vue'),
+						meta: { requiresAuthentication: true },
+					},
+					{
+						path: 'groups',
+						name: 'Groups',
+						component: () => import('@/views/Auth/Groups.vue'),
+						meta: { requiresAuthentication: true },
+					},
+					{
+						path: 'users',
+						name: 'Users',
+						component: () => import('@/views/Auth/Users.vue'),
+						meta: { requiresAuthentication: true },
+					},
+					{
+						path: 'workspaces',
+						name: 'Workspaces',
+						component: () => import('@/views/Auth/Workspaces.vue'),
+						meta: { requiresAuthentication: true },
+					},
+				],
+			},
 		],
 	},
 ];

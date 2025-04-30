@@ -1,0 +1,70 @@
+[
+	{
+		"type": "row",
+		"class": "page",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "object-title",
+						"title_db_name": "name",
+						"subtitle_db_name": "id",
+						"title_placeholder": "auth.account.title_placeholder",
+						"subtitle_placeholder": "auth.account.subtitle_placeholder"
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "33%",
+				"content": {
+					"type": "row",
+					"cols": [
+						{
+							"width": "calc(62% - 1rem)",
+							"content": {
+								"type": "field",
+								"props": {
+									"component": "text-field",
+									"label": "auth.account.label.account_name",
+									"db_name": "name",
+									"validations": ["required"]
+								}
+							}
+						},
+						{
+							"width": "38%",
+							"content": {
+								"type": "field",
+								"props": {
+									"component": "checkbox-field",
+									"label": "generic.active_a",
+									"db_name": "is_active",
+									"validations": ["required"]
+								}
+							}
+						},
+						{
+							"width": "100%",
+							"content": {
+								"type": "field",
+								"props": {
+									"component": "area-field",
+									"label": "generic.description",
+									"db_name": "description",
+									"rows": 10
+								}
+							}
+						}
+					]
+				}
+			}
+		]
+	}
+]

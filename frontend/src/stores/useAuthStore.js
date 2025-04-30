@@ -4,26 +4,26 @@ import { defineStore } from 'pinia';
 export const useAuthStore = defineStore(
 	'auth',
 	() => {
-		const profileData = ref([]);
+		const enviroment = ref([]);
 		const isAuthenticated = ref(false);
 
 		function setAuthenticated(status) {
 			isAuthenticated.value = status;
 		}
 
-		function setProfile(data) {
-			profileData.value = data;
+		function setEnviroment(data) {
+			enviroment.value = data;
 		}
 
-		function clearProfile() {
-			profileData.value = [];
+		function clearEnviroment() {
+			enviroment.value = [];
 		}
 
 		return {
-			profileData,
+			enviroment,
 			isAuthenticated,
-			setProfile,
-			clearProfile,
+			setEnviroment,
+			clearEnviroment,
 			setAuthenticated,
 		};
 	},

@@ -1,19 +1,19 @@
 import apiService from '@/api/apiService';
 import { useUIStore } from '@/stores/useUIStore';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { logoutService } from '@/services/logoutService';
+import { closeEnviroment } from '@/services/closeEnviromentService';
 
-export async function getProfile(router) {
+export async function requestEnviroment(router) {
 	const UIStore = useUIStore();
 	const authStore = useAuthStore();
-	authStore.clearProfile();
-	const response = await apiService.auth.login();
+	authStore.clearEnviroment();
+	const response = await apiService.user.requestEnviroment();
 	if (response.success) {
-		authStore.setProfile(response.profile);
+		authStore.setEnviroment(response.enviroment);
 		authStore.setAuthenticated(true);
 		return { success: true };
 	} else {
 		if (UIStore.isLogin) return { success: false, message: response.message };
-		logoutService(router);
+		closeEnviroment(router);
 	}
 }
