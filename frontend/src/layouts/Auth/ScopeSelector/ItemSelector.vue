@@ -18,7 +18,7 @@
 			<div
 				class="item"
 				:key="index"
-				@click="updateItem(item.id)"
+				@click="handleItemClick(item.id)"
 				v-for="(item, index) in filteredItems"
 			>
 				{{ item.name }}
@@ -28,11 +28,14 @@
 </template>
 
 <script>
+import { useI18n } from 'vue-i18n';
 import { ref, computed } from 'vue';
 import { defineComponent } from 'vue';
 import apiService from '@/api/apiService';
 import { onMounted, onBeforeUnmount } from 'vue';
+import { useUIStore } from '@/stores/useUIStore';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { formGuardService } from '@/services/formGuardService';
 
 export default defineComponent({
 	name: 'ItemSelector',
@@ -48,7 +51,9 @@ export default defineComponent({
 	},
 	emits: ['close'],
 	setup(props, { emit }) {
+		const { t } = useI18n();
 		const search = ref(null);
+		const uiStore = useUIStore();
 		const itemSelector = ref(null);
 		const authStore = useAuthStore();
 
@@ -79,14 +84,31 @@ export default defineComponent({
 		};
 
 		const updateItem = async (id) => {
-			emit('close');
 			if (
 				(props.selectorType === 'account' && id === authStore.enviroment.current_scope.account_id) ||
 				(props.selectorType === 'client' && id === authStore.enviroment.current_scope.client_id)
-			)
+			) {
+				emit('close');
 				return;
-			await apiService.user.updateScope({ selector: props.selectorType, id: id });
-			window.location.reload();
+			}
+
+			emit('close');
+
+			const response = await apiService.user.updateScope({ selector: props.selectorType, id: id });
+			if (response.success) window.location.reload();
+		};
+
+		const handleItemClick = (id) => {
+			if (uiStore.isDirtyForm) {
+				const confirmNavigation = window.confirm(t('generic.unsavedData'));
+
+				if (!confirmNavigation) {
+					emit('close');
+					return;
+				}
+				formGuardService.setOriginal({});
+			}
+			updateItem(id);
 		};
 
 		onMounted(() => {
@@ -97,21 +119,25 @@ export default defineComponent({
 			document.removeEventListener('click', handleClickOutside);
 		});
 
-		return { search, accounts, itemSelector, filteredItems, updateItem };
+		return { search, accounts, itemSelector, filteredItems, handleItemClick };
 	},
 });
 </script>
 
 <style lang="scss" scoped>
 .item-selector {
+	z-index: 10;
+	height: 16rem;
+	margin-left: 1rem;
 	border-style: solid;
-	border-radius: 0 0 4px 4px;
-	background-color: #ffffff;
-	border-width: 0 1px 1px 1px;
-	border-color: $secondary-color;
+	border-color: #ffffff;
+	border-radius: 0 0 4px 0;
+	background-color: #cccccc;
+	border-width: 2px 1px 1px 1px;
+	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
 	.search-wrapper {
 		padding: 1rem * $phi-down;
-		background-color: rgba(0, 0, 0, 0.05);
+		background-color: rgba(0, 0, 0, 0.38);
 
 		.form-element-wrapper {
 			width: 100%;
@@ -138,17 +164,17 @@ export default defineComponent({
 			}
 		}
 	}
+
 	.item {
 		cursor: pointer;
-		color: $text-color;
-		font-size: 1rem * $phi;
+		font-weight: bold;
+		color: #ffffff;
+		font-size: 1rem * $phi-sr;
 		padding: (1rem * $phi) 1rem;
+		background-color: rgba(0, 0, 0, 0.2);
 		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 		&:hover {
-			background-color: rgba(0, 0, 0, 0.05);
-		}
-		&:last-child {
-			border-bottom: 0;
+			background-color: rgba(0, 0, 0, 0.25);
 		}
 	}
 }

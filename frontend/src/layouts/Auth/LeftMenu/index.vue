@@ -1,7 +1,11 @@
 <template>
 	<aside
 		:style="'width:' + menuWidth + 'px;'"
-		:class="[expandedMenu ? 'expanded' : 'collapsed', mobile() ? 'mobile' : '', { 'user-menu-on': showUserMenu }]"
+		:class="[
+			expandedMenu ? 'expanded' : 'collapsed',
+			is_mobile() ? 'mobile' : '',
+			{ 'user-menu-on': showUserMenu },
+		]"
 	>
 		<div class="top-section">
 			<div class="logo-wrapper">
@@ -43,7 +47,7 @@ import { useRouter } from 'vue-router';
 import Logo from '@/components/Logo.vue';
 import ToogleMenu from './ToogleMenu.vue';
 import UserButton from './UserButton.vue';
-import { mobile } from '@/tools/screenSizes';
+import { is_mobile } from '@/tools/screenSizes';
 import { closest } from '@/tools/harmonize.js';
 import { useUIStore } from '@/stores/useUIStore';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -64,13 +68,13 @@ export default defineComponent({
 		const authStore = useAuthStore();
 
 		const goHome = () => {
-			mobile() ? uiStore.setExpandedMenu(false) : null;
+			is_mobile() ? uiStore.setExpandedMenu(false) : null;
 			router.push({ name: authStore.enviroment.current_scope.home_page });
 		};
 
 		const menuWidth = computed(() => {
 			const menuSize = expandedMenu.value ? 280 : 60;
-			if (mobile() && expandedMenu.value) return window.innerWidth;
+			if (is_mobile() && expandedMenu.value) return window.innerWidth;
 			return closest(window.innerWidth, menuSize);
 		});
 
@@ -86,7 +90,7 @@ export default defineComponent({
 			showUserMenu.value = false;
 		};
 
-		return { menuWidth, expandedMenu, showUserMenu, goHome, mobile, closeMenu, toogleUserMenu };
+		return { menuWidth, expandedMenu, showUserMenu, goHome, is_mobile, closeMenu, toogleUserMenu };
 	},
 });
 </script>
@@ -103,9 +107,9 @@ aside {
 	flex-direction: column;
 	transition: width 1s ease;
 	justify-content: space-between;
-	border-right: 2px solid #ffffff;
-	background-color: $secondary-color;
+	border-right: 1px solid #ffffff;
 	box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+	background-color: rgba($secondary-color, 0.85);
 
 	&.expanded {
 		&.mobile {
@@ -124,6 +128,7 @@ aside {
 				.logo {
 					cursor: pointer;
 					margin: 1rem 0;
+					max-width: 15rem;
 					width: 100% * $phi;
 				}
 			}
@@ -178,12 +183,26 @@ aside {
 
 @media (max-height: 768px) {
 	aside {
+		border-right: 0;
 		overflow-y: scroll;
 	}
-}
 
-aside::-webkit-scrollbar {
-	width: 5px;
+	aside::-webkit-scrollbar {
+		width: 5px;
+	}
+
+	aside::-webkit-scrollbar-track {
+		background: rgba(255, 255, 255, 0.5);
+	}
+
+	aside::-webkit-scrollbar-thumb {
+		border-radius: 5px;
+		background: rgba(255, 255, 255, 0.5);
+	}
+
+	aside::-webkit-scrollbar-thumb:hover {
+		background: rgba(255, 255, 255, 0.5);
+	}
 }
 
 .slide-menu-enter-active,

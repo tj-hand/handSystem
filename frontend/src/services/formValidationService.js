@@ -11,12 +11,12 @@ import { ValidationRegistry } from '@/validations/ValidationRegistry';
 /**
  * Validates form data (legacy interface for backward compatibility)
  * @param {Object} formBuild - Object containing form field definitions with validation rules
- * @param {Object} formData - Object containing the form data to validate
+ * @param {Object} record - Object containing the form data to validate
  * @param {Object} i18n - The i18n instance to use for translations
  * @returns {Object} - { valid: boolean, formWithErrors: Object }
  */
-export function validateForm(formBuild, formData, i18n) {
+export function validateForm(formBuild, record, i18n) {
 	const registry = new ValidationRegistry(validators, errorMessages);
 	const validator = new FormValidator(i18n, registry);
-	return validator.validate(formBuild, formData);
+	return validator.validate(formBuild, record);
 }

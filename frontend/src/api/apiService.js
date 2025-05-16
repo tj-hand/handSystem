@@ -19,6 +19,21 @@ const apiService = {
 		},
 	},
 	user: {
+		show(id) {
+			return apiRequest('POST', endpoints.user.show, id);
+		},
+		delete(id) {
+			return apiRequest('POST', endpoints.user.delete, id);
+		},
+		upsert(data) {
+			return apiRequest('POST', endpoints.user.upsert, data);
+		},
+		exists(email) {
+			return apiRequest('POST', endpoints.user.exists, email);
+		},
+		addToAccount(email) {
+			return apiRequest('POST', endpoints.user.addToAccount, email);
+		},
 		requestEnviroment() {
 			return apiRequest('POST', endpoints.user.requestEnviroment);
 		},
@@ -29,6 +44,12 @@ const apiService = {
 	account: {
 		show(id) {
 			return apiRequest('POST', endpoints.account.show, id);
+		},
+		users() {
+			return apiRequest('POST', endpoints.account.users);
+		},
+		upsert(data) {
+			return apiRequest('POST', endpoints.account.upsert, data);
 		},
 	},
 };

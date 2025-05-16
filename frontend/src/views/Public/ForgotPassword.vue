@@ -18,7 +18,7 @@
 				:grow="false"
 				formSize="max"
 				:key="builderKey"
-				:formData="formData"
+				:record="record"
 				ref="formGeneratorRef"
 				:schema="formForgotPassword"
 			/>
@@ -59,7 +59,7 @@ export default defineComponent({
 		const builderKey = ref(0);
 		const router = useRouter();
 		const formGeneratorRef = ref(null);
-		const formData = { email: '' };
+		const record = { record: { email: '' } };
 
 		const backToLogin = () => {
 			router.push({ name: 'Login' });
@@ -68,18 +68,18 @@ export default defineComponent({
 		const requestPasswordReset = async () => {
 			const validationResult = formGeneratorRef.value.validate();
 			if (validationResult) {
-				const response = await apiService.password.requestReset({ email: formData.email });
+				const response = await apiService.password.requestReset({ email: record.email });
 				if (!response.success) {
 					showToast(response.message, { type: 'error', autoClose: false });
 					return;
 				}
-				formData.email = '';
+				record.email = '';
 				builderKey.value++;
 				showToast(response.message, { autoClose: 5000 });
 			}
 		};
 
-		return { builderKey, formData, formGeneratorRef, formForgotPassword, backToLogin, requestPasswordReset };
+		return { builderKey, record, formGeneratorRef, formForgotPassword, backToLogin, requestPasswordReset };
 	},
 });
 </script>

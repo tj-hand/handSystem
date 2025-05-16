@@ -1,7 +1,7 @@
-export function mobile() {
+export function is_mobile() {
 	return window.innerWidth <= 768;
 }
 
-export function smallScreen() {
-	return window.innerWidth <= 1024;
+export function is_smallScreen() {
+	return window.innerWidth <= 992;
 }

@@ -6,19 +6,21 @@
 		<Builder
 			:key="index"
 			:schema="row"
-			:formData="formData"
+			:record="record"
 			:formSize="formSize"
-			@updateData="updateFormData"
+			@updateData="updaterecord"
 			v-for="(row, index) in updatedSchema"
 		/>
 	</div>
 </template>
 
 <script>
-import { ref } from 'vue';
+import { onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Builder from './builder.vue';
 import { defineComponent } from 'vue';
+import { useUIStore } from '@/stores/useUIStore';
 import { validateForm } from '@/services/formValidationService';
 
 export default defineComponent({
@@ -28,15 +30,17 @@ export default defineComponent({
 		grow: { type: Boolean, default: true },
 		formSize: { type: String, default: '' },
 		schema: { type: Object, required: true },
-		formData: { type: Object, required: true },
+		record: { type: Object, required: true },
 	},
 	setup(props) {
 		const { t } = useI18n();
-		const updatedData = ref(props.formData);
+		const uiStore = useUIStore();
 		const updatedSchema = ref(props.schema);
+		const updatedData = ref(props.record);
 
-		const updateFormData = (formDataUpdated) => {
-			updatedData.value[formDataUpdated.fieldName] = formDataUpdated.fieldValue;
+		const updaterecord = (recordUpdated) => {
+			uiStore.setDirtyForm(true);
+			updatedData.value[recordUpdated.fieldName] = recordUpdated.fieldValue;
 		};
 
 		const validate = () => {
@@ -45,7 +49,17 @@ export default defineComponent({
 			return result.valid ? true : false;
 		};
 
-		return { validate, updateFormData, updatedData, updatedSchema };
+		watch(
+			() => props.record,
+			(newVal) => (updatedData.value = newVal),
+			{ immediate: true, deep: false }
+		);
+
+		onMounted(() => {
+			uiStore.setDirtyForm(false);
+		});
+
+		return { validate, updaterecord, updatedData, updatedSchema };
 	},
 });
 </script>
@@ -53,6 +67,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .page-builder {
 	width: 100%;
+	height: 100%;
 	display: flex;
 	flex-direction: column;
 	&.grow {

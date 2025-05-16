@@ -19,7 +19,7 @@
 <script>
 import { computed } from 'vue';
 import { defineComponent } from 'vue';
-import { mobile } from '@/tools/screenSizes';
+import { is_mobile } from '@/tools/screenSizes';
 import { useUIStore } from '@/stores/useUIStore';
 
 export default defineComponent({
@@ -32,7 +32,7 @@ export default defineComponent({
 		});
 
 		const toogleMenu = () => {
-			if (mobile() && !expandedMenu.value) uiStore.setScopeSelector(false);
+			if (is_mobile() && !expandedMenu.value) uiStore.setScopeSelector(false);
 			uiStore.toggleExpandedMenu();
 		};
 

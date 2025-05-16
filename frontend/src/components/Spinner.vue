@@ -19,13 +19,13 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .spinner {
-	top: 0;
 	left: 0;
-	height: 4px;
+	bottom: 0;
 	width: 100%;
 	z-index: 9999;
 	position: fixed;
 	overflow: hidden;
+	height: 1rem * $phi-down;
 
 	&::before {
 		content: '';

@@ -44,12 +44,12 @@ export default defineComponent({
 	props: {
 		params: { type: Object },
 		formSize: { type: String, default: '' },
-		formData: { type: Object, required: true },
+		record: { type: Object, required: true },
 	},
 	emits: ['updateData'],
 	setup(props, { emit }) {
 		const isPasswordVisible = ref(false);
-		const fieldValue = ref(props.formData[props.params.db_name]);
+		const fieldValue = ref(props.record[props.params.db_name]);
 
 		const togglePasswordVisibility = () => {
 			isPasswordVisible.value = !isPasswordVisible.value;

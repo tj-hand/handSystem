@@ -17,7 +17,7 @@
 				:grow="false"
 				formSize="max"
 				:schema="formLogin"
-				:formData="formData"
+				:record="record"
 				ref="formGeneratorRef"
 			/>
 			<div
@@ -60,7 +60,7 @@ export default defineComponent({
 		const uiStore = useUIStore();
 		const authStore = useAuthStore();
 		const formGeneratorRef = ref(null);
-		const formData = { email: '', password: '' };
+		const record = { email: '', password: '' };
 
 		const errorMessage = computed(() => {
 			return route.query.error;
@@ -74,8 +74,8 @@ export default defineComponent({
 			const validationResult = formGeneratorRef.value.validate();
 			if (validationResult) {
 				const response = await apiService.auth.requestTokens({
-					username: formData.email,
-					password: formData.password,
+					username: record.email,
+					password: record.password,
 				});
 				response.success
 					? await enviroment()
@@ -101,7 +101,7 @@ export default defineComponent({
 			{ immediate: true }
 		);
 
-		return { formData, formLogin, formGeneratorRef, autheticate, forgotPassword };
+		return { record, formLogin, formGeneratorRef, autheticate, forgotPassword };
 	},
 });
 </script>

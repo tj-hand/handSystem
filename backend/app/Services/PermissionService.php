@@ -50,15 +50,17 @@ class PermissionService
 		$currentAccount = $userGlobalProperties->current_account;
 		$currentClient = $userAccountProperties->current_client;
 
+		if ($userGlobalProperties->is_superuser) return true;
+		$is_valid_account = Account::where('id', $currentAccount)->where('is_active', true)->exists();
+		if ($is_valid_account && $userAccountProperties->is_account_admin) return true;
+
 		$clientBelongsToAccount = Client::where('id', $currentClient)
 			->where('account_id', $currentAccount)
 			->exists();
-
 		if (!$clientBelongsToAccount) return false;
-		if ($userGlobalProperties->is_superuser) return true;
+
 		if (!$userAccountProperties->is_active_to_account) return false;
 
-		$is_valid_account = Account::where('id', $currentAccount)->where('is_active', true)->exists();
 		if (!$is_valid_account) return false;
 		if ($userAccountProperties->is_account_admin) return true;
 
@@ -79,6 +81,7 @@ class PermissionService
 
 		$query = UserAccountProperties::select('admin_accounts.id', 'admin_accounts.name', 'is_account_admin')
 			->join('admin_accounts', 'users_accounts_properties.account_id', '=', 'admin_accounts.id')
+			->where('users_accounts_properties.user_id', $user->id)
 			->orderBy('admin_accounts.name');
 
 		if (!$userGlobalProperties->is_superuser)
@@ -135,6 +138,23 @@ class PermissionService
 		return true;
 	}
 
+	public static function hasScope(string $type, string $id): bool
+	{
+		$scopes = self::UserScopes();
+
+		if ($type === 'account') {
+			return collect($scopes)->contains('id', $id);
+		}
+
+		if ($type === 'client') {
+			return collect($scopes)
+				->flatMap(fn($account) => $account['clients'] ?? [])
+				->contains('id', $id);
+		}
+
+		return false;
+	}
+
 	public static function UserActions()
 	{
 		$user = self::UserGlobalProperties();
@@ -158,7 +178,7 @@ class PermissionService
 	{
 
 		$user = self::UserGlobalProperties();
-		$groups = ScopedRelationship::joiin('admin_groups', 'admin_scoped_relationships.belong_to_id', '=', 'admin_groups.id')
+		$groups = ScopedRelationship::join('admin_groups', 'admin_scoped_relationships.belongs_to_id', '=', 'admin_groups.id')
 			->where('object_type', 'App\Models\UserGlobalProperties')
 			->where('belongs_to_type', 'App\Models\Group')
 			->where('scope_type', 'App\Models\Account')

@@ -14,6 +14,8 @@
 				class="input-text"
 				@blur="updateData"
 				v-model="fieldValue"
+				:disabled="disabled"
+				:class="[disabled ? 'disabled' : '']"
 			/>
 		</div>
 		<div
@@ -28,25 +30,40 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { ref, computed, watch } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	name: 'TextField',
 	props: {
 		params: { type: Object },
 		formSize: { type: String, default: '' },
-		formData: { type: Object, required: true },
+		record: { type: Object, required: true },
 	},
 	emits: ['updateData'],
 	setup(props, { emit }) {
-		const fieldValue = ref(props.formData[props.params.db_name]);
+		const route = useRoute();
+		const fieldValue = ref(props.record[props.params.db_name]);
+
+		const disabled = computed(() => {
+			return props.params.disabled == 'onEdit' && route.params.id != 'new' ? true : false;
+		});
+
 		const updateData = () => {
 			emit('updateData', {
 				fieldName: props.params.db_name,
 				fieldValue: fieldValue.value,
 			});
 		};
-		return { fieldValue, updateData };
+
+		watch(
+			() => props.record,
+			() => (fieldValue.value = props.record[props.params.db_name]),
+			{ immediate: true, deep: false }
+		);
+
+		return { disabled, fieldValue, updateData };
 	},
 });
 </script>

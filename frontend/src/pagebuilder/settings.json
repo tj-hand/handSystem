@@ -53,6 +53,7 @@
 	},
 	{
 		"type": "row",
+		"class": "grow",
 		"cols": [
 			{
 				"width": "100%",

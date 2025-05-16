@@ -2,25 +2,7 @@
 	<div class="scope-selector">
 		<div class="slide-wrapper">
 			<div
-				@click="toogleMenu"
-				class="icon-wrapper"
-			>
-				<div
-					class="icon"
-					v-if="isOpen"
-				>
-					cancel
-				</div>
-				<div
-					class="icon"
-					v-else
-				>
-					database
-				</div>
-			</div>
-			<div
 				class="content-panel"
-				:class="{ 'is-open': isOpen }"
 				:style="'width: ' + menuWidth + 'px;'"
 			>
 				<div
@@ -45,6 +27,7 @@
 			:menuWidth="menuWidth"
 			@close="closeSelector"
 			:selectorType="selectorType"
+			:style="'width: calc(' + menuWidth + 'px - 2px);'"
 		/>
 	</div>
 </template>
@@ -77,10 +60,6 @@ export default defineComponent({
 			return authStore.enviroment.current_scope?.client_name;
 		});
 
-		const isOpen = computed(() => {
-			return uiStore.scopeSelector;
-		});
-
 		const toogleMenu = () => {
 			uiStore.toggleScopeSelector();
 		};
@@ -99,10 +78,9 @@ export default defineComponent({
 		};
 
 		return {
-			isOpen,
 			menuWidth,
-			accountName,
 			clientName,
+			accountName,
 			selectorType,
 			showSelector,
 			clipText,
@@ -116,42 +94,20 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .scope-selector {
-	top: 0;
-	right: 0;
-	z-index: 50;
-	position: fixed;
+	padding: 0 1rem;
+	position: relative;
+	background-color: rgba($primary-color, 0.15);
+	border-left: 1px solid rgba(255, 255, 255, 0.35);
 	.slide-wrapper {
 		display: flex;
 		color: #ffffff;
 		position: relative;
 		flex-direction: row;
-		border-radius: 0 0 0 6px;
-		background-color: $primary-color;
-		.icon-wrapper {
-			padding: 1rem * $phi-down;
-			border-right: 1px solid rgba(255, 255, 255, 0.35);
-			.icon {
-				cursor: pointer;
-			}
-		}
 		.content-panel {
 			gap: 0;
-			opacity: 0;
 			display: flex;
 			flex-direction: row;
 			align-items: center;
-			transition: width 0.5s ease, opacity 0.3s ease 0.5s;
-
-			&.is-open {
-				opacity: 1;
-				width: auto;
-			}
-
-			&:not(.is-open) {
-				opacity: 0;
-				width: 0 !important;
-				transition: all 0.5s ease;
-			}
 
 			.selector-wrapper {
 				flex-grow: 1;
@@ -159,25 +115,28 @@ export default defineComponent({
 				flex-basis: 0;
 				max-width: 50%;
 				cursor: pointer;
-				border-radius: 4px;
 				align-items: center;
 				flex-direction: row;
-				transition: width 0.5s ease 0.5s;
-				padding: 0 (1rem * $phi);
+				padding: 2px (1rem * $phi);
+				background-color: rgba($primary-color, 0.5);
 				border-right: 1px solid rgba(255, 255, 255, 0.35);
+
+				&:first-child {
+					border-left: 1px solid rgba(255, 255, 255, 0.35);
+				}
 
 				.selector-value {
 					flex-grow: 1;
 					overflow: hidden;
-					font-size: 0.618em;
 					white-space: nowrap;
 					text-overflow: ellipsis;
+					font-size: 1rem * $phi-sr;
 				}
 			}
 		}
 	}
 	.item-selector {
-		right: 0;
+		left: 0;
 		top: 100%;
 		position: absolute;
 	}

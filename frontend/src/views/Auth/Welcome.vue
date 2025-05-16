@@ -1,27 +1,22 @@
 <template>
 	<div class="welcome">
-		<PageBuilder
-			:grow="true"
-			:schema="welcome"
-			:formData="formData"
-			ref="formGeneratorRef"
-		/>
+		<PageTitle title="auth.welcome.title" />
 	</div>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 import welcome from '@/pagebuilder/welcome.json';
-import PageBuilder from '@/components/PageBuilder/index.vue';
+import PageTitle from '@/components/PageTitle.vue';
 
 export default defineComponent({
 	name: 'Welcome',
 	components: {
-		PageBuilder,
+		PageTitle,
 	},
 	setup() {
-		const formData = [];
-		return { welcome, formData };
+		const record = [];
+		return { welcome, record };
 	},
 });
 </script>

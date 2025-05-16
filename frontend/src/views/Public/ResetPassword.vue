@@ -15,13 +15,13 @@
 		</div>
 		<div
 			class="form-wrapper"
-			v-if="formData.token"
+			v-if="record.token"
 		>
 			<PageBuilder
 				:grow="false"
 				formSize="max"
 				:key="builderKey"
-				:formData="formData"
+				:record="record"
 				ref="formGeneratorRef"
 				:schema="formResetPassword"
 			/>
@@ -72,7 +72,7 @@ export default defineComponent({
 		const router = useRouter();
 		const formGeneratorRef = ref(null);
 		const token = ref(route.params.token);
-		let formData = { email: '', password: '', token: token.value };
+		let record = { email: '', password: '', token: token.value };
 
 		const backToLogin = () => {
 			router.push({ name: 'Login' });
@@ -81,9 +81,9 @@ export default defineComponent({
 		const resetPassword = async () => {
 			const validationResult = formGeneratorRef.value.validate();
 			if (validationResult) {
-				const response = await apiService.password.reset(formData);
+				const response = await apiService.password.reset(record);
 				if (response.success) {
-					formData = { email: '', password: '', token: route.params.token };
+					record = { email: '', password: '', token: route.params.token };
 					builderKey.value++;
 					showToast(response.message, { autoClose: 5000 });
 				} else {
@@ -92,7 +92,7 @@ export default defineComponent({
 			}
 		};
 
-		return { formData, builderKey, formGeneratorRef, formResetPassword, backToLogin, resetPassword };
+		return { record, builderKey, formGeneratorRef, formResetPassword, backToLogin, resetPassword };
 	},
 });
 </script>

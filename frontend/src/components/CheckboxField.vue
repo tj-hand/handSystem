@@ -13,12 +13,14 @@
 				:onLabel="$t('generic.yes')"
 			/>
 		</div>
+		<div class="form-element-error"></div>
 	</div>
 </template>
 
 <script>
+import { ref, watch } from 'vue';
 import Toggle from '@vueform/toggle';
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	name: 'CheckboxField',
@@ -26,17 +28,24 @@ export default defineComponent({
 	props: {
 		params: { type: Object },
 		formSize: { type: String, default: '' },
-		formData: { type: Object, required: true },
+		record: { type: Object, required: true },
 	},
 	emits: ['updateData'],
 	setup(props, { emit }) {
-		const fieldValue = ref(props.formData[props.params.db_name]);
+		const fieldValue = ref(props.record[props.params.db_name]);
 		const updateData = () => {
 			emit('updateData', {
 				fieldName: props.params.db_name,
 				fieldValue: fieldValue.value,
 			});
 		};
+
+		watch(
+			() => props.record,
+			() => (fieldValue.value = props.record[props.params.db_name]),
+			{ immediate: true, deep: false }
+		);
+
 		return { fieldValue, updateData };
 	},
 });
@@ -60,5 +69,17 @@ export default defineComponent({
 	padding-left: 0 !important;
 	box-shadow: none !important;
 	background-color: transparent !important;
+}
+
+@media only screen and (max-width: 480px) {
+	.label {
+		text-align: center;
+		padding-left: 0 !important;
+	}
+	.form-element-wrapper {
+		&.checkbox {
+			justify-content: center !important;
+		}
+	}
 }
 </style>

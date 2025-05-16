@@ -71,14 +71,14 @@
 		}
 
 		.login-error {
-			color: variables.$error-color;
+			color: variables.$danger-color;
 		}
 	}
 
 	.error {
 		text-align: center;
 		line-height: 1.35rem;
-		color: variables.$error-color;
+		color: variables.$danger-color;
 	}
 }
 

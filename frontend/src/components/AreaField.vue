@@ -31,24 +31,32 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { ref, watch } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	name: 'TextField',
 	props: {
 		params: { type: Object },
 		formSize: { type: String, default: '' },
-		formData: { type: Object, required: true },
+		record: { type: Object, required: true },
 	},
 	emits: ['updateData'],
 	setup(props, { emit }) {
-		const fieldValue = ref(props.formData[props.params.db_name]);
+		const fieldValue = ref(props.record[props.params.db_name]);
 		const updateData = () => {
 			emit('updateData', {
 				fieldName: props.params.db_name,
 				fieldValue: fieldValue.value,
 			});
 		};
+
+		watch(
+			() => props.record,
+			() => (fieldValue.value = props.record[props.params.db_name]),
+			{ immediate: true, deep: false }
+		);
+
 		return { fieldValue, updateData };
 	},
 });

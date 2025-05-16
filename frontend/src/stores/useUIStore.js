@@ -6,6 +6,7 @@ export const useUIStore = defineStore(
 	() => {
 		const login = ref(false);
 		const loading = ref(false);
+		const isDirtyForm = ref(false);
 		const expandedMenu = ref(false);
 		const scopeSelector = ref(false);
 
@@ -44,9 +45,14 @@ export const useUIStore = defineStore(
 			login.value = false;
 		}
 
+		function setDirtyForm(state) {
+			isDirtyForm.value = state;
+		}
+
 		return {
 			login,
 			loading,
+			isDirtyForm,
 			expandedMenu,
 			scopeSelector,
 
@@ -56,6 +62,7 @@ export const useUIStore = defineStore(
 			fromLogin,
 			showSpinner,
 			hideSpinner,
+			setDirtyForm,
 			setExpandedMenu,
 			exitLoginProcess,
 			setScopeSelector,

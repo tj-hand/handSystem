@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SystemLogService
 {
-	public static function Passa(bool $success, string $message, string $additionalInformation = '', ?Model $object = null, array $returnedData = [])
+	public static function Passa(bool $success, string $message, ?string $additionalInformation = '', ?Model $object = null, array $returnedData = [])
 	{
 		try {
 

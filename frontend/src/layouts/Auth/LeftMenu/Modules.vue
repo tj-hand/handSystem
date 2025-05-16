@@ -21,7 +21,7 @@
 import { computed } from 'vue';
 import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
-import { mobile } from '@/tools/screenSizes';
+import { is_mobile } from '@/tools/screenSizes';
 import { useUIStore } from '@/stores/useUIStore';
 import { useAuthStore } from '@/stores/useAuthStore';
 
@@ -50,7 +50,7 @@ export default defineComponent({
 		});
 
 		const goToModule = (module) => {
-			mobile() ? uiStore.setExpandedMenu(false) : null;
+			is_mobile() ? uiStore.setExpandedMenu(false) : null;
 			router.push({ name: module });
 		};
 

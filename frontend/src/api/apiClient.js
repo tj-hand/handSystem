@@ -25,7 +25,7 @@ apiClient.interceptors.request.use(
 );
 
 apiClient.interceptors.response.use(
-	(response) => {
+	async (response) => {
 		uiStore.hideSpinner();
 		return response;
 	},

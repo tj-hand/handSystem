@@ -22,7 +22,7 @@
 
 		&:has(.form-error) {
 			.form-element-wrapper {
-				border-color: rgba(variables.$error-color, 0.3);
+				border-color: rgba(variables.$danger-color, 0.3);
 			}
 		}
 
@@ -55,6 +55,11 @@
 				color: variables.$text-color;
 				background-color: transparent;
 				padding: 1rem * variables.$phi-down;
+
+				&.disabled {
+					color: rgba(0, 0, 0, 0.38);
+					background-color: rgba(0, 0, 0, 0.1);
+				}
 			}
 
 			&:focus-within {
@@ -81,14 +86,14 @@
 			font-size: calc(1rem - 6px);
 			width: 100% * variables.$phi;
 			background-color: transparent;
-			color: variables.$error-color;
+			color: variables.$danger-color;
 			border-bottom-left-radius: 4px;
 			padding: (1rem * variables.$phi-down) 0;
 			clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%, 0 100%);
 			padding-left: 1rem;
 
 			&.form-error {
-				background-color: rgba(variables.$error-color, 0.15);
+				background-color: rgba(variables.$danger-color, 0.15);
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 <template>
 	<div class="page-title">
-		{{ $t(params.label) }}
+		{{ $t(title) }}
 	</div>
 </template>
 <script>
@@ -9,7 +9,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
 	name: 'PageTitle',
 	props: {
-		params: { type: Object },
+		title: { type: String },
 	},
 	setup() {},
 });
@@ -18,11 +18,10 @@ export default defineComponent({
 <style scoped lang="scss">
 .page-title {
 	width: 100%;
-	padding: 1rem;
-	color: $primary-color;
 	box-sizing: border-box;
 	font-size: 1rem * $phi-up;
 	background-color: #ffffff;
-	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+	padding: 1rem 0 0.38rem 2rem;
+	color: rgba($primary-color, 0.75);
 }
 </style>

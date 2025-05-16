@@ -87,8 +87,36 @@
 			"title_placeholder": "Nome da Conta",
 			"subtitle_placeholder": "Identificador da conta",
 			"label": {
-				"account_name": "Nome da Conta"
-			}
+				"account_name": "Nome da Conta",
+				"powerbi_connection": "Credenciais do PowerBI",
+				"powerbi_tenant": "Tenant",
+				"powerbi_client_id": "Client ID",
+				"powerbi_client_secret": "Client Secret"
+			},
+			"updated": "Conta Atualizada!"
+		},
+		"user": {
+			"label": {
+				"name": "Nome",
+				"lastname": "Sobrenome"
+			},
+			"modal": {
+				"in_account_title": "Usuário Existente",
+				"blocked_user_title": "Usuário Bloqueado",
+				"add_to_account_title": "Usuário já Cadastrado",
+				"in_account_text": "Usuário já cadastrado nessa conta.",
+				"blocked_user_text": "Usuário não pode ser adicionado à conta.",
+				"add_to_account_text": "Esse usuário já está cadastrano em nosso sistema. Deseja adicioná-lo a essa conta?"
+			},
+			"updated": "Usuário Atualizado!",
+			"created": "Novo Usuário Criado!",
+			"deleted": "Usuário Excluído!",
+			"title_placeholder": "Nome do Usuário",
+			"subtitle_placeholder": "Identificador do usuário",
+			"add_to_account": "Usuário Adicionado à Conta"
+		},
+		"users": {
+			"account_users": "Usuários da Conta"
 		}
 	},
 	"validation": {
@@ -101,18 +129,32 @@
 		"confirm": "A confirmação está diferente da senha informada"
 	},
 	"generic": {
+		"OK": "OK",
+		"no": "Não",
+		"yes": "Sim",
+		"save": "Salvar",
+		"email": "E-mail",
+		"groups": "Grupos",
+		"account": "Conta",
+		"users": "Usuários",
+		"active_a": "Ativa",
+		"delete": "Excluir",
 		"search": "Procurar",
+		"cancel": "Cancelar",
+		"clients": "Clientes",
+		"blocked": "Bloqueado",
+		"description": "Descrição",
+		"superuser": "Super-Usuário",
 		"server_error": "Erro no Servidor",
 		"invalid_email": "E-mail inválido",
+		"confirm_delete": "Confirmar exclusão",
+		"no_record": "Nenhum registro selecionado",
 		"user_not_found": "Usuário não encontrado",
-		"clients": "Clientes",
-		"groups": "Grupos",
-		"users": "Usuários",
-		"account": "Conta",
-		"active_a": "Ativa",
-		"yes": "Sim",
-		"no": "Não",
-		"description": "Descrição",
+		"no_results_found": "Resultado não encontrado",
+		"no_items_available": "Nenhum item disponível",
+		"delete_confirmation": "Confirmar a exclusão desse registro?",
+		"add_or_select": "Por favor, adicione ou selecione um registro",
+		"unsavedData": "Você tem alguns dados ainda não salvos. Tem certeza que deseja sair dessa página",
 		"custom": {
 			"workspaces": "Workspaces"
 		}
