@@ -6,12 +6,16 @@ use Exception;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\Account;
+use App\Mail\sendInvite;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Services\UserService;
+use Illuminate\Support\Carbon;
 use App\Services\AccountService;
+use Illuminate\Support\Facades\DB;
 use App\Services\PermissionService;
 use App\Models\UserGlobalProperties;
+use Illuminate\Support\Facades\Mail;
 use App\Services\SystemLogService as Que;
 use Illuminate\Support\Facades\Validator;
 
@@ -48,7 +52,9 @@ class UserController extends Controller
 				'id' => $userGlobalProperties->user_id,
 				'uuid' => $userGlobalProperties->id,
 				'name' => $userGlobalProperties->user_name,
-				'lastname' => $userGlobalProperties->user_lastname
+				'lastname' => $userGlobalProperties->user_lastname,
+				'superuser' => $userGlobalProperties->is_superuser,
+				'account_admin' => $this->permissionService->UserCurrentAccountProperties()->is_account_admin
 			],
 			'current_scope' => [
 				'account_id' => $account->id,
@@ -115,6 +121,9 @@ class UserController extends Controller
 	{
 		try {
 			if (!Str::isUuid($request->input('id'))) return Que::passa(false, 'auth.user.show.invalid_id', $request->input('id'));
+			if (!$this->permissionService::hasPermission('AccountUsers.auth.account_users.show'))
+				return Que::passa(false, 'auth.account.users.show.error.unauthorized');
+
 			$accountId = PermissionService::UserGlobalProperties()->current_account;
 			$users = (new AccountService($accountId))->users();
 			$exists = $users->contains('uuid', $request->input('id'));
@@ -124,7 +133,7 @@ class UserController extends Controller
 				? Que::passa(true, 'auth.user.show', '', null, ['user'  => ['record' => $user]])
 				: Que::passa(false, 'auth.user.show.error.user_not_found', $request->input('id'));
 		} catch (Exception $e) {
-			return Que::passa(false, 'generic.server_error', 'auth.account.show ' . $request->input('id'));
+			return Que::passa(false, 'generic.server_error', 'auth.user.show ' . $request->input('id'));
 		}
 	}
 
@@ -141,6 +150,9 @@ class UserController extends Controller
 	{
 		$validator = Validator::make($request->all(), ['id' => 'uuid']);
 		if ($validator->fails()) return Que::passa(false, 'auth.user.error.delete.error.invalid_id_type');
+
+		if (!$this->permissionService::hasPermission('AccountUsers.auth.account_users.delete'))
+			return Que::passa(false, 'auth.account.users.delete.error.unauthorized');
 
 		return $this->userService->removeUserFromAccount($request->input('id'))
 			? Que::passa(true, 'auth.user.deleted_from_account', '', null)
@@ -186,6 +198,31 @@ class UserController extends Controller
 			return Que::passa(true, 'auth.user.add_to_account', '', null, ['user' => ['record' => $user]]);
 		} else {
 			return Que::passa(false, 'generic.server_error', 'auth.user.add_to_account.error');
+		}
+	}
+
+	public function sendInvite(Request $request)
+	{
+		try {
+			if (!Str::isUuid($request->input('id'))) return Que::passa(false, 'auth.user.show.invalid_id', $request->input('id'));
+			if (!$this->permissionService::hasPermission('AccountUsers.auth.account_users.show'))
+				return Que::passa(false, 'auth.account.users.show.error.unauthorized');
+
+			$userGlobalProperties = UserGlobalProperties::find($request->input('id'));
+			$user = $userGlobalProperties ? User::find($userGlobalProperties->user_id) : null;
+
+			if ($user) {
+				$token = Str::random(64);
+				DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+				DB::table('password_reset_tokens')->insert(['email' => $user->email, 'token' => $token, 'created_at' => Carbon::now()]);
+				$resetLink = env('URL_FRONTEND') . '/reset-password/' . $token;
+				Mail::to($user->email)->send(new sendInvite($user->name, $resetLink));
+				return Que::passa(true, 'auth.user.sendInvite', '', $user);
+			} else {
+				return Que::passa(false, 'auth.user.send_invite.error.user_not_found', $request->input('id'));
+			}
+		} catch (Exception $e) {
+			return Que::passa(false, 'generic.server_error', 'auth.user.send_invite ' . $request->input('id'));
 		}
 	}
 }

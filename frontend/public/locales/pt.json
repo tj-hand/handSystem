@@ -98,7 +98,10 @@
 		"user": {
 			"label": {
 				"name": "Nome",
-				"lastname": "Sobrenome"
+				"lastname": "Sobrenome",
+				"send_invite": "Enviar Convite",
+				"reset_password": "Redefinir senha",
+				"admin": "Administrador da Conta"
 			},
 			"modal": {
 				"in_account_title": "Usuário Existente",
@@ -106,7 +109,9 @@
 				"add_to_account_title": "Usuário já Cadastrado",
 				"in_account_text": "Usuário já cadastrado nessa conta.",
 				"blocked_user_text": "Usuário não pode ser adicionado à conta.",
-				"add_to_account_text": "Esse usuário já está cadastrano em nosso sistema. Deseja adicioná-lo a essa conta?"
+				"add_to_account_text": "Esse usuário já está cadastrano em nosso sistema. Deseja adicioná-lo a essa conta?",
+				"confirm_invite_text": "Confirma o envio do convite para o usuário?",
+				"confirm_invite_title": "Confirmação de Convite"
 			},
 			"updated": "Usuário Atualizado!",
 			"created": "Novo Usuário Criado!",
@@ -138,7 +143,9 @@
 		"account": "Conta",
 		"users": "Usuários",
 		"active_a": "Ativa",
+		"active_o": "Ativo",
 		"delete": "Excluir",
+		"password": "Senha",
 		"search": "Procurar",
 		"cancel": "Cancelar",
 		"clients": "Clientes",

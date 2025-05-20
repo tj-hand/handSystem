@@ -77,6 +77,7 @@ export default defineComponent({
 	width: 100%;
 	display: flex;
 	position: relative;
+	color: $text-color;
 	align-items: center;
 
 	.inputText {
@@ -90,6 +91,7 @@ export default defineComponent({
 		display: flex;
 		cursor: pointer;
 		position: absolute;
+		padding-right: 1rem;
 		align-items: center;
 		font-size: calc(1rem + 6px);
 	}

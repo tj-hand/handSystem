@@ -31,78 +31,66 @@
 		"type": "row",
 		"cols": [
 			{
-				"width": "100%",
+				"width": "calc(62% - 1rem)",
 				"content": {
 					"type": "field",
 					"props": {
 						"component": "area-field",
 						"label": "generic.description",
 						"db_name": "description",
-						"rows": 5
+						"rows": 13
 					}
 				}
-			}
-		]
-	},
-	{
-		"type": "row",
-		"cols": [
+			},
 			{
-				"width": "100%",
+				"width": "38%",
 				"content": {
-					"type": "field",
-					"props": {
-						"component": "form-subtitle",
-						"label": "auth.account.label.powerbi_connection"
-					}
-				}
-			}
-		]
-	},
-	{
-		"type": "row",
-		"cols": [
-			{
-				"width": "100%",
-				"content": {
-					"type": "field",
-					"props": {
-						"component": "text-field",
-						"label": "auth.account.label.powerbi_tenant",
-						"db_name": "tenant"
-					}
-				}
-			}
-		]
-	},
-	{
-		"type": "row",
-		"cols": [
-			{
-				"width": "100%",
-				"content": {
-					"type": "field",
-					"props": {
-						"component": "text-field",
-						"label": "auth.account.label.powerbi_client_id",
-						"db_name": "client_id"
-					}
-				}
-			}
-		]
-	},
-	{
-		"type": "row",
-		"cols": [
-			{
-				"width": "100%",
-				"content": {
-					"type": "field",
-					"props": {
-						"component": "text-field",
-						"label": "auth.account.label.powerbi_client_secret",
-						"db_name": "client_secret"
-					}
+					"type": "row",
+					"cols": [
+						{
+							"width": "100%",
+							"content": {
+								"type": "field",
+								"props": {
+									"component": "form-subtitle",
+									"label": "auth.account.label.powerbi_connection"
+								}
+							}
+						},
+						{
+							"width": "62%",
+							"content": {
+								"type": "field",
+								"props": {
+									"component": "text-field",
+									"label": "auth.account.label.powerbi_tenant",
+									"db_name": "tenant"
+								}
+							}
+						},
+						{
+							"width": "62%",
+							"content": {
+								"type": "field",
+								"props": {
+									"component": "text-field",
+									"label": "auth.account.label.powerbi_client_secret",
+									"db_name": "client_secret"
+								}
+							}
+						},
+						{
+							"width": "62%",
+							"content": {
+								"type": "field",
+								"props": {
+									"component": "text-field",
+									"label": "auth.account.label.powerbi_client_id",
+									"db_name": "client_id"
+								}
+							}
+						}
+					]
 				}
 			}
 		]

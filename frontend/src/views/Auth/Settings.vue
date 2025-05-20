@@ -34,6 +34,10 @@ export default defineComponent({
 			{
 				label: 'generic.users',
 				link_to: 'Users',
+				permissionRequired: {
+					category: 'AccountUsers',
+					identifier: 'auth.account_users.module',
+				},
 			},
 			{
 				label: 'generic.custom.workspaces',

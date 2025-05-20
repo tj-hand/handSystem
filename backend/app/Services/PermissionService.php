@@ -193,4 +193,26 @@ class PermissionService
 		$members = GroupMember::whereIn('group_id', $groupId)->get();
 		return $members;
 	}
+
+	public static function hasPermission(string $permissionRequired): bool
+	{
+
+		if (empty($permissionRequired)) return false;
+		$parts = explode('.', $permissionRequired, 2);
+		if (count($parts) !== 2) return false;
+		[$category, $identifier] = $parts;
+		$permissions = self::UserActions();
+		if (!isset($permissions[$category]) || !is_array($permissions[$category])) return false;
+		foreach ($permissions[$category] as $permission) {
+			if (
+				isset($permission['identifier']) &&
+				$permission['identifier'] === $identifier &&
+				isset($permission['is_visible']) &&
+				$permission['is_visible'] === true
+			) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

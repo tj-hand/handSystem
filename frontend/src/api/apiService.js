@@ -40,6 +40,9 @@ const apiService = {
 		updateScope(data) {
 			return apiRequest('POST', endpoints.user.updateScope, data);
 		},
+		sendInvite(id) {
+			return apiRequest('POST', endpoints.user.sendInvite, id);
+		},
 	},
 	account: {
 		show(id) {

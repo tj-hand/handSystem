@@ -7,7 +7,7 @@
 			:key="index"
 			class="item"
 			@click="goTo(item.link_to, index)"
-			v-for="(item, index) in params"
+			v-for="(item, index) in filteredMenuItems"
 			:class="{ active: isActive(item.link_to) }"
 			:ref="
 				(el) => {
@@ -20,10 +20,11 @@
 	</div>
 </template>
 <script>
-import { ref } from 'vue';
-import { onMounted, nextTick, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { defineComponent } from 'vue';
+import { onMounted, nextTick, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 export default defineComponent({
 	name: 'HorizontalSubmenu',
@@ -33,10 +34,21 @@ export default defineComponent({
 	setup(props) {
 		const route = useRoute();
 		const router = useRouter();
-
 		const activeIndex = ref(null);
 		const activeTabRef = ref(null);
 		const menuContainer = ref(null);
+		const authStore = useAuthStore();
+
+		const filteredMenuItems = computed(() => {
+			if (!props.params?.length) return [];
+			return props.params.filter((item) => {
+				if (!item.permissionRequired) return true;
+				const { category, identifier } = item.permissionRequired;
+				if (!authStore.enviroment?.permissions?.[category]) return false;
+				const permission = authStore.enviroment.permissions[category].find((p) => p.identifier === identifier);
+				return permission && permission.is_visible === true;
+			});
+		});
 
 		const scrollActiveTabIntoView = async () => {
 			await nextTick();
@@ -75,9 +87,9 @@ export default defineComponent({
 		};
 
 		onMounted(() => {
-			if (props.params?.length) {
+			if (filteredMenuItems.value?.length) {
 				const currentRouteName = route.name;
-				const foundIndex = props.params.findIndex(
+				const foundIndex = filteredMenuItems.value.findIndex(
 					(item) =>
 						item.link_to === currentRouteName ||
 						(route.matched && route.matched.some((record) => record.name === item.link_to))
@@ -88,8 +100,8 @@ export default defineComponent({
 					nextTick(() => {
 						scrollActiveTabIntoView();
 					});
-				} else {
-					goTo(props.params[0].link_to, 0);
+				} else if (filteredMenuItems.value.length > 0) {
+					goTo(filteredMenuItems.value[0].link_to, 0);
 				}
 			}
 		});
@@ -101,9 +113,9 @@ export default defineComponent({
 		watch(
 			() => route.name,
 			() => {
-				if (props.params?.length) {
+				if (filteredMenuItems.value?.length) {
 					const currentRouteName = route.name;
-					const foundIndex = props.params.findIndex(
+					const foundIndex = filteredMenuItems.value.findIndex(
 						(item) =>
 							item.link_to === currentRouteName ||
 							(route.matched && route.matched.some((record) => record.name === item.link_to))
@@ -116,7 +128,7 @@ export default defineComponent({
 			}
 		);
 
-		return { activeIndex, activeTabRef, menuContainer, goTo, isActive };
+		return { activeIndex, activeTabRef, menuContainer, filteredMenuItems, goTo, isActive };
 	},
 });
 </script>

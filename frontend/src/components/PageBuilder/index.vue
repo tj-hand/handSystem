@@ -32,15 +32,20 @@ export default defineComponent({
 		schema: { type: Object, required: true },
 		record: { type: Object, required: true },
 	},
-	setup(props) {
+	emits: ['buttonAction'],
+	setup(props, { emit }) {
 		const { t } = useI18n();
 		const uiStore = useUIStore();
-		const updatedSchema = ref(props.schema);
 		const updatedData = ref(props.record);
+		const updatedSchema = ref(props.schema);
 
 		const updaterecord = (recordUpdated) => {
-			uiStore.setDirtyForm(true);
-			updatedData.value[recordUpdated.fieldName] = recordUpdated.fieldValue;
+			if (recordUpdated.fieldName == 'button') {
+				emit('buttonAction', recordUpdated.fieldValue);
+			} else {
+				uiStore.setDirtyForm(true);
+				updatedData.value[recordUpdated.fieldName] = recordUpdated.fieldValue;
+			}
 		};
 
 		const validate = () => {

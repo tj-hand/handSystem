@@ -1,7 +1,4 @@
 <template>
-	<div v-if="!schema">
-		<p>Schema is missing or undefined!</p>
-	</div>
 	<div
 		class="row"
 		:class="schema.class"
@@ -16,7 +13,6 @@
 			v-for="(column, index) in schema.cols"
 			:style="'width: ' + responsive(column.width)"
 		>
-			<!-- Check if content is an array and ensure schema is passed -->
 			<template v-if="Array.isArray(column.content)">
 				<BuilderCore
 					:key="subIndex"
@@ -29,7 +25,6 @@
 			</template>
 
 			<template v-else-if="column.content?.type === 'row'">
-				<!-- Recursively handle nested row, ensure schema is passed -->
 				<BuilderCore
 					:key="index"
 					:record="record"
@@ -39,7 +34,6 @@
 				/>
 			</template>
 
-			<!-- Handle the default content case (fields) -->
 			<BuilderCore
 				v-else
 				@updateData="updaterecord"
@@ -48,7 +42,6 @@
 		</div>
 	</div>
 
-	<!-- RouterView logic, unchanged -->
 	<RouterView v-if="schema.type === 'field' && schema.props?.component === 'virtualRouter'" />
 
 	<component
@@ -68,9 +61,11 @@ import TextField from '@/components/TextField.vue';
 import AreaField from '@/components/AreaField.vue';
 import SelectList from '@/components/SelectList.vue';
 import ObjectCard from '@/components/ObjectCard.vue';
+import ButtonField from '@/components/ButtonField.vue';
 import FormSubtitle from '@/components/FormSubtitle.vue';
 import PasswordField from '@/components/PasswordField.vue';
 import CheckboxField from '@/components/CheckboxField.vue';
+import MultiSelector from '@/components/MultiSelector.vue';
 import HorizontalSubmenu from '@/components/HorizontalSubmenu.vue';
 
 export default defineComponent({
@@ -82,9 +77,11 @@ export default defineComponent({
 		TextField,
 		SelectList,
 		ObjectCard,
+		ButtonField,
 		FormSubtitle,
 		PasswordField,
 		CheckboxField,
+		MultiSelector,
 		HorizontalSubmenu,
 	},
 	props: {
@@ -132,6 +129,11 @@ export default defineComponent({
 		display: flex;
 		flex-direction: column;
 		box-sizing: border-box;
+
+		&.top-space {
+			padding-top: 1rem * $phi-up;
+		}
+
 		&.vertical-justify {
 			flex: 1 1 auto;
 			padding: 0 1rem;

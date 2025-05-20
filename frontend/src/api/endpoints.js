@@ -12,6 +12,7 @@ const endpoints = {
 		delete: 'api/user/delete',
 		upsert: 'api/user/upsert',
 		exists: 'api/user/exists',
+		sendInvite: 'api/user/send-invite',
 		updateScope: '/api/user/update-scope',
 		addToAccount: 'api/user/add-to-account',
 		requestEnviroment: 'api/user/request-enviroment',

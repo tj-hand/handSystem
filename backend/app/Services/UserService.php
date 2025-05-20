@@ -79,6 +79,13 @@ class UserService
 
 	private function updateUser(array $data)
 	{
+
+		$is_superuser = PermissionService::UserGlobalProperties()->is_superuser;
+		$currentAccountId = PermissionService::UserGlobalProperties()->current_account;
+
+		if (!PermissionService::hasPermission('AccountUsers.auth.account_users.edit'))
+			return Que::passa(false, 'auth.account.users.edit.error.unauthorized');
+
 		$validationResults = $this->validateUserUpdateDetails($data);
 		if (!$validationResults['success']) {
 			return $validationResults['response'];
@@ -103,9 +110,16 @@ class UserService
 
 			$userGlobalProperties->user_name = $data['user_name'];
 			$userGlobalProperties->user_lastname = $data['user_lastname'];
-			$userGlobalProperties->is_superuser = $data['is_superuser'] ?? false;
-			$userGlobalProperties->is_blocked = $data['is_blocked'] ?? false;
+			if ($is_superuser) {
+				$userGlobalProperties->is_superuser = $data['is_superuser'] ?? false;
+				$userGlobalProperties->is_blocked = $data['is_blocked'] ?? false;
+			}
 			$userGlobalProperties->save();
+
+			$userAccountProperties = UserAccountProperties::where('user_id', $data['id'])->where('account_id', $currentAccountId)->first();
+			$userAccountProperties->is_active_to_account = $data['is_active_to_account'];
+			if ($is_superuser) $userAccountProperties->is_account_admin = $data['is_account_admin'];
+			$userAccountProperties->save();
 
 			DB::commit();
 
@@ -172,6 +186,10 @@ class UserService
 
 	private function createUser(array $data, $scope = null)
 	{
+
+		if (!PermissionService::hasPermission('AccountUsers.auth.account_users.add'))
+			return Que::passa(false, 'auth.account.users.add.error.unauthorized');
+
 		$validationResults = $this->validateUserUpdateDetails($data);
 		if (!$validationResults['success']) {
 			return $validationResults['response'];
@@ -181,6 +199,8 @@ class UserService
 		if (!$emailValidation['success']) {
 			return $emailValidation['response'];
 		}
+
+		$is_superuser = PermissionService::UserGlobalProperties()->is_superuser;
 
 		DB::beginTransaction();
 		try {
@@ -195,18 +215,23 @@ class UserService
 			$user->password = Hash::make($password);
 			$user->save();
 
+
 			$currentAccountId = PermissionService::UserGlobalProperties()->current_account;
+			$is_account_admin = false;
 
 			$userGlobalProperties = new UserGlobalProperties();
 			$userGlobalProperties->user_id = $user->id;
 			$userGlobalProperties->user_name = $data['user_name'];
 			$userGlobalProperties->user_lastname = $data['user_lastname'];
 			$userGlobalProperties->current_account = $currentAccountId;
-			$userGlobalProperties->is_superuser = $data['is_superuser'] ?? false;
-			$userGlobalProperties->is_blocked = $data['is_blocked'] ?? false;
+			if ($is_superuser) {
+				$is_account_admin = $data['is_account_admin'];
+				$userGlobalProperties->is_superuser = $data['is_superuser'] ?? false;
+				$userGlobalProperties->is_blocked = $data['is_blocked'] ?? false;
+			}
 			$userGlobalProperties->save();
 
-			if ($scope == 'account') $this->addUserToAccount($user->id);
+			if ($scope == 'account') $this->addUserToAccount($user->id, $is_account_admin);
 
 			DB::commit();
 
@@ -217,9 +242,10 @@ class UserService
 		}
 	}
 
-	public function addUserToAccount($userId)
+	public function addUserToAccount($userId, $is_account_admin = false)
 	{
 		try {
+			$is_superuser = PermissionService::UserGlobalProperties()->is_superuser;
 			$currentAccountId = PermissionService::UserGlobalProperties()->current_account;
 			$accountProperties = new UserAccountProperties();
 			$accountProperties->user_id = $userId;
@@ -248,9 +274,12 @@ class UserService
 
 	public static function getUser($id)
 	{
-		return UserGlobalProperties::select('users.id', 'users_global_properties.id AS uuid', 'name', 'user_name', 'user_lastname', 'email', 'is_superuser', 'is_blocked')
+		$accountId = PermissionService::UserCurrentAccountProperties()->account_id;
+		return UserGlobalProperties::select('users.id', 'users_global_properties.id AS uuid', 'name', 'user_name', 'user_lastname', 'email', 'is_superuser', 'is_blocked', 'is_active_to_account', 'is_account_admin')
 			->join('users', 'users_global_properties.user_id', '=', 'users.id')
+			->join('users_accounts_properties', 'users_accounts_properties.user_id', '=', 'users.id')
 			->where('users_global_properties.id', $id)
+			->where('users_accounts_properties.account_id', $accountId)
 			->first();
 	}
 }

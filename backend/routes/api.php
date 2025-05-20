@@ -23,6 +23,7 @@ Route::prefix('user')
         Route::post('/exists', 'UserController@exists')->name('user.exists')->middleware('auth:api');
         Route::post('/upsert', 'UserController@upsert')->name('user.upsert')->middleware('auth:api');
         Route::post('/delete', 'UserController@delete')->name('user.delete')->middleware('auth:api');
+        Route::post('/send-invite', 'UserController@sendInvite')->name('user.sendInvite')->middleware('auth:api');
         Route::post('/update-scope', 'UserController@updateScope')->name('user.updateScope')->middleware('auth:api');
         Route::post('/add-to-account', 'UserController@addToAccount')->name('user.addToAccount')->middleware('auth:api');
         Route::post('/request-enviroment', 'UserController@requestEnviroment')->name('user.requestEnviroment')->middleware('auth:api');

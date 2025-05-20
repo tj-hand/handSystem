@@ -16,6 +16,7 @@
 			<div
 				class="add-button"
 				@click="addAction"
+				v-if="addPermission"
 			>
 				<div class="icon">add_circle</div>
 			</div>
@@ -68,6 +69,7 @@ export default defineComponent({
 		idField: { type: String, default: 'id' },
 		subContent: { type: String, default: 'id' },
 		mainContent: { type: String, default: 'name' },
+		addPermission: { type: Boolean, default: false },
 	},
 	emits: ['addAction'],
 	setup(props, { emit }) {

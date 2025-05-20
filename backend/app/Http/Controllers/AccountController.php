@@ -31,6 +31,12 @@ class AccountController extends Controller
 		if (!Str::isUuid($request->id)) return Que::passa(false, 'auth.account.show.invalid_id', $request->id);
 		if ($request->id != $this->currentAccount) return Que::passa(false, 'auth.account.show.account_not_match', $request->id);
 
+		$userGlobal = $this->permissionService->UserGlobalProperties();
+		$userAccount = $this->permissionService->UserCurrentAccountProperties();
+
+		if (!$userGlobal->is_superuser && !$userAccount->is_account_admin)
+			return Que::passa(false, 'auth.account.upsert.unauthorized', $request->id);
+
 		try {
 			$account = Account::select('admin_accounts.id', 'name', 'description', 'is_active', 'tenant', 'client_id', 'client_secret')
 				->join('custom_microsoft_connection', 'admin_accounts.id', '=', 'custom_microsoft_connection.account_id')
@@ -135,9 +141,11 @@ class AccountController extends Controller
 
 	public function users()
 	{
+		if (!$this->permissionService::hasPermission('AccountUsers.auth.account_users.module'))
+			return Que::passa(false, 'auth.account.users.list.error.unauthorized');
 		try {
 			$users = (new AccountService($this->currentAccount))->users();
-			return Que::passa(true, 'auth.account.users.page_view', '', null, ['users' => $users]);
+			return Que::passa(true, 'auth.account.users.list', '', null, ['users' => $users]);
 		} catch (Exception $e) {
 			return Que::passa(false, 'generic.server_error', 'auth.account.users');
 		}

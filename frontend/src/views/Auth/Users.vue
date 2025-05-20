@@ -1,14 +1,18 @@
 <template>
-	<div class="content-wrapper">
+	<div
+		v-if="can('module')"
+		class="content-wrapper"
+	>
 		<SelectList
 			:list="list"
 			:width="300"
 			idField="uuid"
 			mainContent="name"
 			subContent="email"
-			v-if="isListVisible"
 			@addAction="addAction"
 			title="auth.users.account_users"
+			:addPermission="can('add')"
+			v-if="isListVisible && can('list')"
 		/>
 		<div class="item-data">
 			<NoRecord v-if="isNoRecordVisible" />
@@ -17,7 +21,7 @@
 				:record="record"
 				title_db_name="name"
 				subtitle_db_name="uuid"
-				v-if="isObjectCardVisible"
+				v-if="isObjectCardVisible && can('show')"
 				title_placeholder="auth.user.title_placeholder"
 				subtitle_placeholder="auth.user.subtitle_placeholder"
 			>
@@ -26,6 +30,7 @@
 						:schema="users"
 						:record="record"
 						ref="formGeneratorRef"
+						@buttonAction="buttonAction"
 						@update:record="updateRecord"
 					/>
 				</template>
@@ -34,9 +39,9 @@
 						@action="mainAction"
 						@cancel="cancelAction"
 						@delete="showDeleteConfirmation"
-						:actionButton="$t('generic.save')"
-						:deleteButton="$t('generic.delete')"
 						:cancelButton="$t('generic.cancel')"
+						:actionButton="can('edit') ? $t('generic.save') : null"
+						:deleteButton="can('delete') ? $t('generic.delete') : null"
 					/>
 				</template>
 			</ObjectCard>
@@ -59,9 +64,10 @@ import { isUUID } from '@/tools/isUUID';
 import apiService from '@/api/apiService';
 import { ref, computed, watch } from 'vue';
 import users from '@/pagebuilder/users.json';
-import { onMounted, onBeforeUnmount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { onMounted, onBeforeUnmount } from 'vue';
 import NoRecord from '@/components/NoRecord.vue';
+import { useAuthStore } from '@/stores/useAuthStore';
 import ObjectCard from '@/components/ObjectCard.vue';
 import { is_smallScreen } from '@/tools/screenSizes';
 import SelectList from '@/components/SelectList.vue';
@@ -93,6 +99,7 @@ export default defineComponent({
 		const modalMethod = ref('');
 		const showModal = ref(false);
 		const modalConfirm = ref('');
+		const authStore = useAuthStore();
 		const recordIsLoaded = ref(false);
 		const formGeneratorRef = ref(null);
 		const record = formGuardService.getrecord();
@@ -256,6 +263,29 @@ export default defineComponent({
 			}
 		};
 
+		const can = (action) => {
+			return authStore.enviroment.permissions.AccountUsers.some(
+				(p) => p.identifier === 'auth.account_users.' + action
+			);
+		};
+
+		const buttonAction = (action) => {
+			if (action == 'send_invite') {
+				showModal.value = true;
+				modalDanger.value = false;
+				modalMethod.value = sendInvite;
+				modalCancel.value = 'generic.cancel';
+				modalConfirm.value = 'generic.OK';
+				modalText.value = 'auth.user.modal.confirm_invite_text';
+				modalTitle.value = 'auth.user.modal.confirm_invite_title';
+			}
+		};
+
+		const sendInvite = async () => {
+			const { success } = await apiService.user.sendInvite({ id: route.params.id });
+			success ? showToast(message) : showToast(message, { type: 'error' });
+		};
+
 		watch(
 			() => route.params.id,
 			() => getRecord(),
@@ -293,8 +323,11 @@ export default defineComponent({
 			formGeneratorRef,
 			isNoRecordVisible,
 			isObjectCardVisible,
+			can,
 			addAction,
 			mainAction,
+			sendInvite,
+			buttonAction,
 			deleteAction,
 			updateRecord,
 			cancelAction,
