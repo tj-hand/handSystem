@@ -69,9 +69,8 @@
 				"repository": "Arquivos"
 			},
 			"user_menu": {
-				"personal_info": "Informações pessoais",
-				"change_my_password": "Alterar minha senha",
-				"safely_logout": "Sair com segurança"
+				"safely_logout": "Sair com segurança",
+				"access_settings": "Configurações de Acesso"
 			}
 		},
 		"welcome": {

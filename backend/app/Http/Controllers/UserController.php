@@ -51,6 +51,7 @@ class UserController extends Controller
 			'user' => [
 				'id' => $userGlobalProperties->user_id,
 				'uuid' => $userGlobalProperties->id,
+				'email' => $this->permissionService->user()->email,
 				'name' => $userGlobalProperties->user_name,
 				'lastname' => $userGlobalProperties->user_lastname,
 				'superuser' => $userGlobalProperties->is_superuser,

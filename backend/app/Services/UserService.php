@@ -111,14 +111,14 @@ class UserService
 			$userGlobalProperties->user_name = $data['user_name'];
 			$userGlobalProperties->user_lastname = $data['user_lastname'];
 			if ($is_superuser) {
-				$userGlobalProperties->is_superuser = $data['is_superuser'] ?? false;
-				$userGlobalProperties->is_blocked = $data['is_blocked'] ?? false;
+				if (isset($data['is_superuser'])) $userGlobalProperties->is_superuser = $data['is_superuser'];
+				if (isset($data['is_blocked'])) $userGlobalProperties->is_blocked = $data['is_blocked'];
 			}
 			$userGlobalProperties->save();
 
 			$userAccountProperties = UserAccountProperties::where('user_id', $data['id'])->where('account_id', $currentAccountId)->first();
-			$userAccountProperties->is_active_to_account = $data['is_active_to_account'];
-			if ($is_superuser) $userAccountProperties->is_account_admin = $data['is_account_admin'];
+			if (isset($data['is_active_to_account'])) $userAccountProperties->is_active_to_account = $data['is_active_to_account'];
+			if ($is_superuser && isset($data['is_account_admin'])) $userAccountProperties->is_account_admin = $data['is_account_admin'];
 			$userAccountProperties->save();
 
 			DB::commit();

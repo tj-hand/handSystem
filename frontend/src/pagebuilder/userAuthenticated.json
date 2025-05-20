@@ -60,59 +60,7 @@
 								"width": "47%",
 								"content": {
 									"type": "row",
-									"cols": [
-										{
-											"width": "100%",
-											"content": {
-												"type": "field",
-												"props": {
-													"component": "checkbox-field",
-													"label": "generic.active_o",
-													"db_name": "is_active_to_account",
-													"labelPosition": "right"
-												}
-											}
-										},
-										{
-											"width": "100%",
-											"content": {
-												"type": "field",
-												"props": {
-													"component": "checkbox-field",
-													"label": "generic.blocked",
-													"db_name": "is_blocked",
-													"labelPosition": "right",
-													"validations": ["superuser"]
-												}
-											}
-										},
-										{
-											"width": "100%",
-											"content": {
-												"type": "field",
-												"props": {
-													"component": "checkbox-field",
-													"label": "auth.user.label.admin",
-													"db_name": "is_account_admin",
-													"labelPosition": "right",
-													"validations": ["superuser"]
-												}
-											}
-										},
-										{
-											"width": "100%",
-											"content": {
-												"type": "field",
-												"props": {
-													"component": "checkbox-field",
-													"label": "generic.superuser",
-													"db_name": "is_superuser",
-													"labelPosition": "right",
-													"validations": ["superuser"]
-												}
-											}
-										}
-									]
+									"cols": []
 								}
 							},
 							{
@@ -130,18 +78,6 @@
 													"label": "auth.user.label.reset_password",
 													"db_name": "password",
 													"validations": ["password:null"]
-												}
-											}
-										},
-										{
-											"width": "100%",
-											"content": {
-												"type": "field",
-												"props": {
-													"component": "button-field",
-													"class": "primary",
-													"label": "auth.user.label.send_invite",
-													"action": "send_invite"
 												}
 											}
 										}

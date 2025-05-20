@@ -4,22 +4,16 @@
 		class="user-menu"
 		:class="{ 'expanded-menu': expandedMenu }"
 	>
-		<div class="menu-item">
+		<div
+			@click="authUserData"
+			class="menu-item"
+		>
 			<div class="icon">id_card</div>
 			<div
 				class="menu-label"
 				v-if="expandedMenu"
 			>
-				{{ $t('auth.left_menu.user_menu.personal_info') }}
-			</div>
-		</div>
-		<div class="menu-item">
-			<div class="icon">key</div>
-			<div
-				class="menu-label"
-				v-if="expandedMenu"
-			>
-				{{ $t('auth.left_menu.user_menu.change_my_password') }}
+				{{ $t('auth.left_menu.user_menu.access_settings') }}
 			</div>
 		</div>
 		<div
@@ -58,7 +52,13 @@ export default defineComponent({
 		});
 
 		const logout = () => {
+			uiStore.setUserMenu(false);
 			closeEnviroment(router);
+		};
+
+		const authUserData = async () => {
+			uiStore.setUserMenu(false);
+			await router.push({ name: 'authenticatedUser' });
 		};
 
 		const handleClickOutside = (event) => {
@@ -73,7 +73,7 @@ export default defineComponent({
 			document.removeEventListener('click', handleClickOutside);
 		});
 
-		return { menuRef, expandedMenu, logout };
+		return { menuRef, expandedMenu, logout, authUserData };
 	},
 });
 </script>

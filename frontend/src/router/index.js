@@ -81,6 +81,12 @@ const routes = [
 					},
 				],
 			},
+			{
+				path: 'autheticated-user',
+				name: 'authenticatedUser',
+				component: () => import('@/views/Auth/AuthenticatedUser.vue'),
+				meta: { requiresAuthentication: true },
+			},
 		],
 	},
 ];

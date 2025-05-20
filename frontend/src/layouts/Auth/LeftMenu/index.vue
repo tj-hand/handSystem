@@ -64,7 +64,6 @@ export default defineComponent({
 	setup() {
 		const router = useRouter();
 		const uiStore = useUIStore();
-		const showUserMenu = ref(false);
 		const authStore = useAuthStore();
 
 		const goHome = () => {
@@ -82,8 +81,12 @@ export default defineComponent({
 			return uiStore.expandedMenu;
 		});
 
+		const showUserMenu = computed(() => {
+			return uiStore.userMenu;
+		});
+
 		const toogleUserMenu = () => {
-			showUserMenu.value = !showUserMenu.value;
+			uiStore.setUserMenu(!uiStore.userMenu);
 		};
 
 		const closeMenu = () => {

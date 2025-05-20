@@ -1,20 +1,25 @@
 <template>
-	<div class="scope-selector">
+	<div
+		class="scope-selector"
+		v-if="hasMultipleAccounts || selectedAccountHasMultipleClients"
+	>
 		<div class="slide-wrapper">
 			<div
 				class="content-panel"
 				:style="'width: ' + menuWidth + 'px;'"
 			>
 				<div
-					@click.stop="selector('account')"
 					class="selector-wrapper"
+					v-if="hasMultipleAccounts"
+					@click.stop="selector('account')"
 				>
 					<div class="selector-value">{{ clipText(accountName, 15) }}</div>
 					<div class="icon">keyboard_arrow_down</div>
 				</div>
 				<div
-					@click.stop="selector('client')"
 					class="selector-wrapper"
+					@click.stop="selector('client')"
+					v-if="selectedAccountHasMultipleClients"
 				>
 					<div class="selector-value">{{ clipText(clientName, 15) }}</div>
 					<div class="icon">keyboard_arrow_down</div>
@@ -48,9 +53,18 @@ export default defineComponent({
 	},
 	setup() {
 		const selectorType = ref('');
+		const uiStore = useUIStore();
 		const showSelector = ref(false);
 		const authStore = useAuthStore();
-		const uiStore = useUIStore();
+
+		const hasMultipleAccounts = computed(() => authStore.enviroment.scopes.length >= 2);
+
+		const selectedAccountHasMultipleClients = computed(() => {
+			const selected = authStore.enviroment.scopes.find(
+				(scope) => scope.id === authStore.enviroment.current_scope.account_id
+			);
+			return selected?.clients?.length > 1 || false;
+		});
 
 		const accountName = computed(() => {
 			return authStore.enviroment.current_scope?.account_name;
@@ -78,6 +92,8 @@ export default defineComponent({
 		};
 
 		return {
+			hasMultipleAccounts,
+			selectedAccountHasMultipleClients,
 			menuWidth,
 			clientName,
 			accountName,
