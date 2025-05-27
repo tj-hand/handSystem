@@ -127,7 +127,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .item-selector {
 	z-index: 10;
-	height: 16rem;
 	margin-left: 1rem;
 	border-style: solid;
 	border-color: #ffffff;
@@ -165,16 +164,20 @@ export default defineComponent({
 		}
 	}
 
-	.item {
-		cursor: pointer;
-		font-weight: bold;
-		color: #ffffff;
-		font-size: 1rem * $phi-sr;
-		padding: (1rem * $phi) 1rem;
-		background-color: rgba(0, 0, 0, 0.2);
-		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-		&:hover {
-			background-color: rgba(0, 0, 0, 0.25);
+	.items-wrapper {
+		height: 10rem;
+		overflow-y: auto;
+		.item {
+			cursor: pointer;
+			font-weight: bold;
+			color: #ffffff;
+			font-size: 1rem * $phi-sr;
+			padding: (1rem * $phi) 1rem;
+			background-color: rgba(0, 0, 0, 0.2);
+			border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+			&:hover {
+				background-color: rgba(0, 0, 0, 0.25);
+			}
 		}
 	}
 }

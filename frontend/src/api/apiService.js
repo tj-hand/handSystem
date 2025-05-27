@@ -44,15 +44,46 @@ const apiService = {
 			return apiRequest('POST', endpoints.user.sendInvite, id);
 		},
 	},
+	group: {
+		show(id) {
+			return apiRequest('POST', endpoints.group.show, id);
+		},
+		upsert(data) {
+			return apiRequest('POST', endpoints.group.upsert, data);
+		},
+		delete(id) {
+			return apiRequest('POST', endpoints.group.delete, id);
+		},
+		associated_users(id) {
+			return apiRequest('POST', endpoints.group.associated_users, id);
+		},
+		associated_actions(id) {
+			return apiRequest('POST', endpoints.group.associated_actions, id);
+		},
+	},
 	account: {
 		show(id) {
 			return apiRequest('POST', endpoints.account.show, id);
 		},
+		delete(id) {
+			return apiRequest('POST', endpoints.account.delete, id);
+		},
 		users() {
 			return apiRequest('POST', endpoints.account.users);
 		},
+		groups() {
+			return apiRequest('POST', endpoints.account.groups);
+		},
 		upsert(data) {
 			return apiRequest('POST', endpoints.account.upsert, data);
+		},
+	},
+	authorization: {
+		queue() {
+			return apiRequest('POST', endpoints.authorization.queue);
+		},
+		set(data) {
+			return apiRequest('POST', endpoints.authorization.set, data);
 		},
 	},
 };

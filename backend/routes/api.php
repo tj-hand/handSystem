@@ -43,5 +43,25 @@ Route::prefix('account')
     ->group(function () {
         Route::post('/show', 'AccountController@show')->name('account.show')->middleware('auth:api');
         Route::post('/users', 'AccountController@users')->name('account.users')->middleware('auth:api');
+        Route::post('/delete', 'AccountController@delete')->name('account.delete')->middleware('auth:api');
+        Route::post('/groups', 'AccountController@groups')->name('account.groups')->middleware('auth:api');
         Route::post('/upsert', 'AccountController@upsert')->name('account.upsert')->middleware('auth:api');
+    });
+
+Route::prefix('group')
+    ->name('api.')
+    ->namespace('App\Http\Controllers')
+    ->group(function () {
+        Route::post('/show', 'GroupController@show')->name('group.show')->middleware('auth:api');
+        Route::post('/upsert', 'GroupController@upsert')->name('group.upsert')->middleware('auth:api');
+        Route::post('/delete', 'GroupController@delete')->name('group.delete')->middleware('auth:api');
+        Route::post('/associated_users', 'GroupController@associatedUsers')->name('group.associatedUsers')->middleware('auth:api');
+        Route::post('/associated_actions', 'GroupController@associatedActions')->name('group.associatedActions')->middleware('auth:api');
+    });
+Route::prefix('authorization')
+    ->name('api.')
+    ->namespace('App\Http\Controllers')
+    ->group(function () {
+        Route::post('/set', 'AuthorizationController@set')->name('authorization.set')->middleware('auth:api');
+        Route::post('/queue', 'AuthorizationController@queue')->name('authorization.queue')->middleware('auth:api');
     });

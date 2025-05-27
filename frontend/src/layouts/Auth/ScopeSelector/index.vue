@@ -25,6 +25,17 @@
 					<div class="icon">keyboard_arrow_down</div>
 				</div>
 			</div>
+			<div
+				v-if="canAuthorize"
+				class="authorizations"
+			>
+				<div
+					class="icon"
+					@click="toogleDrawer"
+				>
+					done_outline
+				</div>
+			</div>
 		</div>
 		<ItemSelector
 			v-if="showSelector"
@@ -34,6 +45,7 @@
 			:selectorType="selectorType"
 			:style="'width: calc(' + menuWidth + 'px - 2px);'"
 		/>
+		<DrawerContainer />
 	</div>
 </template>
 
@@ -44,18 +56,29 @@ import { clipText } from '@/tools/clipText';
 import ItemSelector from './ItemSelector.vue';
 import { closest } from '@/tools/harmonize.js';
 import { useUIStore } from '@/stores/useUIStore';
+import { useDrawer } from '@/composables/useDrawer';
 import { useAuthStore } from '@/stores/useAuthStore';
+import authorizationQueue from './authorizationQueue.vue';
+import DrawerContainer from '@/components/DrawerContainer.vue';
 
 export default defineComponent({
 	name: 'ScopeSelectorIndex',
 	components: {
 		ItemSelector,
+		DrawerContainer,
 	},
 	setup() {
 		const selectorType = ref('');
 		const uiStore = useUIStore();
 		const showSelector = ref(false);
 		const authStore = useAuthStore();
+		const { openDrawer } = useDrawer();
+
+		const canAuthorize = computed(() => {
+			return authStore.enviroment?.permissions?.SpecialPermissions?.some(
+				(perm) => perm.identifier === 'auth.authorization_queue.relationships'
+			);
+		});
 
 		const hasMultipleAccounts = computed(() => authStore.enviroment.scopes.length >= 2);
 
@@ -78,6 +101,10 @@ export default defineComponent({
 			uiStore.toggleScopeSelector();
 		};
 
+		const toogleDrawer = () => {
+			openDrawer(authorizationQueue, closest(window.innerWidth, 600));
+		};
+
 		const menuWidth = computed(() => {
 			return closest(window.innerWidth, 300);
 		});
@@ -92,16 +119,18 @@ export default defineComponent({
 		};
 
 		return {
-			hasMultipleAccounts,
-			selectedAccountHasMultipleClients,
+			clipText,
 			menuWidth,
 			clientName,
 			accountName,
 			selectorType,
 			showSelector,
-			clipText,
+			canAuthorize,
+			hasMultipleAccounts,
+			selectedAccountHasMultipleClients,
 			selector,
 			toogleMenu,
+			toogleDrawer,
 			closeSelector,
 		};
 	},
@@ -119,6 +148,7 @@ export default defineComponent({
 		color: #ffffff;
 		position: relative;
 		flex-direction: row;
+		justify-content: space-between;
 		.content-panel {
 			gap: 0;
 			display: flex;
@@ -149,6 +179,14 @@ export default defineComponent({
 					font-size: 1rem * $phi-sr;
 				}
 			}
+		}
+		.authorizations {
+			padding: 0 1rem;
+			cursor: pointer;
+			padding-top: 4px;
+			line-height: 1rem;
+			font-size: 1rem * $phi-up;
+			background-color: rgba($success-color, 0.38);
 		}
 	}
 	.item-selector {

@@ -56,13 +56,19 @@ const routes = [
 						meta: { requiresAuthentication: true },
 					},
 					{
+						path: 'account/new',
+						name: 'NewAccount',
+						component: () => import('@/views/Auth/NewAccount.vue'),
+						meta: { requiresAuthentication: true },
+					},
+					{
 						path: 'clients',
 						name: 'Clients',
 						component: () => import('@/views/Auth/Clients.vue'),
 						meta: { requiresAuthentication: true },
 					},
 					{
-						path: 'groups',
+						path: 'groups/:id?',
 						name: 'Groups',
 						component: () => import('@/views/Auth/Groups.vue'),
 						meta: { requiresAuthentication: true },

@@ -83,6 +83,7 @@
 			}
 		},
 		"account": {
+			"new": "Adicionar Conta",
 			"title_placeholder": "Nome da Conta",
 			"subtitle_placeholder": "Identificador da conta",
 			"label": {
@@ -93,6 +94,14 @@
 				"powerbi_client_secret": "Client Secret"
 			},
 			"updated": "Conta Atualizada!"
+		},
+		"account_users": {
+			"module": "Acesso ao Módulo",
+			"list": "Listar Usuários",
+			"add": "Adicionar Usuário",
+			"show": "Visualizar Usuário",
+			"edit": "Atualizar Usuário",
+			"delete": "Exlcuir Usuário"
 		},
 		"user": {
 			"label": {
@@ -121,6 +130,38 @@
 		},
 		"users": {
 			"account_users": "Usuários da Conta"
+		},
+		"groups": {
+			"list_title": "Grupos de Permissões",
+			"title_placeholder": "Nome do Grupo",
+			"subtitle_placeholder": "Identificador do grupo",
+			"label": {
+				"group_name": "Nome do Grupo",
+				"associated_users": "Usuários Associados",
+				"associated_actions": "Ações Associadas"
+			},
+			"created": "Novo Grupo Criado!",
+			"updated": "Grupo Atualizado!",
+			"module": "Acesso ao Módulo",
+			"list": "Listar Grupos",
+			"add": "Adicionar Grupo",
+			"show": "Visualizar Grupo",
+			"edit": "Atualizar Grupo",
+			"delete": "Exlcuir Grupo"
+		},
+		"authorization_queue": {
+			"title": "Autorizações",
+			"refuse_selected": "Recusar Selecionados",
+			"approve_selected": "Aprovar Selecionados",
+			"approve_all": "Aprovar Todos",
+			"group": {
+				"group_users": "Usuários Associados ao Grupo",
+				"group_actions": "Ações Associadas ao Grupo"
+			},
+			"approved": "Authorizações concedidas",
+			"deleted": "Authorizações negadas!",
+			"no_records": "Nenhuma autorização pendente",
+			"relationships": "Validar Permissões"
 		}
 	},
 	"validation": {
@@ -137,6 +178,7 @@
 		"no": "Não",
 		"yes": "Sim",
 		"save": "Salvar",
+		"close": "Fechar",
 		"email": "E-mail",
 		"groups": "Grupos",
 		"account": "Conta",
@@ -164,5 +206,12 @@
 		"custom": {
 			"workspaces": "Workspaces"
 		}
-	}
+	},
+	"actions_set": {
+		"SidebarModules": "Módulos",
+		"AccountUsers": "Usuários de Conta",
+		"Groups": "Grupos de Permissões",
+		"SpecialPermissions": "Permissões Especiais"
+	},
+	"actions": {}
 }

@@ -65,7 +65,7 @@ import ButtonField from '@/components/ButtonField.vue';
 import FormSubtitle from '@/components/FormSubtitle.vue';
 import PasswordField from '@/components/PasswordField.vue';
 import CheckboxField from '@/components/CheckboxField.vue';
-import MultiSelector from '@/components/MultiSelector.vue';
+import CheckableItemList from '@/components/CheckableItemList.vue';
 import HorizontalSubmenu from '@/components/HorizontalSubmenu.vue';
 
 export default defineComponent({
@@ -81,7 +81,7 @@ export default defineComponent({
 		FormSubtitle,
 		PasswordField,
 		CheckboxField,
-		MultiSelector,
+		CheckableItemList,
 		HorizontalSubmenu,
 	},
 	props: {

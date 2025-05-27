@@ -16,4 +16,9 @@ class ActionSet extends Model
 	{
 		return $this->hasMany(Action::class, 'admin_set_action_id', 'id')->select('admin_set_action_id', 'identifier', 'link_to', 'icon', 'is_visible', 'subgroup');
 	}
+
+	public function itemsList()
+	{
+		return $this->hasMany(Action::class, 'admin_set_action_id', 'id')->select('admin_set_action_id', 'admin_actions.id', 'identifier AS title')->orderBy('sort_order');
+	}
 }

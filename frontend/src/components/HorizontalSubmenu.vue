@@ -6,7 +6,7 @@
 		<div
 			:key="index"
 			class="item"
-			@click="goTo(item.link_to, index)"
+			@click="goTo(item.link_to, item.id, index)"
 			v-for="(item, index) in filteredMenuItems"
 			:class="{ active: isActive(item.link_to) }"
 			:ref="
@@ -41,12 +41,27 @@ export default defineComponent({
 
 		const filteredMenuItems = computed(() => {
 			if (!props.params?.length) return [];
+
 			return props.params.filter((item) => {
 				if (!item.permissionRequired) return true;
+
 				const { category, identifier } = item.permissionRequired;
-				if (!authStore.enviroment?.permissions?.[category]) return false;
-				const permission = authStore.enviroment.permissions[category].find((p) => p.identifier === identifier);
-				return permission && permission.is_visible === true;
+				let permission;
+
+				if (category === 'SuperUser') {
+					permission = authStore.enviroment.user.superuser ? { is_visible: true } : null;
+				} else if (category === 'AccountAdmin') {
+					permission =
+						authStore.enviroment.user.superuser || authStore.enviroment.user.account_admin
+							? { is_visible: true }
+							: null;
+				} else {
+					const categoryPermissions = authStore.enviroment?.permissions?.[category];
+					if (!categoryPermissions) return false;
+					permission = categoryPermissions.find((p) => p.identifier === identifier);
+				}
+
+				return permission?.is_visible === true;
 			});
 		});
 
@@ -71,9 +86,11 @@ export default defineComponent({
 			}
 		};
 
-		const goTo = async (page, index) => {
+		const goTo = async (page, id, index) => {
 			try {
-				await router.push({ name: page });
+				const routeOptions = { name: page };
+				if (id !== null && id !== undefined) routeOptions.params = { id };
+				await router.push(routeOptions);
 				activeIndex.value = index;
 			} catch (navigationError) {
 				// Navigation was cancelled - no action needed
@@ -155,6 +172,7 @@ export default defineComponent({
 		z-index: 1;
 		cursor: pointer;
 		font-weight: bold;
+		text-wrap: nowrap;
 		margin-bottom: -2px;
 		font-size: 1rem * $phi-sr;
 		transition: all 0.5s ease;

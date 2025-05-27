@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Client;
 use App\Models\Account;
 use App\Models\ActionSet;
-use App\Models\GroupMember;
 use App\Models\ScopedRelationship;
 use Illuminate\Support\Facades\Auth;
 use App\Models\UserAccountProperties;
@@ -186,12 +185,6 @@ class PermissionService
 			->where('scope_id', $user->current_account)
 			->pluck('belongs_to_id');
 		return $groups;
-	}
-
-	private static function GroupMembers($groupId)
-	{
-		$members = GroupMember::whereIn('group_id', $groupId)->get();
-		return $members;
 	}
 
 	public static function hasPermission(string $permissionRequired): bool

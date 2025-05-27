@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use App\Models\Group;
+use App\Models\Client;
 use App\Models\Account;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Services\AccountService;
 use Illuminate\Support\Facades\DB;
 use App\Models\MicrosoftConnection;
+use App\Models\ScopedRelationship;
 use App\Services\PermissionService;
 use App\Models\UserAccountProperties;
 use Illuminate\Support\Facades\Crypt;
@@ -45,9 +48,9 @@ class AccountController extends Controller
 
 			if (!$account) return Que::passa(false, 'auth.account.show.error.account_not_found', $request->id);
 
-			$account->tenant = Crypt::decrypt($account->tenant);
-			$account->client_id = Crypt::decrypt($account->client_id);
-			$account->client_secret = Crypt::decrypt($account->client_secret);
+			if ($account->tenant) $account->tenant = Crypt::decrypt($account->tenant);
+			if ($account->client_id) $account->client_id = Crypt::decrypt($account->client_id);
+			if ($account->client_secret) $account->client_secret = Crypt::decrypt($account->client_secret);
 			return Que::passa(true, 'auth.account.show', '', $account, ['account'  => ['record' => $account]]);
 		} catch (Exception $e) {
 			return Que::passa(false, 'generic.server_error', 'auth.account.show ' . $request->id);
@@ -91,6 +94,8 @@ class AccountController extends Controller
 				]);
 
 				$this->addUserToNewAccount($account->id);
+				$userGlobal->current_account = $account->id;
+				$userGlobal->save();
 				$message = 'auth.account.created';
 			}
 
@@ -107,6 +112,48 @@ class AccountController extends Controller
 		}
 	}
 
+	public function delete(Request $request)
+	{
+		$id = $request->input('id');
+		if (!Str::isUuid($id)) return Que::passa(false, 'auth.account.delete.invalid_id', $id);
+		if ($id != $this->currentAccount) return Que::passa(false, 'auth.account.delete.account_not_match', $id);
+		$account = Account::find($id);
+		if (!$account) return Que::passa(false, 'auth.account.delete.account_not_found', $id);
+
+		$userGlobal = $this->permissionService->UserGlobalProperties();
+		if (!$userGlobal->is_superuser) return Que::passa(false, 'auth.account.delete.unauthorized', $id);
+
+		try {
+			DB::beginTransaction();
+			Client::where('account_id', $request->input('id'))->delete();
+			MicrosoftConnection::where('account_id', $request->input('id'))->delete();
+			UserAccountProperties::where('account_id', $request->input('id'))->delete();
+
+			$belongsRelationships = ScopedRelationship::where('object_type', 'App\Models\Group')
+				->where('belongs_to_type', 'App\Models\Account')->where('belongs_to_id', $id)->get();
+
+			foreach ($belongsRelationships as $groupRelationship) {
+				ScopedRelationship::where('belongs_to_type', 'App\Models\Group')
+					->where('belongs_to_id', $groupRelationship->object_id)
+					->where('object_type', 'App\Models\Action')
+					->delete();
+				ScopedRelationship::where('belongs_to_type', 'App\Models\Group')
+					->where('belongs_to_id', $groupRelationship->object_id)
+					->where('object_type', 'App\Models\UserGlobalProperties')
+					->delete();
+				Group::find($groupRelationship->object_id)->delete();
+				$groupRelationship->delete();
+			}
+
+			$account->delete();
+			DB::commit();
+			$this->permissionService::setValidScope();
+			return Que::passa(true, 'auth.account.deleted');
+		} catch (Exception $e) {
+			DB::rollBack();
+			Que::passa(false, 'generic.server_error', 'auth.account.delete ' . $id);
+		}
+	}
 
 	private function saveMicrosoftConnection(string $accountId, Request $request): void
 	{
@@ -148,6 +195,18 @@ class AccountController extends Controller
 			return Que::passa(true, 'auth.account.users.list', '', null, ['users' => $users]);
 		} catch (Exception $e) {
 			return Que::passa(false, 'generic.server_error', 'auth.account.users');
+		}
+	}
+
+	public function groups()
+	{
+		if (!$this->permissionService::hasPermission('Groups.auth.groups.module'))
+			return Que::passa(false, 'auth.account.groups.list.error.unauthorized');
+		try {
+			$groups = (new AccountService($this->currentAccount))->groups();
+			return Que::passa(true, 'auth.account.groups.list', '', null, ['groups' => $groups]);
+		} catch (Exception $e) {
+			return Que::passa(false, 'generic.server_error', 'auth.account.groups');
 		}
 	}
 }

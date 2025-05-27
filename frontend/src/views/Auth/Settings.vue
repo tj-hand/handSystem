@@ -22,6 +22,9 @@ export default defineComponent({
 			{
 				label: 'generic.account',
 				link_to: 'Account',
+				permissionRequired: {
+					category: 'AccountAdmin',
+				},
 			},
 			{
 				label: 'generic.clients',
@@ -30,6 +33,10 @@ export default defineComponent({
 			{
 				label: 'generic.groups',
 				link_to: 'Groups',
+				permissionRequired: {
+					category: 'Groups',
+					identifier: 'auth.groups.module',
+				},
 			},
 			{
 				label: 'generic.users',
@@ -42,6 +49,13 @@ export default defineComponent({
 			{
 				label: 'generic.custom.workspaces',
 				link_to: 'Workspaces',
+			},
+			{
+				label: 'auth.account.new',
+				link_to: 'NewAccount',
+				permissionRequired: {
+					category: 'SuperUser',
+				},
 			},
 		];
 

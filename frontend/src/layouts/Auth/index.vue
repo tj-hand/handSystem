@@ -77,6 +77,7 @@ export default defineComponent({
 					flex-grow: 1;
 					display: flex;
 					min-height: 0;
+					overflow-x: auto;
 					flex-direction: column;
 				}
 			}
