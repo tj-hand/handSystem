@@ -62,7 +62,7 @@ const routes = [
 						meta: { requiresAuthentication: true },
 					},
 					{
-						path: 'clients',
+						path: 'clients/:id?',
 						name: 'Clients',
 						component: () => import('@/views/Auth/Clients.vue'),
 						meta: { requiresAuthentication: true },
@@ -80,7 +80,7 @@ const routes = [
 						meta: { requiresAuthentication: true },
 					},
 					{
-						path: 'workspaces',
+						path: 'workspaces/:id?',
 						name: 'Workspaces',
 						component: () => import('@/views/Auth/Workspaces.vue'),
 						meta: { requiresAuthentication: true },

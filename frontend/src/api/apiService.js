@@ -43,6 +43,15 @@ const apiService = {
 		sendInvite(id) {
 			return apiRequest('POST', endpoints.user.sendInvite, id);
 		},
+		associated_with_clients(id) {
+			return apiRequest('POST', endpoints.user.associated_with_clients, id);
+		},
+		associated_with_groups(id) {
+			return apiRequest('POST', endpoints.user.associated_with_groups, id);
+		},
+		associated_with_actions(id) {
+			return apiRequest('POST', endpoints.user.associated_with_actions, id);
+		},
 	},
 	group: {
 		show(id) {
@@ -61,6 +70,20 @@ const apiService = {
 			return apiRequest('POST', endpoints.group.associated_actions, id);
 		},
 	},
+	client: {
+		show(id) {
+			return apiRequest('POST', endpoints.client.show, id);
+		},
+		upsert(data) {
+			return apiRequest('POST', endpoints.client.upsert, data);
+		},
+		delete(id) {
+			return apiRequest('POST', endpoints.client.delete, id);
+		},
+		associated_users(id) {
+			return apiRequest('POST', endpoints.client.associated_users, id);
+		},
+	},
 	account: {
 		show(id) {
 			return apiRequest('POST', endpoints.account.show, id);
@@ -73,6 +96,9 @@ const apiService = {
 		},
 		groups() {
 			return apiRequest('POST', endpoints.account.groups);
+		},
+		clients() {
+			return apiRequest('POST', endpoints.account.clients);
 		},
 		upsert(data) {
 			return apiRequest('POST', endpoints.account.upsert, data);

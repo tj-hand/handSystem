@@ -1,0 +1,63 @@
+[
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "calc(62% - 1rem)",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "text-field",
+						"label": "auth.clients.label.client_name",
+						"db_name": "name",
+						"validations": ["required"]
+					}
+				}
+			},
+			{
+				"width": "38%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "checkbox-field",
+						"label": "generic.active_o",
+						"db_name": "is_active"
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "area-field",
+						"label": "generic.description",
+						"db_name": "description",
+						"rows": 5
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "48%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "checkable-item-list",
+						"title": "auth.clients.label.associated_users",
+						"backend_request": "client.associated_users"
+					}
+				}
+			}
+		]
+	}
+]

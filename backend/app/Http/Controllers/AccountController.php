@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Group;
 use App\Models\Client;
 use App\Models\Account;
+use App\Models\GrantConfig;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Services\AccountService;
@@ -36,6 +37,7 @@ class AccountController extends Controller
 
 		$userGlobal = $this->permissionService->UserGlobalProperties();
 		$userAccount = $this->permissionService->UserCurrentAccountProperties();
+		$grants = GrantConfig::where('object_type', 'App\Models\Account')->where('object_id', $userGlobal->current_account)->first();
 
 		if (!$userGlobal->is_superuser && !$userAccount->is_account_admin)
 			return Que::passa(false, 'auth.account.upsert.unauthorized', $request->id);
@@ -51,6 +53,14 @@ class AccountController extends Controller
 			if ($account->tenant) $account->tenant = Crypt::decrypt($account->tenant);
 			if ($account->client_id) $account->client_id = Crypt::decrypt($account->client_id);
 			if ($account->client_secret) $account->client_secret = Crypt::decrypt($account->client_secret);
+
+			$account->groups_and_account_users = $grants->groups_and_account_users;
+			$account->groups_and_actions = $grants->groups_and_actions;
+			$account->clients_and_account_users = $grants->clients_and_account_users;
+			$account->account_users_and_clients = $grants->account_users_and_clients;
+			$account->account_users_and_groups = $grants->account_users_and_groups;
+			$account->account_users_and_actions = $grants->account_users_and_actions;
+
 			return Que::passa(true, 'auth.account.show', '', $account, ['account'  => ['record' => $account]]);
 		} catch (Exception $e) {
 			return Que::passa(false, 'generic.server_error', 'auth.account.show ' . $request->id);
@@ -94,6 +104,12 @@ class AccountController extends Controller
 				]);
 
 				$this->addUserToNewAccount($account->id);
+
+				GrantConfig::create([
+					'object_type' => 'App\Models\Account',
+					'object_id' => $account->id
+				]);
+
 				$userGlobal->current_account = $account->id;
 				$userGlobal->save();
 				$message = 'auth.account.created';
@@ -103,6 +119,15 @@ class AccountController extends Controller
 			$account->tenant = $request->tenant;
 			$account->client_id = $request->client_id;
 			$account->client_secret = $request->client_secret;
+
+			$grants = GrantConfig::where('object_type', 'App\Models\Account')->where('object_id', $userGlobal->current_account)->first();
+			$grants->groups_and_account_users = $request->groups_and_account_users;
+			$grants->groups_and_actions = $request->groups_and_actions;
+			$grants->clients_and_account_users = $request->clients_and_account_users;
+			$grants->account_users_and_clients = $request->account_users_and_clients;
+			$grants->account_users_and_groups = $request->account_users_and_groups;
+			$grants->account_users_and_actions = $request->account_users_and_actions;
+			$grants->save();
 
 			DB::commit();
 			return Que::passa(true, $message, '', $account, ['account' => $account]);
@@ -207,6 +232,18 @@ class AccountController extends Controller
 			return Que::passa(true, 'auth.account.groups.list', '', null, ['groups' => $groups]);
 		} catch (Exception $e) {
 			return Que::passa(false, 'generic.server_error', 'auth.account.groups');
+		}
+	}
+
+	public function clients()
+	{
+		if (!$this->permissionService::hasPermission('Clients.auth.clients.module'))
+			return Que::passa(false, 'auth.account.clients.list.error.unauthorized');
+		try {
+			$clients = Client::select('id', 'name')->where('account_id', $this->currentAccount)->orderBy('name')->get();
+			return Que::passa(true, 'auth.account.clients.list', '', null, ['clients' => $clients]);
+		} catch (Exception $e) {
+			return Que::passa(false, 'generic.server_error', 'auth.account.clients');
 		}
 	}
 }

@@ -4,7 +4,7 @@
 		"class": "grow",
 		"cols": [
 			{
-				"width": "100%",
+				"width": "45%",
 				"content": [
 					{
 						"type": "row",
@@ -146,6 +146,49 @@
 											}
 										}
 									]
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"width": "52%",
+				"content": [
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "47%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkable-item-list",
+										"title": "auth.user.label.account_user_associated_with_clients",
+										"backend_request": "user.associated_with_clients"
+									}
+								}
+							},
+							{
+								"width": "47%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkable-item-list",
+										"title": "auth.user.label.account_user_associated_with_groups",
+										"backend_request": "user.associated_with_groups"
+									}
+								}
+							},
+							{
+								"width": "47%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkable-item-list",
+										"title": "auth.user.label.account_user_associated_with_actions",
+										"backend_request": "user.associated_with_actions"
+									}
 								}
 							}
 						]

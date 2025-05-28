@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Models\User;
+use App\Models\Group;
+use App\Models\Action;
 use App\Models\Client;
 use App\Models\Account;
 use App\Mail\sendInvite;
@@ -18,6 +20,8 @@ use App\Models\UserGlobalProperties;
 use Illuminate\Support\Facades\Mail;
 use App\Services\SystemLogService as Que;
 use Illuminate\Support\Facades\Validator;
+use App\Services\ScopedRelationshipService;
+
 
 class UserController extends Controller
 {
@@ -225,5 +229,50 @@ class UserController extends Controller
 		} catch (Exception $e) {
 			return Que::passa(false, 'generic.server_error', 'auth.user.send_invite ' . $request->input('id'));
 		}
+	}
+
+	public function associatedWithClients(Request $request)
+	{
+		$userId = $request->input('id');
+
+		if ($userId === 'new') {
+			$list = app(ScopedRelationshipService::class)->makeScopedListWithoutRelations(Client::class);
+			return Que::passa(true, 'auth.user.associated_with_clients.listed', '', null, ['list' => $list]);
+		}
+
+		$user = UserGlobalProperties::find($userId);
+		if (!$user) return Que::passa(false, 'auth.group.associated_with_clients.error.user_not_found', $userId);
+		$list = app(ScopedRelationshipService::class)->makeScopedListWithRelations($user, Client::class);
+		return Que::passa(true, 'auth.user.associated_with_clients.listed', '', null, ['list' => $list]);
+	}
+
+	public function associatedWithGroups(Request $request)
+	{
+		$userId = $request->input('id');
+
+		if ($userId === 'new') {
+			$list = app(ScopedRelationshipService::class)->makeScopedListWithoutRelations(Group::class);
+			return Que::passa(true, 'auth.user.associated_with_groups.listed', '', null, ['list' => $list]);
+		}
+
+		$user = UserGlobalProperties::find($userId);
+		if (!$user) return Que::passa(false, 'auth.group.associated_with_groups.error.user_not_found', $userId);
+		$list = app(ScopedRelationshipService::class)->makeScopedListWithRelations($user, Group::class);
+		return Que::passa(true, 'auth.user.associated_with_groups.listed', '', null, ['list' => $list]);
+	}
+
+	public function associatedWithActions(Request $request)
+	{
+		$userId = $request->input('id');
+
+		if ($userId === 'new') {
+			$list = app(ScopedRelationshipService::class)->makeScopedListWithoutRelations(Action::class);
+			return Que::passa(true, 'auth.user.associated_with_actions.listed', '', null, ['list' => $list]);
+		}
+
+		$user = UserGlobalProperties::find($userId);
+		if (!$user) return Que::passa(false, 'auth.group.associated_with_actions.error.user_not_found', $userId);
+		$list = app(ScopedRelationshipService::class)->makeScopedListWithRelations($user, Action::class);
+		return Que::passa(true, 'auth.user.associated_with_actions.listed', '', null, ['list' => $list]);
 	}
 }

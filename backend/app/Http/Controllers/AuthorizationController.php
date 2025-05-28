@@ -28,6 +28,10 @@ class AuthorizationController extends Controller
 			$queue = [];
 			$queue['group_users'] = $this->groupUsers();
 			$queue['group_actions'] = $this->groupActions();
+			$queue['client_account_users'] = $this->clientAccountUsers();
+			$queue['user_actions'] = $this->userActions();
+			$queue['user_clients'] = $this->userClients();
+			$queue['user_groups'] = $this->userGroups();
 			return Que::passa(true, 'auth.authorization.queued', '', null, ['queue' => $queue]);
 		} catch (Exception $e) {
 			return Que::passa(false, 'generic.server_error', 'auth.authorization.queue');
@@ -112,6 +116,74 @@ class AuthorizationController extends Controller
 			->where('authorized', false)
 			->orderBy('admin_groups.name')
 			->orderBy('admin_actions.sort_order')
+			->get();
+	}
+
+	private function clientAccountUsers()
+	{
+		return ScopedRelationship::select('admin_scoped_relationships.id', 'admin_clients.name AS parent', 'users.name AS child', DB::raw('false as translate'))
+			->join('admin_clients', 'admin_scoped_relationships.belongs_to_id', '=', 'admin_clients.id')
+			->join('users_global_properties', 'admin_scoped_relationships.object_id', '=', 'users_global_properties.id')
+			->join('users', 'users_global_properties.user_id', '=', 'users.id')
+			->where('belongs_to_type', 'App\Models\Client')
+			->where('object_type', 'App\Models\UserGlobalProperties')
+			->where('scope_type', 'App\Models\Account')
+			->where('scope_id', $this->currentAccount)
+			->where('requires_authorization', true)
+			->where('authorized', false)
+			->orderBy('admin_clients.name')
+			->orderBy('users.name')
+			->get();
+	}
+
+	private function userActions()
+	{
+		return ScopedRelationship::select('admin_scoped_relationships.id', 'users.name AS parent', 'admin_actions.identifier AS child', DB::raw('true as translate'))
+			->join('users_global_properties', 'admin_scoped_relationships.belongs_to_id', '=', 'users_global_properties.id')
+			->join('admin_actions', 'admin_scoped_relationships.object_id', '=', 'admin_actions.id')
+			->join('users', 'users_global_properties.user_id', '=', 'users.id')
+			->where('belongs_to_type', 'App\Models\UserGlobalProperties')
+			->where('object_type', 'App\Models\Action')
+			->where('scope_type', 'App\Models\Account')
+			->where('scope_id', $this->currentAccount)
+			->where('requires_authorization', true)
+			->where('authorized', false)
+			->orderBy('users.name')
+			->orderBy('admin_actions.sort_order')
+			->get();
+	}
+
+	private function userClients()
+	{
+		return ScopedRelationship::select('admin_scoped_relationships.id', 'users.name AS parent', 'admin_clients.name AS child', DB::raw('false as translate'))
+			->join('users_global_properties', 'admin_scoped_relationships.belongs_to_id', '=', 'users_global_properties.id')
+			->join('admin_clients', 'admin_scoped_relationships.object_id', '=', 'admin_clients.id')
+			->join('users', 'users_global_properties.user_id', '=', 'users.id')
+			->where('belongs_to_type', 'App\Models\UserGlobalProperties')
+			->where('object_type', 'App\Models\Client')
+			->where('scope_type', 'App\Models\Account')
+			->where('scope_id', $this->currentAccount)
+			->where('requires_authorization', true)
+			->where('authorized', false)
+			->orderBy('users.name')
+			->orderBy('admin_clients.name')
+			->get();
+	}
+
+	private function userGroups()
+	{
+		return ScopedRelationship::select('admin_scoped_relationships.id', 'users.name AS parent', 'admin_groups.name AS child', DB::raw('false as translate'))
+			->join('users_global_properties', 'admin_scoped_relationships.belongs_to_id', '=', 'users_global_properties.id')
+			->join('admin_groups', 'admin_scoped_relationships.object_id', '=', 'admin_groups.id')
+			->join('users', 'users_global_properties.user_id', '=', 'users.id')
+			->where('belongs_to_type', 'App\Models\UserGlobalProperties')
+			->where('object_type', 'App\Models\Group')
+			->where('scope_type', 'App\Models\Account')
+			->where('scope_id', $this->currentAccount)
+			->where('requires_authorization', true)
+			->where('authorized', false)
+			->orderBy('users.name')
+			->orderBy('admin_groups.name')
 			->get();
 	}
 }

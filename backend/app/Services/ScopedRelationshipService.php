@@ -4,6 +4,8 @@ namespace App\Services;
 
 use Exception;
 use Carbon\Carbon;
+use App\Models\Group;
+use App\Models\Client;
 use App\Models\Account;
 use App\Models\ActionSet;
 use App\Models\GrantConfig;
@@ -154,6 +156,24 @@ class ScopedRelationshipService
 
 	public function makeScopedListWithoutRelations(string $objectModel)
 	{
+
+		if ($objectModel == 'App\Models\Action') {
+			$setActions = ActionSet::select('id', 'name AS title')->where('is_active', true)->where('is_visible', true)->with('itemsList')->orderBY('sort_order')->get();
+			return collect($setActions)->map(function ($group) {
+				return [
+					'id' => $group['id'],
+					'title' => $group['title'],
+					'items_list' => collect($group['itemsList'])->map(function ($item) {
+						return [
+							'id' => $item['id'],
+							'title' => $item['title'],
+							'selected' => false,
+						];
+					})->values(),
+				];
+			})->values();
+		}
+
 		$objects = $this->getObjects($objectModel);
 
 		return $objects->map(function ($object) {
@@ -207,7 +227,7 @@ class ScopedRelationshipService
 	protected function makeAccountScopedList(Model $belongsTo, string $objectModel, string $scopeType)
 	{
 		$accountId = $this->permissionService->UserGlobalProperties()->current_account;
-		$setActions = ActionSet::select('id', 'name AS title')->where('is_active', true)->where('is_visible', true)->with('itemsList')->get();
+		$setActions = ActionSet::select('id', 'name AS title')->where('is_active', true)->where('is_visible', true)->with('itemsList')->orderBY('sort_order')->get();
 		$allItemIds = collect($setActions)->pluck('itemsList')->flatten(1)->pluck('id')->unique()->values();
 
 
@@ -249,9 +269,43 @@ class ScopedRelationshipService
 
 	protected function getObjects(string $objectModel)
 	{
+
+		$accountId = $this->permissionService->UserGlobalProperties()->current_account;
+
 		if ($objectModel === UserGlobalProperties::class) {
-			return $objectModel::select('users_global_properties.id', 'name AS title', 'email AS subtitle')
+			return $objectModel::select(
+				'users_global_properties.id',
+				'users.name AS title',
+				'users.email AS subtitle',
+			)
 				->join('users', 'users_global_properties.user_id', '=', 'users.id')
+				->join('users_accounts_properties', 'users.id', '=', 'users_accounts_properties.user_id')
+				->where('users_global_properties.is_superuser', false)
+				->where('users_accounts_properties.is_account_admin', false)
+				->where('users_accounts_properties.account_id', $accountId)
+				->orderBy('users.name')
+				->distinct()
+				->get();
+		}
+
+
+
+		if ($objectModel === Client::class) {
+			return $objectModel::select('admin_clients.id', 'name AS title')
+				->where('account_id', $accountId)
+				->orderBy('name')
+				->get();
+		}
+
+		if ($objectModel === Group::class) {
+
+			$groupsIds = ScopedRelationship::where('admin_scoped_relationships.object_type', 'App\Models\Group')
+				->where('admin_scoped_relationships.scope_type', 'App\Models\Account')
+				->where('admin_scoped_relationships.scope_id', $accountId)
+				->pluck('object_id');
+
+			return $objectModel::select('admin_groups.id', 'name AS title')
+				->whereIn('id', $groupsIds)
 				->orderBy('name')
 				->get();
 		}

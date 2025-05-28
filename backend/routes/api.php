@@ -27,6 +27,9 @@ Route::prefix('user')
         Route::post('/update-scope', 'UserController@updateScope')->name('user.updateScope')->middleware('auth:api');
         Route::post('/add-to-account', 'UserController@addToAccount')->name('user.addToAccount')->middleware('auth:api');
         Route::post('/request-enviroment', 'UserController@requestEnviroment')->name('user.requestEnviroment')->middleware('auth:api');
+        Route::post('/associated-with-clients', 'UserController@associatedWithClients')->name('user.associatedWithClients')->middleware('auth:api');
+        Route::post('/associated-with-groups', 'UserController@associatedWithGroups')->name('user.associatedWithGroups')->middleware('auth:api');
+        Route::post('/associated-with-actions', 'UserController@associatedWithActions')->name('user.associatedWithActions')->middleware('auth:api');
     });
 
 Route::prefix('password')
@@ -46,6 +49,7 @@ Route::prefix('account')
         Route::post('/delete', 'AccountController@delete')->name('account.delete')->middleware('auth:api');
         Route::post('/groups', 'AccountController@groups')->name('account.groups')->middleware('auth:api');
         Route::post('/upsert', 'AccountController@upsert')->name('account.upsert')->middleware('auth:api');
+        Route::post('/clients', 'AccountController@clients')->name('account.clients')->middleware('auth:api');
     });
 
 Route::prefix('group')
@@ -64,4 +68,13 @@ Route::prefix('authorization')
     ->group(function () {
         Route::post('/set', 'AuthorizationController@set')->name('authorization.set')->middleware('auth:api');
         Route::post('/queue', 'AuthorizationController@queue')->name('authorization.queue')->middleware('auth:api');
+    });
+Route::prefix('client')
+    ->name('api.')
+    ->namespace('App\Http\Controllers')
+    ->group(function () {
+        Route::post('/show', 'ClientController@show')->name('client.show')->middleware('auth:api');
+        Route::post('/upsert', 'ClientController@upsert')->name('client.upsert')->middleware('auth:api');
+        Route::post('/delete', 'ClientController@delete')->name('client.delete')->middleware('auth:api');
+        Route::post('/associated_users', 'ClientController@associatedUsers')->name('client.associatedUsers')->middleware('auth:api');
     });

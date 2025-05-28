@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Models\Action;
 use App\Models\Group;
-use App\Models\ActionSet;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -31,7 +30,7 @@ class GroupController extends Controller
 	public function show(Request $request)
 	{
 		try {
-			if (!Str::isUuid($request->input('id'))) return Que::passa(false, 'auth.user.show.invalid_id', $request->input('id'));
+			if (!Str::isUuid($request->input('id'))) return Que::passa(false, 'auth.group.show.invalid_id', $request->input('id'));
 			if (!$this->permissionService::hasPermission('Groups.auth.groups.show'))
 				return Que::passa(false, 'auth.groups.show.error.unauthorized');
 
@@ -56,6 +55,8 @@ class GroupController extends Controller
 		try {
 			DB::beginTransaction();
 			if (!empty($data['id'])) {
+				if (!$this->permissionService::hasPermission('Groups.auth.groups.edit'))
+					return Que::passa(false, 'auth.groups.edit.error.unauthorized');
 				$message = 'auth.groups.updated';
 				$group = Group::find($data['id']);
 				if (!$group) return Que::passa(false, 'auth.groups.upsert.error.group_not_found', $data['id']);
@@ -64,6 +65,8 @@ class GroupController extends Controller
 				$group->description = $data['description'];
 				$group->save();
 			} else {
+				if (!$this->permissionService::hasPermission('Groups.auth.groups.add'))
+					return Que::passa(false, 'auth.groups.add.error.unauthorized');
 				$message = 'auth.groups.created';
 				$accountId = $this->permissionService->UserGlobalProperties()->current_account;
 				$group = Group::create($data);
@@ -129,7 +132,7 @@ class GroupController extends Controller
 			return Que::passa(true, 'auth.group.deleted', '', $group);
 		} catch (Exception $e) {
 			DB::rollBack();
-			return Que::passa(false, 'generic.server_error', 'auth.gorup.delete.error');
+			return Que::passa(false, 'generic.server_error', 'auth.group.delete.error');
 		}
 	}
 
@@ -156,11 +159,11 @@ class GroupController extends Controller
 
 		if ($groupId === 'new') {
 			$list = app(ScopedRelationshipService::class)->makeScopedListWithoutRelations(Action::class);
-			return Que::passa(true, 'auth.group.associated_users.listed', '', null, ['list' => $list]);
+			return Que::passa(true, 'auth.group.associated_actions.listed', '', null, ['list' => $list]);
 		}
 
 		$group = Group::find($groupId);
-		if (!$group) return Que::passa(false, 'auth.group.associat_users.error.group_not_found', $groupId);
+		if (!$group) return Que::passa(false, 'auth.group.associated_actions.error.group_not_found', $groupId);
 		$list = app(ScopedRelationshipService::class)->makeScopedListWithRelations($group, Action::class);
 		return Que::passa(true, 'auth.group.actions.listed', '', null, ['list' => $list]);
 	}

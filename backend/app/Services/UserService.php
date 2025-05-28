@@ -121,6 +121,33 @@ class UserService
 			if ($is_superuser && isset($data['is_account_admin'])) $userAccountProperties->is_account_admin = $data['is_account_admin'];
 			$userAccountProperties->save();
 
+			if (!empty($data['user.associated_with_actions']))
+				app(ScopedRelationshipService::class)->syncScopedRelationships(
+					parentEntity: $userGlobalProperties,
+					items: $data['user.associated_with_actions'],
+					scopeType: 'App\Models\Account',
+					relatedObjectType: 'App\Models\Action',
+					grantField: 'account_users_and_actions'
+				);
+
+			if (!empty($data['user.associated_with_clients']))
+				app(ScopedRelationshipService::class)->syncScopedRelationships(
+					parentEntity: $userGlobalProperties,
+					items: $data['user.associated_with_clients'],
+					scopeType: 'App\Models\Account',
+					relatedObjectType: 'App\Models\Client',
+					grantField: 'account_users_and_clients'
+				);
+
+			if (!empty($data['user.associated_with_groups']))
+				app(ScopedRelationshipService::class)->syncScopedRelationships(
+					parentEntity: $userGlobalProperties,
+					items: $data['user.associated_with_groups'],
+					scopeType: 'App\Models\Account',
+					relatedObjectType: 'App\Models\Group',
+					grantField: 'account_users_and_groups'
+				);
+
 			DB::commit();
 
 			return ['success' => 'true', 'type' => 'update', 'id' => $userGlobalProperties->id];
@@ -232,6 +259,33 @@ class UserService
 			$userGlobalProperties->save();
 
 			if ($scope == 'account') $this->addUserToAccount($user->id, $is_account_admin);
+
+			if (!empty($data['user.associated_with_actions']))
+				app(ScopedRelationshipService::class)->syncScopedRelationships(
+					parentEntity: $userGlobalProperties,
+					items: $data['user.associated_with_actions'],
+					scopeType: 'App\Models\Account',
+					relatedObjectType: 'App\Models\Action',
+					grantField: 'account_users_and_actions'
+				);
+
+			if (!empty($data['user.associated_with_clients']))
+				app(ScopedRelationshipService::class)->syncScopedRelationships(
+					parentEntity: $userGlobalProperties,
+					items: $data['user.associated_with_clients'],
+					scopeType: 'App\Models\Account',
+					relatedObjectType: 'App\Models\Client',
+					grantField: 'account_users_and_clients'
+				);
+
+			if (!empty($data['user.associated_with_groups']))
+				app(ScopedRelationshipService::class)->syncScopedRelationships(
+					parentEntity: $userGlobalProperties,
+					items: $data['user.associated_with_groups'],
+					scopeType: 'App\Models\Account',
+					relatedObjectType: 'App\Models\Group',
+					grantField: 'account_users_and_groups'
+				);
 
 			DB::commit();
 

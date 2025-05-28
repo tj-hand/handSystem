@@ -91,7 +91,8 @@
 				"powerbi_connection": "Credenciais do PowerBI",
 				"powerbi_tenant": "Tenant",
 				"powerbi_client_id": "Client ID",
-				"powerbi_client_secret": "Client Secret"
+				"powerbi_client_secret": "Client Secret",
+				"required_authorizations": "Filas de Authorizações"
 			},
 			"updated": "Conta Atualizada!"
 		},
@@ -109,7 +110,10 @@
 				"lastname": "Sobrenome",
 				"send_invite": "Enviar Convite",
 				"reset_password": "Redefinir senha",
-				"admin": "Administrador da Conta"
+				"admin": "Administrador da Conta",
+				"account_user_associated_with_clients": "Clientes Associados ao Usuário",
+				"account_user_associated_with_groups": "Grupos Associados ao Usuário",
+				"account_user_associated_with_actions": "Permissões Individuais do Usuário"
 			},
 			"modal": {
 				"in_account_title": "Usuário Existente",
@@ -149,6 +153,23 @@
 			"edit": "Atualizar Grupo",
 			"delete": "Exlcuir Grupo"
 		},
+		"clients": {
+			"list_title": "Clientes",
+			"title_placeholder": "Nome do Cliente",
+			"subtitle_placeholder": "Identificador do client",
+			"label": {
+				"client_name": "Nome do Cliente",
+				"associated_users": "Usuários Associados"
+			},
+			"created": "Novo Cliente Criado!",
+			"updated": "Cliente Atualizado!",
+			"module": "Acesso ao Módulo",
+			"list": "Listar Clientes",
+			"add": "Adicionar Cliente",
+			"show": "Visualizar Cliente",
+			"edit": "Atualizar Cliente",
+			"delete": "Exlcuir Cliente"
+		},
 		"authorization_queue": {
 			"title": "Autorizações",
 			"refuse_selected": "Recusar Selecionados",
@@ -156,7 +177,11 @@
 			"approve_all": "Aprovar Todos",
 			"group": {
 				"group_users": "Usuários Associados ao Grupo",
-				"group_actions": "Ações Associadas ao Grupo"
+				"group_actions": "Ações Associadas ao Grupo",
+				"client_account_users": "Usuários Associados ao Cliente",
+				"user_actions": "Permissões Individuais do Usuário",
+				"user_clients": "Usuário Associado aos Clintes",
+				"user_groups": "Usuário Associado aos Grupos"
 			},
 			"approved": "Authorizações concedidas",
 			"deleted": "Authorizações negadas!",
@@ -211,6 +236,7 @@
 		"SidebarModules": "Módulos",
 		"AccountUsers": "Usuários de Conta",
 		"Groups": "Grupos de Permissões",
+		"Clients": "Clientes",
 		"SpecialPermissions": "Permissões Especiais"
 	},
 	"actions": {}

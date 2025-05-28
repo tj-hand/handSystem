@@ -4,7 +4,6 @@
 		class="content-wrapper"
 	>
 		<ObjectCard
-			width="50%"
 			class="itemData"
 			:record="record"
 			v-if="!isLoading"

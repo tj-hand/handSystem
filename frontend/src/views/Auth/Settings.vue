@@ -29,6 +29,10 @@ export default defineComponent({
 			{
 				label: 'generic.clients',
 				link_to: 'Clients',
+				permissionRequired: {
+					category: 'Clients',
+					identifier: 'auth.clients.module',
+				},
 			},
 			{
 				label: 'generic.groups',

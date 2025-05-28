@@ -17,7 +17,6 @@
 		<div class="item-data">
 			<NoRecord v-if="isNoRecordVisible" />
 			<ObjectCard
-				width="50%"
 				:record="record"
 				title_db_name="name"
 				subtitle_db_name="uuid"
@@ -198,13 +197,23 @@ export default defineComponent({
 			const hasValidId = isUUID(route.params.id);
 			if (!hasValidId && route.params.id !== 'new') return;
 			let success = route.params.id !== 'new' ? false : true;
-			let recordData = { is_superuser: false, is_blocked: false };
+			let recordData = {
+				is_active_to_account: true,
+				is_superuser: false,
+				is_blocked: false,
+				is_account_admin: false,
+			};
 			if (hasValidId) {
 				const { success: apiSuccess, user } = await apiService.user.show({ id: route.params.id });
 				success = apiSuccess;
 				recordData = success
-					? user.record ?? { is_superuser: false, is_blocked: false }
-					: { is_superuser: false, is_blocked: false };
+					? user.record ?? {
+							is_active_to_account: true,
+							is_superuser: false,
+							is_blocked: false,
+							is_account_admin: false,
+					  }
+					: { is_active_to_account: true, is_superuser: false, is_blocked: false, is_account_admin: false };
 			}
 			formGuardService.setOriginal(recordData);
 			recordIsLoaded.value = true;
