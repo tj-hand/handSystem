@@ -72,45 +72,6 @@
 													"labelPosition": "right"
 												}
 											}
-										},
-										{
-											"width": "100%",
-											"content": {
-												"type": "field",
-												"props": {
-													"component": "checkbox-field",
-													"label": "generic.blocked",
-													"db_name": "is_blocked",
-													"labelPosition": "right",
-													"validations": ["superuser"]
-												}
-											}
-										},
-										{
-											"width": "100%",
-											"content": {
-												"type": "field",
-												"props": {
-													"component": "checkbox-field",
-													"label": "auth.user.label.admin",
-													"db_name": "is_account_admin",
-													"labelPosition": "right",
-													"validations": ["superuser"]
-												}
-											}
-										},
-										{
-											"width": "100%",
-											"content": {
-												"type": "field",
-												"props": {
-													"component": "checkbox-field",
-													"label": "generic.superuser",
-													"db_name": "is_superuser",
-													"labelPosition": "right",
-													"validations": ["superuser"]
-												}
-											}
 										}
 									]
 								}
@@ -164,41 +125,8 @@
 									"type": "field",
 									"props": {
 										"component": "checkable-item-list",
-										"title": "auth.user.label.account_user_associated_with_clients",
-										"backend_request": "user.associated_with_clients"
-									}
-								}
-							},
-							{
-								"width": "47%",
-								"content": {
-									"type": "field",
-									"props": {
-										"component": "checkable-item-list",
 										"title": "auth.user.label.account_user_associated_with_groups",
-										"backend_request": "user.associated_with_groups"
-									}
-								}
-							},
-							{
-								"width": "47%",
-								"content": {
-									"type": "field",
-									"props": {
-										"component": "checkable-item-list",
-										"title": "auth.user.label.account_user_associated_with_global_actions",
-										"backend_request": "user.associated_with_global_actions"
-									}
-								}
-							},
-							{
-								"width": "47%",
-								"content": {
-									"type": "field",
-									"props": {
-										"component": "checkable-item-list",
-										"title": "auth.user.label.account_user_associated_with_local_actions",
-										"backend_request": "user.associated_with_local_actions"
+										"backend_request": "user.local_associated_with_groups"
 									}
 								}
 							}

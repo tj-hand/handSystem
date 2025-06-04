@@ -2,137 +2,140 @@
 
 namespace App\Http\Controllers;
 
+// Import Tools
 use Exception;
-use App\Models\Action;
-use App\Models\Group;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use App\Services\AccountService;
-use App\Models\ScopedRelationship;
 use Illuminate\Support\Facades\DB;
-use App\Services\PermissionService;
+
+// Import Models
+use App\Models\Group;
+use App\Models\Action;
+use App\Models\Client;
+use App\Models\ScopedRelationship;
 use App\Models\UserGlobalProperties;
-use Illuminate\Support\Facades\Validator;
+
+// Import Services
+use App\Services\AccountService;
+use App\Services\PermissionService;
 use App\Services\SystemLogService as Que;
 use App\Services\ScopedRelationshipService;
 
 class GroupController extends Controller
 {
 
+	protected $record = [];
+	protected $groupId = '';
+	protected $group = null;
+	protected $newRecord = false;
+	protected $currentAccountId = '';
+	protected AccountService $accountService;
 	protected PermissionService $permissionService;
 
-	public function __construct(PermissionService $permissionService)
+	public function __construct(Request $request, AccountService $accountService, PermissionService $permissionService)
 	{
+
+		$this->record = $request->input('record');
+		$this->groupId = data_get($request->input('record'), 'id', $request->input('id'));
+
+		$this->accountService = $accountService;
 		$this->permissionService = $permissionService;
+		$this->currentAccountId = PermissionService::UserGlobalProperties()->current_account;
 	}
 
-	public function show(Request $request)
+	public function show()
 	{
 		try {
-			if (!Str::isUuid($request->input('id'))) return Que::passa(false, 'auth.group.show.invalid_id', $request->input('id'));
-			if (!$this->permissionService::hasPermission('Groups.auth.groups.show'))
-				return Que::passa(false, 'auth.groups.show.error.unauthorized');
 
-			$accountId = PermissionService::UserGlobalProperties()->current_account;
-			$groups = (new AccountService($accountId))->groups();
-			$exists = $groups->contains('id', $request->input('id'));
-			if (!$exists) return Que::passa(false, 'auth.group.show.unauthorized', $request->input('id'));
-			$group = Group::find($request->input('id'));
-			return $group
-				? Que::passa(true, 'auth.group.show', '', $group, ['group'  => ['record' => $group]])
-				: Que::passa(false, 'auth.group.show.error.group_not_found', $request->input('id'));
+			// Validate the operation
+			$validationAndLoad = $this->validateAndLoadGroup('show');
+			if ($validationAndLoad !== true) return $validationAndLoad;
+
+			// Check grant
+			$grantOperation = $this->grantOperation('show');
+			if ($grantOperation !== true) return $grantOperation;
+
+			return Que::passa(true, 'auth.client.show', '', $this->group, ['group'  => ['record' => $this->group]]);
 		} catch (Exception $e) {
-			return Que::passa(false, 'generic.server_error', 'auth.group.show ' . $request->input('id'));
+			return Que::passa(false, 'generic.server_error', 'auth.client.show ' . $this->groupId);
 		}
 	}
 
-	public function upsert(Request $request)
+	public function upsert()
 	{
-		$message = '';
-		$data = $request->input('record', []);
+		// Validate the operation
+		$validationAndLoad = $this->validateAndLoadGroup('upsert');
+		if ($validationAndLoad !== true) return $validationAndLoad;
+
+		if ($this->newRecord) return $this->create();
+		return $this->update();
+	}
+
+	public function delete()
+	{
+		// Validate the operation
+		$validationAndLoad = $this->validateAndLoadGroup('delete');
+		if ($validationAndLoad !== true) return $validationAndLoad;
+
+		// Check grant
+		$grantOperation = $this->grantOperation('delete');
+		if ($grantOperation !== true) return $grantOperation;
 
 		try {
 			DB::beginTransaction();
-			if (!empty($data['id'])) {
-				if (!$this->permissionService::hasPermission('Groups.auth.groups.edit'))
-					return Que::passa(false, 'auth.groups.edit.error.unauthorized');
-				$message = 'auth.groups.updated';
-				$group = Group::find($data['id']);
-				if (!$group) return Que::passa(false, 'auth.groups.upsert.error.group_not_found', $data['id']);
-				$group->name = $data['name'];
-				$group->is_active = $data['is_active'];
-				$group->description = $data['description'];
-				$group->save();
-			} else {
-				if (!$this->permissionService::hasPermission('Groups.auth.groups.add'))
-					return Que::passa(false, 'auth.groups.add.error.unauthorized');
-				$message = 'auth.groups.created';
-				$accountId = $this->permissionService->UserGlobalProperties()->current_account;
-				$group = Group::create($data);
-				app(ScopedRelationshipService::class)->setRelationship('Group', $group->id, 'Account', $accountId, 'Account', $accountId, false, true, 'System', Carbon::now());
-			}
-			if (!empty($data['group.associated_users']))
-				app(ScopedRelationshipService::class)->syncScopedRelationships(
-					parentEntity: $group,
-					items: $data['group.associated_users'],
-					scopeType: 'App\Models\Account',
-					relatedObjectType: 'App\Models\UserGlobalProperties',
-					grantField: 'groups_and_account_users'
-				);
-			if (!empty($data['group.associated_actions']))
-				app(ScopedRelationshipService::class)->syncScopedRelationships(
-					parentEntity: $group,
-					items: $data['group.associated_actions'],
-					scopeType: 'App\Models\Account',
-					relatedObjectType: 'App\Models\Action',
-					grantField: 'groups_and_actions'
-				);
-
+			$this->group->delete();
 			DB::commit();
-			return Que::passa(true, $message, '', $group, ['group'  => ['record' => $group]]);
+			return Que::passa(true, 'auth.group.deleted', '', $this->group);
 		} catch (Exception $e) {
 			DB::rollBack();
-			return Que::passa(false, 'generic.server_error', 'auth.groups.upsert ' . ($data['id'] ?? 'new'));
+			return Que::passa(false, 'generic.server_error', 'auth.group.delete.error ' . $this->group);
 		}
 	}
 
-	public function delete(Request $request)
+	private function create()
 	{
-		$validator = Validator::make($request->all(), ['id' => 'uuid']);
-		if ($validator->fails()) return Que::passa(false, 'auth.group.error.delete.error.invalid_id_type');
-
-		if (!$this->permissionService::hasPermission('Groups.auth.groups.delete'))
-			return Que::passa(false, 'auth.groups.delete.error.unauthorized');
-
 		try {
-
 			DB::beginTransaction();
-			$group = Group::find($request->input('id'));
-			if (!$group) return Que::passa(false, 'auth.group.delete.error.group_not_found', $request->input('id'));
-			$accountId = $this->permissionService->UserGlobalProperties()->current_account;
 
-			ScopedRelationship::where('object_id', $request->input('id'))
-				->where('object_type', 'App\Models\Group')
-				->where('belongs_to_type', 'App\Models\Account')
-				->where('scope_type', 'App\Models\Account')
-				->where('belongs_to_id', $accountId)
-				->where('scope_id', $accountId)
-				->delete();
+			if (!$this->permissionService::hasPermission('Groups.auth.groups.add'))
+				return Que::passa(false, 'auth.groups.add.error.unauthorized');
 
-			ScopedRelationship::where('object_type', 'App\Models\Group')
-				->where('belongs_to_type', 'App\Models\Group')
-				->where('scope_type', 'App\Models\Account')
-				->where('belongs_to_id', $group->id)
-				->where('scope_id', $accountId)
-				->delete();
-
-			$group->delete();
+			$this->group = Group::create($this->record);
+			$this->groupId = $this->group->id;
+			$this->setGroupRelationsship();
+			if (!empty($this->record['group.associated_users'])) $this->setAssociatedUsers();
+			if (!empty($this->record['group.associated_actions'])) $this->setAssociatedActions();
 			DB::commit();
-			return Que::passa(true, 'auth.group.deleted', '', $group);
+			return Que::passa(true, 'auth.groups.created', '', $this->group, ['group'  => ['record' => $this->group]]);
 		} catch (Exception $e) {
 			DB::rollBack();
-			return Que::passa(false, 'generic.server_error', 'auth.group.delete.error');
+			return Que::passa(false, 'generic.server_error', 'auth.group.create ' . $this->groupId);
+		}
+	}
+
+	private function update()
+	{
+		if (!$this->permissionService::hasPermission('Groups.auth.groups.edit'))
+			return Que::passa(false, 'auth.groups.edit.error.unauthorized');
+
+		try {
+			DB::beginTransaction();
+			$this->group->name = $this->record['name'];
+			$this->group->is_active = $this->record['is_active'];
+			$this->group->scope = $this->record['scope'];
+			$this->group->description = $this->record['description'];
+			$this->group->save();
+
+			ScopedRelationship::where('object_type', 'App\Models\Group')->where('object_id', $this->groupId)->delete();
+			$this->setGroupRelationsship();
+			if (!empty($this->record['group.associated_users'])) $this->setAssociatedUsers();
+			if (!empty($this->record['group.associated_actions']))  $this->setAssociatedActions();
+			DB::commit();
+			return Que::passa(true, 'auth.groups.updated', '', $this->group, ['group'  => ['record' => $this->group]]);
+		} catch (Exception $e) {
+			DB::rollBack();
+			return Que::passa(false, 'generic.server_error', 'auth.groups.create ' . $this->groupId);
 		}
 	}
 
@@ -164,7 +167,82 @@ class GroupController extends Controller
 
 		$group = Group::find($groupId);
 		if (!$group) return Que::passa(false, 'auth.group.associated_actions.error.group_not_found', $groupId);
-		$list = app(ScopedRelationshipService::class)->makeScopedListWithRelations($group, Action::class);
+		$scope = $group->scope == 'client' ? 'App\Models\Client' : 'App\Models\Account';
+		$list = app(ScopedRelationshipService::class)->makeScopedListWithRelations($group, Action::class, $scope);
 		return Que::passa(true, 'auth.group.actions.listed', '', null, ['list' => $list]);
+	}
+
+	private function validateAndLoadGroup($operation)
+	{
+		// Handle new record
+		if (is_array($this->record) && !array_key_exists('id', $this->record)) {
+			$this->newRecord = true;
+			return true;
+		}
+
+		// Validate UUID format
+		if (!Str::isUuid($this->groupId)) return Que::passa(false, 'auth.group.' . $operation . '.invalid_id', $this->groupId);
+
+		// Try to find the client
+		$this->group = Group::find($this->groupId);
+		if (!$this->group) return Que::passa(false, 'auth.group.' . $operation . '.not_found', $this->group);
+
+		return true;
+	}
+
+	private function grantOperation($operation)
+	{
+		if (!$this->permissionService::hasPermission('Groups.auth.groups.' . $operation))
+			return Que::passa(false, 'auth.groups.' . $operation . '.error.unauthorized');
+
+		if (!$this->accountService->groups()->contains('id', $this->groupId))
+			return Que::passa(false, 'auth.groups.show.unauthorized', $this->groupId);
+
+		return true;
+	}
+
+	private function setGroupRelationsship()
+	{
+
+		$currentClientId = $this->permissionService::UserCurrentAccountProperties()->current_client;
+
+		$scope = $this->record['scope'];
+		$belongsToType = $scope === 'account' ? 'Account' : 'Client';
+		$belongsToId   = $scope === 'account' ? $this->currentAccountId : $currentClientId;
+
+		return app(ScopedRelationshipService::class)->setRelationship(
+			'Group',
+			$this->groupId,
+			$belongsToType,
+			$belongsToId,
+			'Account',
+			$this->currentAccountId,
+			false,
+			true,
+			'System',
+			Carbon::now()
+		);
+	}
+
+	private function setAssociatedUsers()
+	{
+		return app(ScopedRelationshipService::class)->syncScopedRelationships(
+			parentEntity: $this->group,
+			items: $this->record['group.associated_users'],
+			scopeType: 'App\Models\Client',
+			relatedObjectType: 'App\Models\UserGlobalProperties',
+			grantField: 'group_users'
+		);
+	}
+
+	private function setAssociatedActions()
+	{
+		return app(ScopedRelationshipService::class)->syncScopedRelationships(
+			parentEntity: $this->group,
+			items: $this->record['group.associated_actions'],
+			scopeType: 'App\Models\Client',
+			relatedObjectType: 'App\Models\Action',
+			grantField: 'group_actions'
+		);
 	}
 }

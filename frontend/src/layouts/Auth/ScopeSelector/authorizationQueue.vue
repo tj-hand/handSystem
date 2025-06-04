@@ -17,13 +17,13 @@
 						class="group-title"
 						v-if="group?.length"
 					>
-						{{ $t('auth.authorization_queue.group.' + title) }}
+						{{ $t('auth.authorization_queue.' + title) }}
 					</div>
 					<div class="group-wrapper">
 						<div
 							class="item"
 							v-for="(item, index) in group"
-							@click="toogleAuthorization(item.id)"
+							@click="toogleAuthorization(item.id, title)"
 						>
 							<input
 								type="checkbox"
@@ -122,7 +122,7 @@ export default defineComponent({
 	},
 	setup(props, { emit }) {
 		const list = ref([]);
-		const selectedIds = ref([]);
+		const selectedItems = ref([]); // Changed from selectedIds to selectedItems
 		const authStore = useAuthStore();
 
 		const canAuthorize = computed(() => {
@@ -138,13 +138,17 @@ export default defineComponent({
 			}
 		};
 
-		const toogleAuthorization = (id) => {
-			const index = selectedIds.value.indexOf(id);
-			index === -1 ? selectedIds.value.push(id) : selectedIds.value.splice(index, 1);
+		const toogleAuthorization = (id, group) => {
+			const index = selectedItems.value.findIndex((item) => item.id === id);
+			if (index === -1) {
+				selectedItems.value.push({ id, group });
+			} else {
+				selectedItems.value.splice(index, 1);
+			}
 		};
 
 		const isSelected = (id) => {
-			return selectedIds.value.includes(id);
+			return selectedItems.value.some((item) => item.id === id);
 		};
 
 		const closeDrawer = () => {
@@ -161,21 +165,28 @@ export default defineComponent({
 		};
 
 		const selectAll = () => {
-			selectedIds.value = Object.values(list.value)
-				.filter(Array.isArray)
-				.flat()
-				.map((item) => item.id);
-			console.log(selectedIds.value);
+			selectedItems.value = [];
+			Object.entries(list.value).forEach(([title, group]) => {
+				if (Array.isArray(group)) {
+					group.forEach((item) => {
+						selectedItems.value.push({ id: item.id, group: title });
+					});
+				}
+			});
+			console.log(selectedItems.value);
 		};
 
 		const setAuthorizations = async (operationType) => {
-			if (!selectedIds.value.length) return;
+			if (!selectedItems.value.length) return;
 			const { success, message } = await apiService.authorization.set({
-				ids: selectedIds.value,
+				items: selectedItems.value, // Changed from ids to items
 				operation_type: operationType,
 			});
 			showToast(message, { type: success ? 'success' : 'error' });
-			if (success) getAuthorizationQueue();
+			if (success) {
+				selectedItems.value = []; // Clear selection after successful operation
+				getAuthorizationQueue();
+			}
 		};
 
 		onMounted(() => {

@@ -12,6 +12,11 @@ class GrantConfig extends Model
 	protected $keyType = 'string';
 	protected $table = 'admin_grants_configs';
 
+	protected $fillable = [
+		'object_type',
+		'object_id',
+	];
+
 	protected static function boot()
 	{
 		parent::boot();

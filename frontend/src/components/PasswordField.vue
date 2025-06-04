@@ -37,7 +37,8 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { ref } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
 	name: 'PasswordField',

@@ -17,7 +17,8 @@ class Group extends Model
 		'name',
 		'is_active',
 		'description',
-		'group_type'
+		'group_type',
+		'scope'
 	];
 
 	protected static function boot()

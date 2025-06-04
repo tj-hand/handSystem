@@ -32,7 +32,7 @@
 					@click="goTo(item[idField])"
 					v-if="filteredItems.length > 0"
 					v-for="(item, index) in filteredItems"
-					:class="{ active: isItemActive(item[idField]) }"
+					:class="{ active: isItemActive(item[idField]), not_authorized: item['not_authorized'] }"
 					:ref="
 						(el) => {
 							if (isItemActive(item[idField])) activeItemRef = el;
@@ -266,6 +266,10 @@ export default defineComponent({
 
 				.subContent {
 					font-size: 1rem * $phi-sr;
+				}
+
+				&.not_authorized {
+					border-left-color: rgba($warning-color, 0.4);
 				}
 			}
 		}

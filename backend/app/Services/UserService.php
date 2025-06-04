@@ -4,11 +4,14 @@ namespace App\Services;
 
 use Exception;
 use App\Models\User;
+use App\Models\GrantConfig;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Services\PermissionService;
 use App\Models\UserGlobalProperties;
 use Illuminate\Support\Facades\Hash;
+use App\Models\UserClientProperties;
 use App\Models\UserAccountProperties;
 use Illuminate\Support\Facades\Validator;
 use App\Services\SystemLogService as Que;
@@ -20,19 +23,13 @@ class UserService
 		$data = $request->input('record', []);
 		$scope = $request->input('scope', null);
 
-
-
 		$identificationValidation = $this->validateIdentification($data);
-		if (!$identificationValidation['success']) {
-			return $identificationValidation['response'];
-		}
+		if (!$identificationValidation['success']) return $identificationValidation['response'];
 
 		$operationType = $this->determineOperationType($data);
 
 		$emailValidation = $this->validateEmail($data);
-		if (!$emailValidation['success']) {
-			return $emailValidation['response'];
-		}
+		if (!$emailValidation['success']) return $emailValidation['response'];
 
 		return $operationType === 'update'
 			? $this->updateUser($data)
@@ -87,29 +84,24 @@ class UserService
 			return Que::passa(false, 'auth.account.users.edit.error.unauthorized');
 
 		$validationResults = $this->validateUserUpdateDetails($data);
-		if (!$validationResults['success']) {
-			return $validationResults['response'];
-		}
+		if (!$validationResults['success']) return $validationResults['response'];
 
 		$user = User::find($data['id']);
 		$userGlobalProperties = UserGlobalProperties::find($data['uuid']);
 
 		$validationChecks = $this->performUpdateValidationChecks($data, $user, $userGlobalProperties);
-		if (!$validationChecks['success']) {
-			return $validationChecks['response'];
-		}
+		if (!$validationChecks['success']) return $validationChecks['response'];
 
 		try {
 			DB::beginTransaction();
 
 			$user->name = $data['user_name'] . ' ' . $data['user_lastname'];
-			if (!empty($data['password'])) {
-				$user->password = bcrypt($data['password']);
-			}
+			if (!empty($data['password'])) $user->password = bcrypt($data['password']);
 			$user->save();
 
 			$userGlobalProperties->user_name = $data['user_name'];
 			$userGlobalProperties->user_lastname = $data['user_lastname'];
+
 			if ($is_superuser) {
 				if (isset($data['is_superuser'])) $userGlobalProperties->is_superuser = $data['is_superuser'];
 				if (isset($data['is_blocked'])) $userGlobalProperties->is_blocked = $data['is_blocked'];
@@ -121,32 +113,44 @@ class UserService
 			if ($is_superuser && isset($data['is_account_admin'])) $userAccountProperties->is_account_admin = $data['is_account_admin'];
 			$userAccountProperties->save();
 
-			if (!empty($data['user.associated_with_actions']))
+			if (!empty($data['user.associated_with_global_actions'])) {
 				app(ScopedRelationshipService::class)->syncScopedRelationships(
 					parentEntity: $userGlobalProperties,
-					items: $data['user.associated_with_actions'],
+					items: $data['user.associated_with_global_actions'],
 					scopeType: 'App\Models\Account',
 					relatedObjectType: 'App\Models\Action',
-					grantField: 'account_users_and_actions'
+					grantField: 'user_global_actions'
 				);
+			}
 
-			if (!empty($data['user.associated_with_clients']))
-				app(ScopedRelationshipService::class)->syncScopedRelationships(
+			if (!empty($data['user.associated_with_local_actions'])) {
+				$log = app(ScopedRelationshipService::class)->syncScopedRelationships(
 					parentEntity: $userGlobalProperties,
-					items: $data['user.associated_with_clients'],
-					scopeType: 'App\Models\Account',
-					relatedObjectType: 'App\Models\Client',
-					grantField: 'account_users_and_clients'
+					items: $data['user.associated_with_local_actions'],
+					scopeType: 'App\Models\Client',
+					relatedObjectType: 'App\Models\Action',
+					grantField: 'user_local_actions'
 				);
+			}
 
-			if (!empty($data['user.associated_with_groups']))
-				app(ScopedRelationshipService::class)->syncScopedRelationships(
-					parentEntity: $userGlobalProperties,
+			if (!empty($data['user.associated_with_clients'])) {
+				$items = $data['user.associated_with_clients'];
+				foreach ($items as $item) {
+					$item['selected']
+						? $this->attachClient($item['id'], $user->id)
+						: $this->deattachClient($item['id'], $user->id);
+				}
+			}
+
+			if (!empty($data['user.associated_with_groups'])) {
+				app(ScopedRelationshipService::class)->syncReverseScopedRelationships(
+					childEntity: $userGlobalProperties,
 					items: $data['user.associated_with_groups'],
 					scopeType: 'App\Models\Account',
-					relatedObjectType: 'App\Models\Group',
-					grantField: 'account_users_and_groups'
+					parentObjectType: 'App\Models\Group',
+					grantField: 'group_users'
 				);
+			}
 
 			DB::commit();
 
@@ -258,34 +262,47 @@ class UserService
 			}
 			$userGlobalProperties->save();
 
-			if ($scope == 'account') $this->addUserToAccount($user->id, $is_account_admin);
+			$this->addUserToAccount($user->id, $is_account_admin);
 
-			if (!empty($data['user.associated_with_actions']))
+			if (!empty($data['user.associated_with_global_actions'])) {
 				app(ScopedRelationshipService::class)->syncScopedRelationships(
 					parentEntity: $userGlobalProperties,
-					items: $data['user.associated_with_actions'],
+					items: $data['user.associated_with_global_actions'],
 					scopeType: 'App\Models\Account',
 					relatedObjectType: 'App\Models\Action',
-					grantField: 'account_users_and_actions'
+					grantField: 'user_actions'
 				);
+			}
 
-			if (!empty($data['user.associated_with_clients']))
+			if (!empty($data['user.associated_with_local_actions'])) {
 				app(ScopedRelationshipService::class)->syncScopedRelationships(
 					parentEntity: $userGlobalProperties,
-					items: $data['user.associated_with_clients'],
-					scopeType: 'App\Models\Account',
-					relatedObjectType: 'App\Models\Client',
-					grantField: 'account_users_and_clients'
+					items: $data['user.associated_with_local_actions'],
+					scopeType: 'App\Models\Client',
+					relatedObjectType: 'App\Models\Action',
+					grantField: 'user_actions'
 				);
+			}
 
-			if (!empty($data['user.associated_with_groups']))
-				app(ScopedRelationshipService::class)->syncScopedRelationships(
-					parentEntity: $userGlobalProperties,
+			if (!empty($data['user.associated_with_clients'])) {
+				$items = $data['user.associated_with_clients'];
+				foreach ($items as $item) {
+					$item['selected']
+						? $this->attachClient($item['id'], $user->id)
+						: $this->deattachClient($item['id'], $user->id);
+				}
+			}
+
+
+			if (!empty($data['user.associated_with_groups'])) {
+				app(ScopedRelationshipService::class)->syncReverseScopedRelationships(
+					childEntity: $userGlobalProperties,
 					items: $data['user.associated_with_groups'],
 					scopeType: 'App\Models\Account',
-					relatedObjectType: 'App\Models\Group',
-					grantField: 'account_users_and_groups'
+					parentObjectType: 'App\Models\Group',
+					grantField: 'group_users'
 				);
+			}
 
 			DB::commit();
 
@@ -299,7 +316,6 @@ class UserService
 	public function addUserToAccount($userId, $is_account_admin = false)
 	{
 		try {
-			$is_superuser = PermissionService::UserGlobalProperties()->is_superuser;
 			$currentAccountId = PermissionService::UserGlobalProperties()->current_account;
 			$accountProperties = new UserAccountProperties();
 			$accountProperties->user_id = $userId;
@@ -326,6 +342,40 @@ class UserService
 		}
 	}
 
+	public function addUserToClient($userId)
+	{
+		try {
+
+			$currentAccountId = PermissionService::UserGlobalProperties()->current_account;
+			$currentClientId = PermissionService::UserCurrentAccountProperties()->current_client;
+			$grantOptions = GrantConfig::where('object_type', 'App\Models\Account')->where('object_id', $currentAccountId)->first();
+			if (!$grantOptions) return Que::passa(false, 'auth.client.attach_user.error.grant_not_found');
+
+			if ($grantOptions->client_users) {
+				UserClientProperties::create([
+					'user_id' => $userId,
+					'client_id' => $currentClientId,
+					'home_page' => 'Welcome',
+					'requires_authorization' => true,
+					'authorized' => false
+				]);
+			} else {
+				UserClientProperties::create([
+					'user_id' => $userId,
+					'client_id' => $currentClientId,
+					'home_page' => 'Welcome',
+					'requires_authorization' => false,
+					'authorized' => true,
+					'authorized_by_name' => 'System',
+					'authorization_timestamp' => Carbon::now()
+				]);
+			}
+			return true;
+		} catch (Exception $e) {
+			return false;
+		}
+	}
+
 	public static function getUser($id)
 	{
 		$accountId = PermissionService::UserCurrentAccountProperties()->account_id;
@@ -335,5 +385,42 @@ class UserService
 			->where('users_global_properties.id', $id)
 			->where('users_accounts_properties.account_id', $accountId)
 			->first();
+	}
+
+	private function attachClient($clientId, $userId)
+	{
+
+		$currentAccountId = PermissionService::UserGlobalProperties()->current_account;
+
+		$grantOptions = GrantConfig::where('object_type', 'App\Models\Account')->where('object_id', $currentAccountId)->first();
+		if (!$grantOptions) return Que::passa(false, 'auth.client.attach_user.error.grant_not_found');
+
+		$userClientProperties = UserClientProperties::where('client_id', $clientId)->where('user_id', $userId)->first();
+		if ($userClientProperties) return;
+
+		if ($grantOptions->client_users) {
+			return UserClientProperties::create([
+				'user_id' => $userId,
+				'client_id' => $clientId,
+				'home_page' => 'Welcome',
+				'requires_authorization' => true,
+				'authorized' => false
+			]);
+		} else {
+			return UserClientProperties::create([
+				'user_id' => $userId,
+				'client_id' => $clientId,
+				'home_page' => 'Welcome',
+				'requires_authorization' => false,
+				'authorized' => true,
+				'authorized_by_name' => 'System',
+				'authorization_timestamp' => Carbon::now()
+			]);
+		}
+	}
+
+	private function deattachClient($clientId, $userId)
+	{
+		return UserClientProperties::where('user_id', $userId)->where('client_id', $clientId)->delete();
 	}
 }

@@ -14,7 +14,7 @@ class ActionSet extends Model
 
 	public function actions()
 	{
-		return $this->hasMany(Action::class, 'admin_set_action_id', 'id')->select('admin_set_action_id', 'identifier', 'link_to', 'icon', 'is_visible', 'subgroup');
+		return $this->hasMany(Action::class, 'admin_set_action_id', 'id')->select('id', 'admin_set_action_id', 'identifier', 'link_to', 'icon', 'is_visible', 'subgroup');
 	}
 
 	public function itemsList()

@@ -38,6 +38,12 @@ const routes = [
 				meta: { requiresAuthentication: true },
 			},
 			{
+				path: 'users/:id?',
+				name: 'LocalUsers',
+				component: () => import('@/views/Auth/LocalUsers.vue'),
+				meta: { requiresAuthentication: true },
+			},
+			{
 				path: 'logout',
 				name: 'Logout',
 				component: () => import('@/views/Auth/Logout.vue'),

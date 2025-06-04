@@ -31,6 +31,12 @@ const apiService = {
 		exists(email) {
 			return apiRequest('POST', endpoints.user.exists, email);
 		},
+		existsInClient(email) {
+			return apiRequest('POST', endpoints.user.existsInClient, email);
+		},
+		addToClient(email) {
+			return apiRequest('POST', endpoints.user.addToClient, email);
+		},
 		addToAccount(email) {
 			return apiRequest('POST', endpoints.user.addToAccount, email);
 		},
@@ -49,8 +55,14 @@ const apiService = {
 		associated_with_groups(id) {
 			return apiRequest('POST', endpoints.user.associated_with_groups, id);
 		},
-		associated_with_actions(id) {
-			return apiRequest('POST', endpoints.user.associated_with_actions, id);
+		local_associated_with_groups(id) {
+			return apiRequest('POST', endpoints.user.local_associated_with_groups, id);
+		},
+		associated_with_global_actions(id) {
+			return apiRequest('POST', endpoints.user.associated_with_global_actions, id);
+		},
+		associated_with_local_actions(id) {
+			return apiRequest('POST', endpoints.user.associated_with_local_actions, id);
 		},
 	},
 	group: {
@@ -82,6 +94,9 @@ const apiService = {
 		},
 		associated_users(id) {
 			return apiRequest('POST', endpoints.client.associated_users, id);
+		},
+		local_users(id) {
+			return apiRequest('POST', endpoints.client.local_users, id);
 		},
 	},
 	account: {

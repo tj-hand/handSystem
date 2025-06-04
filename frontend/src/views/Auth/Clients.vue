@@ -17,7 +17,6 @@
 		<div class="item-data">
 			<NoRecord v-if="isNoRecordVisible" />
 			<ObjectCard
-				width="50%"
 				:record="record"
 				title_db_name="name"
 				subtitle_db_name="id"
@@ -110,7 +109,7 @@ export default defineComponent({
 		} = useRecordManagement({
 			apiService: apiService.client,
 			singularName: 'client',
-			defaultRecord: { is_active: false },
+			defaultRecord: { is_active: false, group_users: false, group_actions: false, user_local_actions: false },
 			getListFn: getList,
 		});
 

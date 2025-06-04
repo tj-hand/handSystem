@@ -31,7 +31,7 @@
 		"type": "row",
 		"cols": [
 			{
-				"width": "100%",
+				"width": "calc(62% - 1rem)",
 				"content": {
 					"type": "field",
 					"props": {
@@ -39,6 +39,17 @@
 						"label": "generic.description",
 						"db_name": "description",
 						"rows": 5
+					}
+				}
+			},
+			{
+				"width": "38%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "scope-setter",
+						"label": "generic.scope",
+						"db_name": "scope"
 					}
 				}
 			}

@@ -125,8 +125,8 @@
 									"type": "field",
 									"props": {
 										"component": "checkbox-field",
-										"label": "auth.authorization_queue.group.group_users",
-										"db_name": "groups_and_account_users",
+										"label": "auth.authorization_queue.client_users",
+										"db_name": "client_users",
 										"labelPosition": "right"
 									}
 								}
@@ -137,56 +137,8 @@
 									"type": "field",
 									"props": {
 										"component": "checkbox-field",
-										"label": "auth.authorization_queue.group.group_actions",
-										"db_name": "groups_and_actions",
-										"labelPosition": "right"
-									}
-								}
-							},
-							{
-								"width": "100%",
-								"content": {
-									"type": "field",
-									"props": {
-										"component": "checkbox-field",
-										"label": "auth.authorization_queue.group.client_account_users",
-										"db_name": "clients_and_account_users",
-										"labelPosition": "right"
-									}
-								}
-							},
-							{
-								"width": "100%",
-								"content": {
-									"type": "field",
-									"props": {
-										"component": "checkbox-field",
-										"label": "auth.authorization_queue.group.user_clients",
-										"db_name": "account_users_and_clients",
-										"labelPosition": "right"
-									}
-								}
-							},
-							{
-								"width": "100%",
-								"content": {
-									"type": "field",
-									"props": {
-										"component": "checkbox-field",
-										"label": "auth.authorization_queue.group.user_groups",
-										"db_name": "account_users_and_groups",
-										"labelPosition": "right"
-									}
-								}
-							},
-							{
-								"width": "100%",
-								"content": {
-									"type": "field",
-									"props": {
-										"component": "checkbox-field",
-										"label": "auth.authorization_queue.group.user_actions",
-										"db_name": "account_users_and_actions",
+										"label": "auth.authorization_queue.user_global_actions",
+										"db_name": "user_global_actions",
 										"labelPosition": "right"
 									}
 								}

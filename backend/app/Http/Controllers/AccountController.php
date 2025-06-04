@@ -2,41 +2,49 @@
 
 namespace App\Http\Controllers;
 
+// Import Tools
 use Exception;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
+
+// Import Models
 use App\Models\Group;
 use App\Models\Client;
 use App\Models\Account;
 use App\Models\GrantConfig;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Services\AccountService;
-use Illuminate\Support\Facades\DB;
-use App\Models\MicrosoftConnection;
 use App\Models\ScopedRelationship;
-use App\Services\PermissionService;
+use App\Models\MicrosoftConnection;
 use App\Models\UserAccountProperties;
-use Illuminate\Support\Facades\Crypt;
+
+// Import Services
+use App\Services\AccountService;
+use App\Services\PermissionService;
 use App\Services\SystemLogService as Que;
+
 
 class AccountController extends Controller
 {
 
-	protected $currentAccount;
+	protected $currentAccountId;
+	protected AccountService $accountService;
 	protected PermissionService $permissionService;
 
-	public function __construct(PermissionService $permissionService)
+	public function __construct(PermissionService $permissionService, AccountService $accountService)
 	{
+		$this->accountService = $accountService;
 		$this->permissionService = $permissionService;
-		$this->currentAccount = $permissionService->UserGlobalProperties()->current_account;
+		$this->currentAccountId = $permissionService->UserGlobalProperties()->current_account;
 	}
 
 	public function show(Request $request)
 	{
 		if (!Str::isUuid($request->id)) return Que::passa(false, 'auth.account.show.invalid_id', $request->id);
-		if ($request->id != $this->currentAccount) return Que::passa(false, 'auth.account.show.account_not_match', $request->id);
+		if ($request->id != $this->currentAccountId) return Que::passa(false, 'auth.account.show.account_not_match', $request->id);
 
 		$userGlobal = $this->permissionService->UserGlobalProperties();
-		$userAccount = $this->permissionService->UserCurrentAccountProperties();
+		$userAccount = $this->permissionService->UsercurrentAccountProperties();
 		$grants = GrantConfig::where('object_type', 'App\Models\Account')->where('object_id', $userGlobal->current_account)->first();
 
 		if (!$userGlobal->is_superuser && !$userAccount->is_account_admin)
@@ -54,12 +62,8 @@ class AccountController extends Controller
 			if ($account->client_id) $account->client_id = Crypt::decrypt($account->client_id);
 			if ($account->client_secret) $account->client_secret = Crypt::decrypt($account->client_secret);
 
-			$account->groups_and_account_users = $grants->groups_and_account_users;
-			$account->groups_and_actions = $grants->groups_and_actions;
-			$account->clients_and_account_users = $grants->clients_and_account_users;
-			$account->account_users_and_clients = $grants->account_users_and_clients;
-			$account->account_users_and_groups = $grants->account_users_and_groups;
-			$account->account_users_and_actions = $grants->account_users_and_actions;
+			$account->client_users = $grants->client_users;
+			$account->user_global_actions = $grants->user_global_actions;;
 
 			return Que::passa(true, 'auth.account.show', '', $account, ['account'  => ['record' => $account]]);
 		} catch (Exception $e) {
@@ -70,7 +74,7 @@ class AccountController extends Controller
 	public function upsert(Request $request)
 	{
 		$userGlobal = $this->permissionService->UserGlobalProperties();
-		$userAccount = $this->permissionService->UserCurrentAccountProperties();
+		$userAccount = $this->permissionService->UsercurrentAccountProperties();
 
 		if (!$userGlobal->is_superuser && !$userAccount->is_account_admin)
 			return Que::passa(false, 'auth.account.upsert.unauthorized', $request->id);
@@ -82,7 +86,7 @@ class AccountController extends Controller
 
 			if ($isUpdate) {
 				if (!Str::isUuid($request->id)) return Que::passa(false, 'auth.account.upsert.invalid_id_format', $request->id);
-				if ($request->id !== $this->currentAccount) return Que::passa(false, 'auth.account.show.account_not_match', $request->id);
+				if ($request->id !== $this->currentAccountId) return Que::passa(false, 'auth.account.show.account_not_match', $request->id);
 
 				$account = Account::find($request->id);
 				if (!$account) return Que::passa(false, 'auth.account.upsert.account_not_found', $request->id);
@@ -121,12 +125,8 @@ class AccountController extends Controller
 			$account->client_secret = $request->client_secret;
 
 			$grants = GrantConfig::where('object_type', 'App\Models\Account')->where('object_id', $userGlobal->current_account)->first();
-			$grants->groups_and_account_users = $request->groups_and_account_users;
-			$grants->groups_and_actions = $request->groups_and_actions;
-			$grants->clients_and_account_users = $request->clients_and_account_users;
-			$grants->account_users_and_clients = $request->account_users_and_clients;
-			$grants->account_users_and_groups = $request->account_users_and_groups;
-			$grants->account_users_and_actions = $request->account_users_and_actions;
+			$grants->client_users = $request->client_users;
+			$grants->user_global_actions = $request->user_global_actions;
 			$grants->save();
 
 			DB::commit();
@@ -141,7 +141,7 @@ class AccountController extends Controller
 	{
 		$id = $request->input('id');
 		if (!Str::isUuid($id)) return Que::passa(false, 'auth.account.delete.invalid_id', $id);
-		if ($id != $this->currentAccount) return Que::passa(false, 'auth.account.delete.account_not_match', $id);
+		if ($id != $this->currentAccountId) return Que::passa(false, 'auth.account.delete.account_not_match', $id);
 		$account = Account::find($id);
 		if (!$account) return Que::passa(false, 'auth.account.delete.account_not_found', $id);
 
@@ -216,7 +216,7 @@ class AccountController extends Controller
 		if (!$this->permissionService::hasPermission('AccountUsers.auth.account_users.module'))
 			return Que::passa(false, 'auth.account.users.list.error.unauthorized');
 		try {
-			$users = (new AccountService($this->currentAccount))->users();
+			$users = $this->accountService->users();
 			return Que::passa(true, 'auth.account.users.list', '', null, ['users' => $users]);
 		} catch (Exception $e) {
 			return Que::passa(false, 'generic.server_error', 'auth.account.users');
@@ -228,7 +228,7 @@ class AccountController extends Controller
 		if (!$this->permissionService::hasPermission('Groups.auth.groups.module'))
 			return Que::passa(false, 'auth.account.groups.list.error.unauthorized');
 		try {
-			$groups = (new AccountService($this->currentAccount))->groups();
+			$groups = $this->accountService->groups();
 			return Que::passa(true, 'auth.account.groups.list', '', null, ['groups' => $groups]);
 		} catch (Exception $e) {
 			return Que::passa(false, 'generic.server_error', 'auth.account.groups');
@@ -240,7 +240,7 @@ class AccountController extends Controller
 		if (!$this->permissionService::hasPermission('Clients.auth.clients.module'))
 			return Que::passa(false, 'auth.account.clients.list.error.unauthorized');
 		try {
-			$clients = Client::select('id', 'name')->where('account_id', $this->currentAccount)->orderBy('name')->get();
+			$clients = $this->accountService->clients();
 			return Que::passa(true, 'auth.account.clients.list', '', null, ['clients' => $clients]);
 		} catch (Exception $e) {
 			return Que::passa(false, 'generic.server_error', 'auth.account.clients');

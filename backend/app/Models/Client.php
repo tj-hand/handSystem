@@ -17,7 +17,7 @@ class Client extends Model
 		'account_id',
 		'name',
 		'is_active',
-		'description'
+		'description',
 	];
 
 	protected static function boot()

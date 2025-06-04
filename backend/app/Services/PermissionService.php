@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Group;
 use App\Models\Client;
 use App\Models\Account;
 use App\Models\ActionSet;
@@ -64,7 +65,6 @@ class PermissionService
 		if ($userAccountProperties->is_account_admin) return true;
 
 		$is_valid_client = Client::join('users_clients_properties', 'admin_clients.id', '=', 'users_clients_properties.client_id')
-			->where('users_clients_properties.is_active_to_client', true)
 			->where('admin_clients.id', $currentClient)
 			->where('admin_clients.is_active', true)
 			->exists();
@@ -102,7 +102,6 @@ class PermissionService
 		return $query
 			->join('users_clients_properties', 'admin_clients.id', '=', 'users_clients_properties.client_id')
 			->where('users_clients_properties.user_id', self::user()->id)
-			->where('users_clients_properties.is_active_to_client', true)
 			->where('admin_clients.is_active', true)
 			->get();
 	}
@@ -158,7 +157,51 @@ class PermissionService
 	{
 		$user = self::UserGlobalProperties();
 		if ($user->is_superuser) return self::superUserPermissions();
-		return self::UserAccountGroups();
+		if (self::UserCurrentAccountProperties()->is_account_admin) return self::superUserPermissions();
+		return self::userPermissions();
+	}
+
+	private static function userPermissions()
+	{
+		$groupsIds = self::UserGroups();
+		$activeGroupIds = Group::whereIn('id', $groupsIds)->where('is_active', true)->pluck('id')->toArray();
+
+
+		$allActionIds = ScopedRelationship::where('belongs_to_type', 'App\Models\Group')
+			->whereIn('belongs_to_id', $activeGroupIds)
+			->where('object_type', 'App\Models\Action')
+			->where('authorized', true)
+			->select('object_id')
+			->union(
+				ScopedRelationship::where('belongs_to_type', 'App\Models\UserGlobalProperties')
+					->where('belongs_to_id', self::UserGlobalProperties()->id)
+					->where('object_type', 'App\Models\Action')
+					->where('scope_type', 'App\Models\Account')
+					->where('scope_id', self::UserGlobalProperties()->current_account)
+					->where('authorized', true)
+					->select('object_id')
+			)
+			->union(
+				ScopedRelationship::where('belongs_to_type', 'App\Models\UserGlobalProperties')
+					->where('belongs_to_id', self::UserGlobalProperties()->id)
+					->where('object_type', 'App\Models\Action')
+					->where('scope_type', 'App\Models\Client')
+					->where('scope_id', self::UserCurrentAccountProperties()->current_client)
+					->where('authorized', true)
+					->select('object_id')
+			)
+			->distinct()
+			->pluck('object_id');
+
+		$userActions = [];
+		$permissions =  ActionSet::select('id', 'name')->where('is_active', true)->orderBy('sort_order')->with('actions')->get();
+		foreach ($permissions as $group) {
+			$name = $group['name'];
+			$actions = collect($group['actions'])->select('id', 'identifier', 'link_to', 'icon', 'is_visible', 'subgroup')->whereIn('id', $allActionIds)->values()->all();
+			$userActions[$name] = $actions;
+		}
+
+		return $userActions;
 	}
 
 	private static function superUserPermissions()
@@ -173,16 +216,24 @@ class PermissionService
 		return $superUserActions;
 	}
 
-	private static function UserAccountGroups()
+	private static function UserGroups()
 	{
 
 		$user = self::UserGlobalProperties();
 		$groups = ScopedRelationship::join('admin_groups', 'admin_scoped_relationships.belongs_to_id', '=', 'admin_groups.id')
 			->where('object_type', 'App\Models\UserGlobalProperties')
 			->where('belongs_to_type', 'App\Models\Group')
-			->where('scope_type', 'App\Models\Account')
 			->where('object_id', $user->id)
-			->where('scope_id', $user->current_account)
+			->where(function ($query) {
+				$query->where(function ($subQuery) {
+					$subQuery->where('scope_type', 'App\Models\Account') // Fixed typo: "Acocunt" -> "Account"
+						->where('scope_id', self::UserGlobalProperties()->current_account);
+				})
+					->orWhere(function ($subQuery) {
+						$subQuery->where('scope_type', 'App\Models\Client')
+							->where('scope_id', self::UserCurrentAccountProperties()->current_client);
+					});
+			})
 			->pluck('belongs_to_id');
 		return $groups;
 	}

@@ -17,10 +17,22 @@
 				/>
 			</div>
 			<ToogleMenu />
-			<Modules group="intelligence" />
-			<Modules group="users" />
-			<Modules group="digital-signage" />
-			<Modules group="tools" />
+			<Modules
+				group="intelligence"
+				v-if="clientSelected"
+			/>
+			<Modules
+				group="users"
+				v-if="clientSelected"
+			/>
+			<Modules
+				group="digital-signage"
+				v-if="clientSelected"
+			/>
+			<Modules
+				group="tools"
+				v-if="clientSelected"
+			/>
 		</div>
 		<div class="bottom-section">
 			<Modules group="admin" />
@@ -39,8 +51,8 @@
 </template>
 
 <script>
+import { computed } from 'vue';
 import Modules from './Modules.vue';
-import { ref, computed } from 'vue';
 import { defineComponent } from 'vue';
 import UserMenu from './UserMenu.vue';
 import { useRouter } from 'vue-router';
@@ -71,6 +83,10 @@ export default defineComponent({
 			router.push({ name: authStore.enviroment.current_scope.home_page });
 		};
 
+		const clientSelected = computed(() => {
+			return authStore.enviroment.current_scope?.client_id;
+		});
+
 		const menuWidth = computed(() => {
 			const menuSize = expandedMenu.value ? 280 : 60;
 			if (is_mobile() && expandedMenu.value) return window.innerWidth;
@@ -93,7 +109,7 @@ export default defineComponent({
 			showUserMenu.value = false;
 		};
 
-		return { menuWidth, expandedMenu, showUserMenu, goHome, is_mobile, closeMenu, toogleUserMenu };
+		return { menuWidth, expandedMenu, showUserMenu, clientSelected, goHome, is_mobile, closeMenu, toogleUserMenu };
 	},
 });
 </script>

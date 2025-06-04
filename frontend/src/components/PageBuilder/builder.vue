@@ -61,6 +61,7 @@ import TextField from '@/components/TextField.vue';
 import AreaField from '@/components/AreaField.vue';
 import SelectList from '@/components/SelectList.vue';
 import ObjectCard from '@/components/ObjectCard.vue';
+import ScopeSetter from '@/components/ScopeSetter.vue';
 import ButtonField from '@/components/ButtonField.vue';
 import FormSubtitle from '@/components/FormSubtitle.vue';
 import PasswordField from '@/components/PasswordField.vue';
@@ -78,6 +79,7 @@ export default defineComponent({
 		SelectList,
 		ObjectCard,
 		ButtonField,
+		ScopeSetter,
 		FormSubtitle,
 		PasswordField,
 		CheckboxField,

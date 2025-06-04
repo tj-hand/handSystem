@@ -110,7 +110,7 @@ export default defineComponent({
 		} = useRecordManagement({
 			apiService: apiService.group,
 			singularName: 'group',
-			defaultRecord: { group_type: 'permissions_group', is_active: false },
+			defaultRecord: { group_type: 'permissions_group', is_active: false, scope: 'account' },
 			getListFn: getList,
 		});
 

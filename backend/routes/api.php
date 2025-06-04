@@ -25,11 +25,15 @@ Route::prefix('user')
         Route::post('/delete', 'UserController@delete')->name('user.delete')->middleware('auth:api');
         Route::post('/send-invite', 'UserController@sendInvite')->name('user.sendInvite')->middleware('auth:api');
         Route::post('/update-scope', 'UserController@updateScope')->name('user.updateScope')->middleware('auth:api');
+        Route::post('/add-to-client', 'UserController@addToClient')->name('user.addToClient')->middleware('auth:api');
         Route::post('/add-to-account', 'UserController@addToAccount')->name('user.addToAccount')->middleware('auth:api');
+        Route::post('/exists-in-client', 'UserController@existsInClient')->name('user.existsInClient')->middleware('auth:api');
         Route::post('/request-enviroment', 'UserController@requestEnviroment')->name('user.requestEnviroment')->middleware('auth:api');
         Route::post('/associated-with-clients', 'UserController@associatedWithClients')->name('user.associatedWithClients')->middleware('auth:api');
         Route::post('/associated-with-groups', 'UserController@associatedWithGroups')->name('user.associatedWithGroups')->middleware('auth:api');
-        Route::post('/associated-with-actions', 'UserController@associatedWithActions')->name('user.associatedWithActions')->middleware('auth:api');
+        Route::post('/local_associated-with-groups', 'UserController@localAssociatedWithGroups')->name('user.localAssociatedWithGroups')->middleware('auth:api');
+        Route::post('/associated-with-local-actions', 'UserController@associatedWithLocalActions')->name('user.associatedWithLocalActions')->middleware('auth:api');
+        Route::post('/associated-with-global-actions', 'UserController@associatedWithGlobalActions')->name('user.associatedWithGlobalActions')->middleware('auth:api');
     });
 
 Route::prefix('password')
@@ -76,5 +80,6 @@ Route::prefix('client')
         Route::post('/show', 'ClientController@show')->name('client.show')->middleware('auth:api');
         Route::post('/upsert', 'ClientController@upsert')->name('client.upsert')->middleware('auth:api');
         Route::post('/delete', 'ClientController@delete')->name('client.delete')->middleware('auth:api');
+        Route::post('/local_users', 'ClientController@localUsers')->name('client.localUsers')->middleware('auth:api');
         Route::post('/associated_users', 'ClientController@associatedUsers')->name('client.associatedUsers')->middleware('auth:api');
     });

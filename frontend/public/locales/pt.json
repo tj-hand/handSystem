@@ -113,14 +113,17 @@
 				"admin": "Administrador da Conta",
 				"account_user_associated_with_clients": "Clientes Associados ao Usuário",
 				"account_user_associated_with_groups": "Grupos Associados ao Usuário",
-				"account_user_associated_with_actions": "Permissões Individuais do Usuário"
+				"account_user_associated_with_local_actions": "Permissões Locais e Individuais",
+				"account_user_associated_with_global_actions": "Permissões Globais e Individuais"
 			},
 			"modal": {
 				"in_account_title": "Usuário Existente",
 				"blocked_user_title": "Usuário Bloqueado",
 				"add_to_account_title": "Usuário já Cadastrado",
 				"in_account_text": "Usuário já cadastrado nessa conta.",
+				"in_account_add_client_text": "Usuário já cadastrado",
 				"blocked_user_text": "Usuário não pode ser adicionado à conta.",
+				"add_to_client_text": "Esse usuário já está cadastrano em nosso sistema. Deseja adicioná-lo a esse cliente?",
 				"add_to_account_text": "Esse usuário já está cadastrano em nosso sistema. Deseja adicioná-lo a essa conta?",
 				"confirm_invite_text": "Confirma o envio do convite para o usuário?",
 				"confirm_invite_title": "Confirmação de Convite"
@@ -133,7 +136,16 @@
 			"add_to_account": "Usuário Adicionado à Conta"
 		},
 		"users": {
-			"account_users": "Usuários da Conta"
+			"account_users": "Usuários da Conta",
+			"local_users": "Usuários Locais"
+		},
+		"local_users": {
+			"module": "Acesso ao Módulo",
+			"list": "Listar Usuários Locais",
+			"add": "Adicionar Usuário Local",
+			"show": "Visualizar Usuário Local",
+			"edit": "Atualizar Usuário Local",
+			"delete": "Exlcuir Usuário Local"
 		},
 		"groups": {
 			"list_title": "Grupos de Permissões",
@@ -175,14 +187,11 @@
 			"refuse_selected": "Recusar Selecionados",
 			"approve_selected": "Aprovar Selecionados",
 			"approve_all": "Aprovar Todos",
-			"group": {
-				"group_users": "Usuários Associados ao Grupo",
-				"group_actions": "Ações Associadas ao Grupo",
-				"client_account_users": "Usuários Associados ao Cliente",
-				"user_actions": "Permissões Individuais do Usuário",
-				"user_clients": "Usuário Associado aos Clintes",
-				"user_groups": "Usuário Associado aos Grupos"
-			},
+			"client_users": "CLIENTE - Usuários Associados",
+			"group_users": "GRUPO - Usuários Associados",
+			"group_actions": "GRUPO - Ações Associadas",
+			"user_global_actions": "USUÁRIOS - Permissões Globais e Individuais",
+			"user_local_actions": "USUÁRIOS - Permissões Locais e Individuais",
 			"approved": "Authorizações concedidas",
 			"deleted": "Authorizações negadas!",
 			"no_records": "Nenhuma autorização pendente",
@@ -205,8 +214,10 @@
 		"save": "Salvar",
 		"close": "Fechar",
 		"email": "E-mail",
+		"scope": "Escopo",
 		"groups": "Grupos",
 		"account": "Conta",
+		"client": "Cliente",
 		"users": "Usuários",
 		"active_a": "Ativa",
 		"active_o": "Ativo",
@@ -237,7 +248,8 @@
 		"AccountUsers": "Usuários de Conta",
 		"Groups": "Grupos de Permissões",
 		"Clients": "Clientes",
-		"SpecialPermissions": "Permissões Especiais"
+		"SpecialPermissions": "Permissões Especiais",
+		"LocalUsers": "Usuários Locais"
 	},
 	"actions": {}
 }
