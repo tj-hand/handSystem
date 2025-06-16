@@ -4,11 +4,22 @@ import { useUIStore } from '@/stores/useUIStore';
 const uiStore = useUIStore();
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://apihand.dotmkt.com.br/';
 
+let isRefreshing = false;
+let refreshSubscribers = [];
+
+const subscribeTokenRefresh = (cb) => {
+	refreshSubscribers.push(cb);
+};
+
+const onRefreshed = (token) => {
+	refreshSubscribers.forEach((cb) => cb(token));
+	refreshSubscribers = [];
+};
+
 const apiClient = axios.create({
 	baseURL: BASE_URL,
 	withCredentials: true,
 	headers: {
-		'Content-Type': 'application/json',
 		Accept: 'application/json',
 	},
 });

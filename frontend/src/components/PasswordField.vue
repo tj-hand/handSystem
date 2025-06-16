@@ -2,6 +2,7 @@
 	<label
 		class="label"
 		:class="[formSize == 'max' ? 'max' : '']"
+		:for="$t(params.label).replaceAll(' ', '_')"
 		>{{ $t(params.label) }}</label
 	>
 	<div class="form-element-row">
@@ -14,6 +15,7 @@
 					class="input-text"
 					@blur="updateData"
 					v-model="fieldValue"
+					:name="$t(params.label).replaceAll(' ', '_')"
 					:type="isPasswordVisible ? 'text' : 'password'"
 				/>
 				<span

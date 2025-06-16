@@ -44,6 +44,30 @@ const routes = [
 				meta: { requiresAuthentication: true },
 			},
 			{
+				path: 'profiles/:id?',
+				name: 'Profiles',
+				component: () => import('@/views/Auth/Profiles.vue'),
+				meta: { requiresAuthentication: true },
+			},
+			{
+				path: 'bis/:id?',
+				name: 'Bis',
+				component: () => import('@/views/Auth/BIs.vue'),
+				meta: { requiresAuthentication: true },
+			},
+			{
+				path: 'repository',
+				name: 'Repository',
+				component: () => import('@/views/Auth/Repository.vue'),
+				meta: { requiresAuthentication: true },
+			},
+			{
+				path: 'signage/:id?',
+				name: 'Signage',
+				component: () => import('@/views/Auth/Signage.vue'),
+				meta: { requiresAuthentication: true },
+			},
+			{
 				path: 'logout',
 				name: 'Logout',
 				component: () => import('@/views/Auth/Logout.vue'),

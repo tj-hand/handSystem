@@ -171,7 +171,8 @@
 			"subtitle_placeholder": "Identificador do client",
 			"label": {
 				"client_name": "Nome do Cliente",
-				"associated_users": "Usuários Associados"
+				"associated_users": "Usuários Associados",
+				"associated_workspaces": "Workspaces Associados"
 			},
 			"created": "Novo Cliente Criado!",
 			"updated": "Cliente Atualizado!",
@@ -188,14 +189,109 @@
 			"approve_selected": "Aprovar Selecionados",
 			"approve_all": "Aprovar Todos",
 			"client_users": "CLIENTE - Usuários Associados",
+			"client_workspaces": "CLIENTE - Workspaces Associados",
 			"group_users": "GRUPO - Usuários Associados",
 			"group_actions": "GRUPO - Ações Associadas",
-			"user_global_actions": "USUÁRIOS - Permissões Globais e Individuais",
-			"user_local_actions": "USUÁRIOS - Permissões Locais e Individuais",
+			"user_global_actions": "USUÁRIO - Permissões Globais e Individuais",
+			"user_local_actions": "USUÁRIO - Permissões Locais e Individuais",
+			"profile_users": "PERFIL - Usuários Associados",
+			"profile_objects": "PERFIL - BIs Associados",
 			"approved": "Authorizações concedidas",
 			"deleted": "Authorizações negadas!",
 			"no_records": "Nenhuma autorização pendente",
-			"relationships": "Validar Permissões"
+			"relationships": "Autorizações"
+		},
+		"workspaces": {
+			"list_title": "Workspaces",
+			"sync_confirmation_title": "Syncronização de Ambiente",
+			"sync_confirmation_message": "Confirmar a sincronização com o PowerBI?",
+			"label": {
+				"workspace_name": "Nome do Workspace",
+				"microsoft_name": "Nome na Microsoft",
+				"microsoft_type": "Tipo de Objeto",
+				"microsoft_id": "Identificador do Objeto",
+				"associated_clients": "Clientes Associados"
+			},
+			"updated": "Workspace Atualizado",
+			"module": "Acesso ao Módulo",
+			"list": "Listar Workspaces",
+			"show": "Visualizar Workspace",
+			"edit": "Atualizar Workspace",
+			"delete": "Exlcuir Workspace",
+			"sync": "Sincronizar com PowerBI"
+		},
+		"powerbi": {
+			"sync": "Ambiente sincronizado"
+		},
+		"bis": {
+			"title": "Business Intelligence",
+			"list_title": "Painéis de BI",
+			"label": {
+				"roles": "Roles",
+				"dataset": "Dataset",
+				"bi_name": "Nome do BI",
+				"file_name": "Nome do Arquivo",
+				"microsoft_type": "Tipo de Objeto",
+				"microsoft_name": "Nome na Microsoft",
+				"microsoft_id": "Identificador do Objeto",
+				"associated_profiles": "Perfis Associados",
+				"update_time": "Tempo (s)"
+			},
+			"update": "Objeto Atualizado",
+			"list_pages": "Páginas do BI",
+			"without_pages": "Não existem páginas nesse BI",
+			"module": "Acesso ao Módulo",
+			"list": "Listar BIs",
+			"show": "Visualizar Dados do BI",
+			"edit": "Atualizar Dados do BI",
+			"delete": "Excluir BI",
+			"powerbi": "Visualizar Painel",
+			"ignore_profiles": "Ignorar Perfis de Acesso"
+		},
+		"profiles": {
+			"list_title": "Perfis de Acesso",
+			"title_placeholder": "Nome do Perfil",
+			"subtitle_placeholder": "Identificador do perfil",
+			"label": {
+				"group_name": "Nome do Perfil",
+				"associated_users": "Usuários Associados",
+				"associated_objects": "BIs Associados"
+			},
+			"created": "Novo Perfil Criado!",
+			"updated": "Perfil Atualizado!",
+			"module": "Acesso ao Módulo",
+			"list": "Listar Perfis",
+			"add": "Adicionar Perfil",
+			"show": "Visualizar Perfil",
+			"edit": "Atualizar Perfil",
+			"delete": "Exlcuir Perfil"
+		},
+		"repository": {
+			"title": "Arquivos",
+			"add_files": "Carregar Arquivos",
+			"no-files": "Nenhum arquivo encontrado",
+			"modal": {
+				"destroy_title": "Exclusão de Arquivo",
+				"destroy_text": "Confirma a exclusão do arquivo?"
+			}
+		},
+		"signage": {
+			"title": "Transmissões",
+			"list_title": "Transmissões Disponíveis",
+			"title_placeholder": "Nome da Transmissão",
+			"subtitle_placeholder": "Identificador da transmissão",
+			"created": "Nova Transmissão Criada!",
+			"updated": "Transmissão Atualizada!",
+			"selected-files": "Arquivos da Transmissão",
+			"modal": {
+				"destroy_title": "Exclusão de Arquivo",
+				"destroy_text": "Confirma a exclusão do arquivo?"
+			},
+			"slide-time": "Tempo de Slide (s)",
+			"move-up": "Subir",
+			"move-down": "Descer",
+			"add-to-broadcast": "Adicionar à Transmissão",
+			"test-slideshow": "Testar Transmissão"
 		}
 	},
 	"validation": {
@@ -211,6 +307,7 @@
 		"OK": "OK",
 		"no": "Não",
 		"yes": "Sim",
+		"name": "Nome",
 		"save": "Salvar",
 		"close": "Fechar",
 		"email": "E-mail",
@@ -223,12 +320,19 @@
 		"active_o": "Ativo",
 		"delete": "Excluir",
 		"password": "Senha",
+		"view": "Visualizar",
+		"rename": "Renomear",
 		"search": "Procurar",
 		"cancel": "Cancelar",
+		"update": "Atualizar",
 		"clients": "Clientes",
 		"blocked": "Bloqueado",
+		"favorite": "Favorito",
+		"to_favorite": "Favoritar",
 		"description": "Descrição",
+		"transicions": "Transições",
 		"superuser": "Super-Usuário",
+		"profiles": "Perfis de Acesso",
 		"server_error": "Erro no Servidor",
 		"invalid_email": "E-mail inválido",
 		"confirm_delete": "Confirmar exclusão",
@@ -236,6 +340,8 @@
 		"user_not_found": "Usuário não encontrado",
 		"no_results_found": "Resultado não encontrado",
 		"no_items_available": "Nenhum item disponível",
+		"full_screen_view": "Tela Cheia",
+		"full_screen_exit": "Sair da Visualização em Tela Cheia",
 		"delete_confirmation": "Confirmar a exclusão desse registro?",
 		"add_or_select": "Por favor, adicione ou selecione um registro",
 		"unsavedData": "Você tem alguns dados ainda não salvos. Tem certeza que deseja sair dessa página",
@@ -249,7 +355,10 @@
 		"Groups": "Grupos de Permissões",
 		"Clients": "Clientes",
 		"SpecialPermissions": "Permissões Especiais",
-		"LocalUsers": "Usuários Locais"
+		"LocalUsers": "Usuários Locais",
+		"Workspaces": "Workspaces",
+		"BIs": "Paineis de BI",
+		"Profiles": "Perfis de Acesso aos BIs"
 	},
 	"actions": {}
 }

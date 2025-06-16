@@ -12,13 +12,17 @@ use Illuminate\Support\Facades\DB;
 // Import Models
 use App\Models\User;
 use App\Models\Client;
+use App\Models\Repository;
 use App\Models\GrantConfig;
+use App\Models\PBIWorkspace;
 use App\Models\ScopedRelationship;
 use App\Models\UserClientProperties;
 use App\Models\UserGlobalProperties;
 
 // Import Services
 use App\Services\AccountService;
+use App\Services\SignageService;
+use App\Services\ProfileService;
 use App\Services\PermissionService;
 use App\Services\SystemLogService as Que;
 use App\Services\ScopedRelationshipService;
@@ -30,19 +34,30 @@ class ClientController extends Controller
 	protected $clientId = '';
 	protected $client = null;
 	protected $newRecord = false;
+	protected $currentClientId = '';
 	protected $currentAccountId = '';
+	protected SignageService $signageService;
+	protected ProfileService $profileService;
 	protected AccountService $accountService;
 	protected PermissionService $permissionService;
 
-	public function __construct(Request $request, AccountService $accountService, PermissionService $permissionService)
-	{
+	public function __construct(
+		Request $request,
+		AccountService $accountService,
+		PermissionService $permissionService,
+		ProfileService $profileService,
+		SignageService $signageService
+	) {
 
 		$this->record = $request->input('record');
 		$this->clientId = data_get($request->input('record'), 'id', $request->input('id'));
 
 		$this->accountService = $accountService;
+		$this->profileService = $profileService;
+		$this->signageService = $signageService;
 		$this->permissionService = $permissionService;
 		$this->currentAccountId = PermissionService::UserGlobalProperties()->current_account;
+		$this->currentClientId = PermissionService::UserCurrentAccountProperties()->current_client;
 	}
 
 	public function show()
@@ -58,8 +73,11 @@ class ClientController extends Controller
 			if ($grantOperation !== true) return $grantOperation;
 
 			$grants = GrantConfig::where('object_type', 'App\Models\Client')->where('object_id', $this->clientId)->first();
+			$this->client['profile_users'] = $grants->profile_users;
+			$this->client['profile_objects'] = $grants->profile_objects;
 			$this->client['group_users'] = $grants->group_users;
 			$this->client['group_actions'] = $grants->group_actions;
+			$this->client['client_workspaces'] = $grants->client_workspaces;
 			$this->client['user_local_actions'] = $grants->user_local_actions;
 
 			return Que::passa(true, 'auth.client.show', '', $this->client, ['client'  => ['record' => $this->client]]);
@@ -94,14 +112,19 @@ class ClientController extends Controller
 				'object_id' => $this->clientId,
 				'group_users' => $this->record['group_users'],
 				'group_actions' => $this->record['group_actions'],
+				'client_workspaces' => $this->record['client_workspaces'],
 				'user_local_actions' => $this->record['user_local_actions'],
 			]);
 
+			$this->client['profile_users'] = $this->record['profile_users'];
+			$this->client['profile_objects'] = $this->record['profile_objects'];
 			$this->client['group_users'] = $this->record['group_users'];
 			$this->client['group_actions'] = $this->record['group_actions'];
+			$this->client['client_workspaces'] = $this->record['client_workspaces'];
 			$this->client['user_local_actions'] = $this->record['user_local_actions'];
 
 			if (!empty($this->record['client.associated_users'])) $this->updateAssociatedUsers();
+			if (!empty($this->record['client.associated_workspaces'])) $this->updateAssociatedWorkspaces();
 			DB::commit();
 			return Que::passa(true, 'auth.clients.created', '', $this->client, ['client'  => ['record' => $this->client]]);
 		} catch (Exception $e) {
@@ -123,16 +146,21 @@ class ClientController extends Controller
 			$this->client->save();
 
 			$grants = GrantConfig::where('object_type', 'App\Models\Client')->where('object_id', $this->clientId)->first();
+			$grants->profile_users = $this->record['profile_users'];
+			$grants->profile_objects = $this->record['profile_objects'];
 			$grants->group_users = $this->record['group_users'];
 			$grants->group_actions = $this->record['group_actions'];
+			$grants->client_workspaces = $this->record['client_workspaces'];
 			$grants->user_local_actions = $this->record['user_local_actions'];
 			$grants->save();
 
 			$this->client['group_users'] = $this->record['group_users'];
 			$this->client['group_actions'] = $this->record['group_actions'];
+			$this->client['client_workspaces'] = $this->record['client_workspaces'];
 			$this->client['user_local_actions'] = $this->record['user_local_actions'];
 
 			if (!empty($this->record['client.associated_users'])) $this->updateAssociatedUsers();
+			if (!empty($this->record['client.associated_workspaces'])) $this->updateAssociatedWorkspaces();
 			DB::commit();
 			return Que::passa(true, 'auth.clients.updated', '', $this->client, ['client'  => ['record' => $this->client]]);
 		} catch (Exception $e) {
@@ -151,6 +179,17 @@ class ClientController extends Controller
 					: $this->deattachUser($userGlobalProperties->user_id);
 			}
 		}
+	}
+
+	private function updateAssociatedWorkspaces()
+	{
+		return app(ScopedRelationshipService::class)->syncScopedRelationships(
+			parentEntity: $this->client,
+			items: $this->record['client.associated_workspaces'],
+			scopeType: 'App\Models\Client',
+			relatedObjectType: 'App\Models\PBIWorkspace',
+			grantField: 'client_workspaces'
+		);
 	}
 
 	public function delete()
@@ -228,6 +267,15 @@ class ClientController extends Controller
 
 
 		return Que::passa(true, 'auth.client.associated_users.listed', '', $this->client, ['list' => $list]);
+	}
+
+	public function associatedWorkspaces(Request $request)
+	{
+		$clientId = $request->id;
+		$client = Client::find($clientId);
+		if (!$client) return Que::passa(false, 'auth.client.associated_with_workspaces.error.client_not_found', $clientId);
+		$list = app(ScopedRelationshipService::class)->makeScopedListWithRelations($client, PBIWorkspace::class, Client::class);
+		return Que::passa(true, 'auth.client.associated_with_workspaces.listed', '', null, ['list' => $list]);
 	}
 
 	private function attachUser($userId)
@@ -315,6 +363,33 @@ class ClientController extends Controller
 			return Que::passa(true, 'auth.client.users.list', '', null, ['users' => $users]);
 		} catch (Exception $e) {
 			return Que::passa(false, 'generic.server_error', 'auth.client.users');
+		}
+	}
+
+	public function profiles()
+	{
+		try {
+			$profiles = $this->profileService->profiles();
+			return Que::passa(true, 'auth.client.profiles.list', '', null, ['profiles' => $profiles]);
+		} catch (Exception $e) {
+			return Que::passa(false, 'auth.client.profiles.list.error');
+		}
+	}
+
+	public function files()
+	{
+		$clientId = $this->permissionService->UserCurrentAccountProperties()->current_client;
+		$files = Repository::where('client_id', $clientId)->orderBy('display_name')->get();
+		return Que::Passa(true, 'auth.client.repository.list', '', null, ['filesIndex' => $files]);
+	}
+
+	public function signages()
+	{
+		try {
+			$signages = $this->signageService->signages();
+			return Que::passa(true, 'auth.client.signages.list', '', null, ['signages' => $signages]);
+		} catch (Exception $e) {
+			return Que::passa(false, 'auth.client.signages.list.error');
 		}
 	}
 }

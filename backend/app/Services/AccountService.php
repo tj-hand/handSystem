@@ -5,9 +5,9 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\Group;
 use App\Models\Client;
+use App\Models\PBIWorkspace;
 use Illuminate\Support\Collection;
 use App\Services\PermissionService;
-use App\Models\UserAccountProperties;
 
 class AccountService
 {
@@ -60,9 +60,8 @@ class AccountService
 		return Client::select('id', 'name')->where('account_id', $this->currentAccountId)->orderBy('name')->get();
 	}
 
-	// public function isUser($id)
-	// {
-	// 	$userAccount = UserAccountProperties::where('user_id', $id)->where('account_id', $this->currentAccountId)->first();
-	// 	return $userAccount ? true : false;
-	// }
+	public function workspaces(): Collection
+	{
+		return PBIWorkspace::select('id', 'local_name')->where('account_id', $this->currentAccountId)->orderBy('local_name')->get();
+	}
 }

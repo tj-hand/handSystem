@@ -4,7 +4,6 @@
 		class="content-wrapper"
 	>
 		<ObjectCard
-			width="50%"
 			class="itemData"
 			:record="record"
 			v-if="!isLoading"
@@ -82,7 +81,11 @@ export default defineComponent({
 
 		const getAccount = async () => {
 			isLoading.value = true;
-			formGuardService.setOriginal({ is_active: true });
+			formGuardService.setOriginal({
+				is_active: true,
+				client_users: false,
+				user_global_actions: false,
+			});
 			record.value = formGuardService.getPlainrecord();
 			isLoading.value = false;
 		};

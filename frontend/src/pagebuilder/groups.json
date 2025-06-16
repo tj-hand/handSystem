@@ -10,7 +10,7 @@
 						"component": "text-field",
 						"label": "auth.groups.label.group_name",
 						"db_name": "name",
-						"validations": ["required"]
+						"validations": ["required", "min:3"]
 					}
 				}
 			},

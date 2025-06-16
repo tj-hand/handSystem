@@ -17,6 +17,10 @@
 			<slot name="form"></slot>
 		</div>
 
+		<div class="plus">
+			<slot name="plus"></slot>
+		</div>
+
 		<div class="footer">
 			<slot name="action"></slot>
 		</div>
@@ -70,13 +74,14 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .object-card {
-	height: auto;
+	height: 100%;
 	margin: 1rem;
 	flex-grow: 1;
 	display: flex;
 	overflow: hidden;
 	border-radius: 4px;
 	flex-direction: column;
+	max-height: calc(100% - 2rem);
 	background-color: rgba(255, 255, 255, 0.7);
 	box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.1);
 
@@ -101,7 +106,8 @@ export default defineComponent({
 		}
 	}
 	.body {
-		flex: 1;
+		flex-grow: 1;
+		min-height: 0;
 		padding: 1rem;
 		overflow-y: auto;
 		color: #ffffff;

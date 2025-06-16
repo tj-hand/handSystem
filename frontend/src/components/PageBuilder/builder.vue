@@ -56,6 +56,7 @@
 import { defineComponent } from 'vue';
 import { is_mobile } from '@/tools/screenSizes';
 import NoRecord from '@/components/NoRecord.vue';
+import PBIHeader from '@/components/PBIHeader.vue';
 import PageTitle from '@/components/PageTitle.vue';
 import TextField from '@/components/TextField.vue';
 import AreaField from '@/components/AreaField.vue';
@@ -65,7 +66,9 @@ import ScopeSetter from '@/components/ScopeSetter.vue';
 import ButtonField from '@/components/ButtonField.vue';
 import FormSubtitle from '@/components/FormSubtitle.vue';
 import PasswordField from '@/components/PasswordField.vue';
+import PowerBIViewer from '@/components/PowerBIViewer.vue';
 import CheckboxField from '@/components/CheckboxField.vue';
+import PBIObjectPages from '@/components/PBIObjectPages.vue';
 import CheckableItemList from '@/components/CheckableItemList.vue';
 import HorizontalSubmenu from '@/components/HorizontalSubmenu.vue';
 
@@ -73,6 +76,7 @@ export default defineComponent({
 	name: 'BuilderCore',
 	components: {
 		NoRecord,
+		PBIHeader,
 		PageTitle,
 		AreaField,
 		TextField,
@@ -82,7 +86,9 @@ export default defineComponent({
 		ScopeSetter,
 		FormSubtitle,
 		PasswordField,
+		PowerBIViewer,
 		CheckboxField,
+		PBIObjectPages,
 		CheckableItemList,
 		HorizontalSubmenu,
 	},

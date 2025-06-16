@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', function () {
@@ -54,6 +53,7 @@ Route::prefix('account')
         Route::post('/groups', 'AccountController@groups')->name('account.groups')->middleware('auth:api');
         Route::post('/upsert', 'AccountController@upsert')->name('account.upsert')->middleware('auth:api');
         Route::post('/clients', 'AccountController@clients')->name('account.clients')->middleware('auth:api');
+        Route::post('/workspaces', 'AccountController@workspaces')->name('account.workspaces')->middleware('auth:api');
     });
 
 Route::prefix('group')
@@ -78,8 +78,67 @@ Route::prefix('client')
     ->namespace('App\Http\Controllers')
     ->group(function () {
         Route::post('/show', 'ClientController@show')->name('client.show')->middleware('auth:api');
+        Route::post('/files', 'ClientController@files')->name('client.files')->middleware('auth:api');
         Route::post('/upsert', 'ClientController@upsert')->name('client.upsert')->middleware('auth:api');
         Route::post('/delete', 'ClientController@delete')->name('client.delete')->middleware('auth:api');
+        Route::post('/profiles', 'ClientController@profiles')->name('client.profiles')->middleware('auth:api');
+        Route::post('/signages', 'ClientController@signages')->name('client.signages')->middleware('auth:api');
         Route::post('/local_users', 'ClientController@localUsers')->name('client.localUsers')->middleware('auth:api');
-        Route::post('/associated_users', 'ClientController@associatedUsers')->name('client.associatedUsers')->middleware('auth:api');
+        Route::post('/associated-users', 'ClientController@associatedUsers')->name('client.associatedUsers')->middleware('auth:api');
+        Route::post('/associated-workspaces', 'ClientController@associatedWorkspaces')->name('client.associatedWorkspaces')->middleware('auth:api');
+    });
+Route::prefix('powerbi')
+    ->name('api.')
+    ->namespace('App\Http\Controllers')
+    ->group(function () {
+        Route::post('/sync', 'PowerBIController@sync')->name('powerbi.sync')->middleware('auth:api');
+        Route::post('/workspace/show', 'PowerBIController@workspaceShow')->name('powerbi.workspaceShow')->middleware('auth:api');
+        Route::post('/workspace/upsert', 'PowerBIController@workspaceUpsert')->name('powerbi.workspaceUpsert')->middleware('auth:api');
+        Route::post('/workspace/delete', 'PowerBIController@workspaceDelete')->name('powerbi.workspaceDelete')->middleware('auth:api');
+        Route::post('/workspace/associated-clients', 'PowerBIController@workspaceAssociatedClients')->name('powerbi.workspaceAssociatedClients')->middleware('auth:api');
+        Route::post('/bis/list', 'PowerBIController@bisList')->name('powerbi.bisList')->middleware('auth:api');
+        Route::post('/bis/show', 'PowerBIController@bisShow')->name('powerbi.bisShow')->middleware('auth:api');
+        Route::post('/bis/page', 'PowerBIController@bisPage')->name('powerbi.bisPage')->middleware('auth:api');
+        Route::post('/bis/pages', 'PowerBIController@bisPages')->name('powerbi.bisPages')->middleware('auth:api');
+        Route::post('/bis/render', 'PowerBIController@bisRender')->name('powerbi.bisRender')->middleware('auth:api');
+        Route::post('/bis/upsert', 'PowerBIController@bisUpsert')->name('powerbi.bisUpsert')->middleware('auth:api');
+        Route::post('/bis/delete', 'PowerBIController@bisDelete')->name('powerbi.bisDelete')->middleware('auth:api');
+        Route::post('/bis/bookmark', 'PowerBIController@bisBookmark')->name('powerbi.bisBookmark')->middleware('auth:api');
+        Route::post('/bis/create-image', 'PowerBIController@bisCreateImage')->name('powerbi.bisCreateImage')->middleware('auth:api');
+        Route::post('/bis/destroy-image', 'PowerBIController@bisDestroyImage')->name('powerbi.bisDestroyImage')->middleware('auth:api');
+        Route::post('/bis/associated-profiles', 'PowerBIController@bisAssociatedProfiles')->name('powerbi.bisAssociatedProfiles')->middleware('auth:api');
+    });
+
+Route::prefix('profile')
+    ->name('api.')
+    ->namespace('App\Http\Controllers')
+    ->group(function () {
+        Route::post('/show', 'ProfileController@show')->name('profile.show')->middleware('auth:api');
+        Route::post('/upsert', 'ProfileController@upsert')->name('profile.upsert')->middleware('auth:api');
+        Route::post('/delete', 'ProfileController@delete')->name('profile.delete')->middleware('auth:api');
+        Route::post('/associated_users', 'ProfileController@associatedUsers')->name('profile.associatedUsers')->middleware('auth:api');
+        Route::post('/associated_objects', 'ProfileController@associatedObjects')->name('profile.associatedActions')->middleware('auth:api');
+    });
+Route::prefix('repository')
+    ->name('api.')
+    ->namespace('App\Http\Controllers')
+    ->group(function () {
+        Route::post('/view', 'RepositoryController@view')->name('repository.view')->middleware('auth:api');
+        Route::post('/upload', 'RepositoryController@upload')->name('repository.upload')->middleware('auth:api');
+        Route::post('/rename', 'RepositoryController@rename')->name('repository.rename')->middleware('auth:api');
+        Route::post('/destroy', 'RepositoryController@destroy')->name('repository.destroy')->middleware('auth:api');
+    });
+Route::prefix('signage')
+    ->name('api.')
+    ->namespace('App\Http\Controllers')
+    ->group(function () {
+        Route::post('/show', 'SignageController@show')->name('signage.show')->middleware('auth:api');
+        Route::post('/slides', 'SignageController@slides')->name('signage.slides')->middleware('auth:api');
+        Route::post('/upsert', 'SignageController@upsert')->name('signage.upsert')->middleware('auth:api');
+        Route::post('/delete', 'SignageController@delete')->name('signage.delete')->middleware('auth:api');
+        Route::post('/delete-slide', 'SignageController@deleteSlide')->name('signage.deleteSlide')->middleware('auth:api');
+        Route::post('/move-slide-up', 'SignageController@moveSlideUp')->name('signage.moveSlideUp')->middleware('auth:api');
+        Route::post('/set-slide-time', 'SignageController@setSlideTime')->name('signage.setSlideTime')->middleware('auth:api');
+        Route::post('/move-slide-down', 'SignageController@moveSlideDown')->name('signage.moveSlideDown')->middleware('auth:api');
+        Route::post('/add-to-broadcast', 'SignageController@addToBroadcast')->name('signage.addToBroadcast')->middleware('auth:api');
     });

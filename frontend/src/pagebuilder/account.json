@@ -80,8 +80,8 @@
 												"type": "field",
 												"props": {
 													"component": "text-field",
-													"label": "auth.account.label.powerbi_client_secret",
-													"db_name": "client_secret"
+													"label": "auth.account.label.powerbi_client_id",
+													"db_name": "client_id"
 												}
 											}
 										},
@@ -91,8 +91,8 @@
 												"type": "field",
 												"props": {
 													"component": "text-field",
-													"label": "auth.account.label.powerbi_client_id",
-													"db_name": "client_id"
+													"label": "auth.account.label.powerbi_client_secret",
+													"db_name": "client_secret"
 												}
 											}
 										}

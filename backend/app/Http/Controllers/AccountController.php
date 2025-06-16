@@ -246,4 +246,16 @@ class AccountController extends Controller
 			return Que::passa(false, 'generic.server_error', 'auth.account.clients');
 		}
 	}
+
+	public function workspaces()
+	{
+		if (!$this->permissionService::hasPermission('Workspaces.auth.workspaces.module'))
+			return Que::passa(false, 'auth.account.workspace.list.error.unauthorized');
+		try {
+			$workspaces = $this->accountService->workspaces();
+			return Que::passa(true, 'auth.account.workspaces.list', '', null, ['workspaces' => $workspaces]);
+		} catch (Exception $e) {
+			return Que::passa(false, 'generic.server_error', 'auth.account.workspaces');
+		}
+	}
 }

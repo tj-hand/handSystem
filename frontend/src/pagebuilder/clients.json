@@ -3,7 +3,7 @@
 		"type": "row",
 		"cols": [
 			{
-				"width": "45%",
+				"width": "calc(62% - 1rem)",
 				"content": [
 					{
 						"type": "row",
@@ -54,7 +54,7 @@
 						"type": "row",
 						"cols": [
 							{
-								"width": "48%",
+								"width": "calc(50% - 1rem)",
 								"content": {
 									"type": "field",
 									"props": {
@@ -63,13 +63,24 @@
 										"backend_request": "client.associated_users"
 									}
 								}
+							},
+							{
+								"width": "50%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkable-item-list",
+										"title": "auth.clients.label.associated_workspaces",
+										"backend_request": "client.associated_workspaces"
+									}
+								}
 							}
 						]
 					}
 				]
 			},
 			{
-				"width": "45%",
+				"width": "38%",
 				"content": [
 					{
 						"type": "row",
@@ -81,6 +92,30 @@
 									"props": {
 										"component": "form-subtitle",
 										"label": "auth.account.label.required_authorizations"
+									}
+								}
+							},
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkbox-field",
+										"label": "auth.authorization_queue.profile_users",
+										"db_name": "profile_users",
+										"labelPosition": "right"
+									}
+								}
+							},
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkbox-field",
+										"label": "auth.authorization_queue.profile_objects",
+										"db_name": "profile_objects",
+										"labelPosition": "right"
 									}
 								}
 							},
@@ -104,6 +139,18 @@
 										"component": "checkbox-field",
 										"label": "auth.authorization_queue.group_actions",
 										"db_name": "group_actions",
+										"labelPosition": "right"
+									}
+								}
+							},
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkbox-field",
+										"label": "auth.authorization_queue.client_workspaces",
+										"db_name": "client_workspaces",
 										"labelPosition": "right"
 									}
 								}

@@ -30,6 +30,9 @@ class AuthorizationController extends Controller
 		try {
 			$queue = [];
 			$queue['client_users'] = $this->clientUsers();
+			$queue['client_workspaces'] = $this->clientWorkspaces();
+			$queue['profile_users'] = $this->profileUsers();
+			$queue['profile_objects'] = $this->profileObjects();
 			$queue['group_users'] = $this->groupUsers();
 			$queue['group_actions'] = $this->groupActions();
 			$queue['user_global_actions'] = $this->userGlobalActions();
@@ -182,12 +185,30 @@ class AuthorizationController extends Controller
 			->get();
 	}
 
+	private function clientWorkspaces()
+	{
+		return ScopedRelationship::select('admin_scoped_relationships.id', 'admin_clients.name AS parent', 'custom_pbi_workspaces.local_name AS child', DB::raw('false as translate'))
+			->join('admin_clients', 'admin_scoped_relationships.belongs_to_id', '=', 'admin_clients.id')
+			->join('custom_pbi_workspaces', 'admin_scoped_relationships.object_id', '=', 'custom_pbi_workspaces.id')
+			->where('admin_scoped_relationships.object_type', 'App\Models\PBIWorkspace')
+			->where('admin_scoped_relationships.belongs_to_type', 'App\Models\Client')
+			->where('admin_scoped_relationships.scope_type', 'App\Models\Client')
+			->where('admin_scoped_relationships.belongs_to_id', $this->currentClientId)
+			->where('admin_scoped_relationships.scope_id', $this->currentClientId)
+			->where('requires_authorization', true)
+			->where('authorized', false)
+			->orderBy('admin_clients.name')
+			->orderBy('custom_pbi_workspaces.local_name')
+			->get();
+	}
+
 	private function groupUsers()
 	{
 		return ScopedRelationship::select('admin_scoped_relationships.id', 'admin_groups.name AS parent', 'users.name AS child', DB::raw('false as translate'))
 			->join('admin_groups', 'admin_scoped_relationships.belongs_to_id', '=', 'admin_groups.id')
 			->join('users_global_properties', 'admin_scoped_relationships.object_id', '=', 'users_global_properties.id')
 			->join('users', 'users_global_properties.user_id', '=', 'users.id')
+			->where('admin_groups.group_type', 'permissions_group')
 			->where('belongs_to_type', 'App\Models\Group')
 			->where('object_type', 'App\Models\UserGlobalProperties')
 			->where(function ($query) {
@@ -262,6 +283,41 @@ class AuthorizationController extends Controller
 			->where('authorized', false)
 			->orderBy('users.name')
 			->orderBy('admin_actions.sort_order')
+			->get();
+	}
+
+	private function profileUsers()
+	{
+		return ScopedRelationship::select('admin_scoped_relationships.id', 'admin_groups.name AS parent', 'users.name AS child', DB::raw('false as translate'))
+			->join('admin_groups', 'admin_scoped_relationships.belongs_to_id', '=', 'admin_groups.id')
+			->join('users_global_properties', 'admin_scoped_relationships.object_id', '=', 'users_global_properties.id')
+			->join('users', 'users_global_properties.user_id', '=', 'users.id')
+			->where('admin_groups.group_type', 'profile_group')
+			->where('belongs_to_type', 'App\Models\Profile')
+			->where('object_type', 'App\Models\UserGlobalProperties')
+			->where('scope_type', 'App\Models\Client')
+			->where('scope_id', $this->currentClientId)
+			->where('requires_authorization', true)
+			->where('authorized', false)
+			->orderBy('admin_groups.name')
+			->orderBy('users.name')
+			->get();
+	}
+
+	private function profileObjects()
+	{
+		return ScopedRelationship::select('admin_scoped_relationships.id', 'admin_groups.name AS parent', 'custom_pbi_objects.local_name AS child', DB::raw('false as translate'))
+			->join('admin_groups', 'admin_scoped_relationships.belongs_to_id', '=', 'admin_groups.id')
+			->join('custom_pbi_objects', 'admin_scoped_relationships.object_id', '=', 'custom_pbi_objects.id')
+			->where('admin_groups.group_type', 'profile_group')
+			->where('belongs_to_type', 'App\Models\Profile')
+			->where('object_type', 'App\Models\PBIObject')
+			->where('scope_type', 'App\Models\Client')
+			->where('scope_id', $this->currentClientId)
+			->where('requires_authorization', true)
+			->where('authorized', false)
+			->orderBy('admin_groups.name')
+			->orderBy('custom_pbi_objects.local_name')
 			->get();
 	}
 }

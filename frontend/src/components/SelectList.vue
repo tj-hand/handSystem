@@ -18,7 +18,7 @@
 				@click="addAction"
 				v-if="addPermission"
 			>
-				<div class="icon">add_circle</div>
+				<div class="icon">{{ addIcon }}</div>
 			</div>
 		</div>
 		<div class="list-wrapper">
@@ -68,6 +68,7 @@ export default defineComponent({
 		width: { type: Number, default: 300 },
 		idField: { type: String, default: 'id' },
 		subContent: { type: String, default: 'id' },
+		addIcon: { type: String, default: 'add_circle' },
 		mainContent: { type: String, default: 'name' },
 		addPermission: { type: Boolean, default: false },
 	},

@@ -452,13 +452,13 @@ export default defineComponent({
 		display: flex;
 		cursor: pointer;
 		color: $text-color;
+		padding-left: 2rem;
 		align-items: center;
 		gap: 1rem * $phi-sr;
 		font-size: 1rem * $phi-sr;
 		padding: 1rem * $phi-down;
 		transition: all 0.2s ease;
 		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-		padding-left: 2rem; // Indent items under groups
 
 		&:hover {
 			background-color: rgba(0, 0, 0, 0.05);

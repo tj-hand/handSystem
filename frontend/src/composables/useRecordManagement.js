@@ -30,7 +30,7 @@ export function useRecordManagement(options) {
 		updateRouteParams({ ...route.params, id: null });
 	};
 
-	const getRecord = async () => {
+	const getRecord = async (ignore = false) => {
 		recordIsLoaded.value = false;
 		const hasValidId = isUUID(route.params.id);
 
@@ -50,7 +50,7 @@ export function useRecordManagement(options) {
 
 		formGuardService.setOriginal(recordData);
 		recordIsLoaded.value = true;
-		if (!success) cancelAction();
+		if (!success && !ignore) cancelAction();
 	};
 
 	const mainAction = async (formGeneratorRef) => {

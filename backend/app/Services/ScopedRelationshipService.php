@@ -13,8 +13,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Group;
 use App\Models\Client;
 use App\Models\Account;
+use App\Models\Profile;
 use App\Models\ActionSet;
 use App\Models\GrantConfig;
+use App\Models\PBIObject;
+use App\Models\PBIWorkspace;
 use App\Models\ScopedRelationship;
 use App\Models\UserClientProperties;
 use App\Models\UserGlobalProperties;
@@ -27,10 +30,12 @@ class ScopedRelationshipService
 {
 	protected string $currentClientId;
 	protected string $currentAccountId;
+	protected ProfileService $profileService;
 	protected PermissionService $permissionService;
 
-	public function __construct(PermissionService $permissionService)
+	public function __construct(PermissionService $permissionService, ProfileService $profileService)
 	{
+		$this->profileService = $profileService;
 		$this->permissionService = $permissionService;
 		$this->currentAccountId = $this->permissionService::UserGlobalProperties()->current_account;
 		$this->currentClientId = $this->permissionService::UserCurrentAccountProperties()->current_client;
@@ -101,6 +106,12 @@ class ScopedRelationshipService
 
 	protected function removeRelationships(array $objectIds, object $parent, string $scopeType, string $scopeId, string $objectType): void
 	{
+
+		if ($parent instanceof Group) {
+			$scopeType = $parent->scope === 'client' ? 'App\Models\Client' : 'App\Models\Account';
+			$scopeId = $parent->scope === 'client' ? $this->currentClientId : $this->currentAccountId;
+		}
+
 		ScopedRelationship::whereIn('object_id', $objectIds)
 			->where('object_type', $objectType)
 			->where('belongs_to_type', get_class($parent))
@@ -120,6 +131,7 @@ class ScopedRelationshipService
 				$scopeId = $parent->scope === 'client' ? $this->currentClientId : $this->currentAccountId;
 			}
 
+			if ($parent instanceof Client && $objectType == 'App\Models\PBIWorkspace') $scopeId = $parent->id;
 
 			$exists = ScopedRelationship::where([
 				'object_type' => $objectType,
@@ -132,6 +144,8 @@ class ScopedRelationshipService
 
 
 			if (!$exists) {
+				$granted = (bool) ($grant->$grantField ?? false);
+
 				ScopedRelationship::create([
 					'object_type' => $objectType,
 					'object_id' => $objectId,
@@ -139,10 +153,10 @@ class ScopedRelationshipService
 					'belongs_to_id' => $parent->id,
 					'scope_type' => $scopeType,
 					'scope_id' => $scopeId,
-					'requires_authorization' => $grant->$grantField,
-					'authorized' => !$grant->$grantField,
-					'authorized_by_name' => !$grant->$grantField ? 'System' : null,
-					'authorization_timestamp' => !$grant->$grantField ? Carbon::now() : null,
+					'requires_authorization' => $granted,
+					'authorized' => !$granted,
+					'authorized_by_name' => !$granted ? 'System' : null,
+					'authorization_timestamp' => !$granted ? Carbon::now() : null,
 				]);
 			}
 		}
@@ -157,7 +171,6 @@ class ScopedRelationshipService
 			$grant = $this->getGrant($scopeType, $scopeId);
 
 			if (!$grant) return Que::passa(false, 'auth.scoped_relationship.error.grant_not_found');
-
 
 			[$parentObjectIdsToAdd, $parentObjectIdsToRemove] = $this->extractIdsFromItems($items);
 
@@ -212,6 +225,8 @@ class ScopedRelationshipService
 				}
 			}
 
+			if (get_class($childEntity) == 'App\Models\PBIWorkspace') $scopeId =  $parentObjectId;
+
 			$exists = ScopedRelationship::where([
 				'object_type' => get_class($childEntity),
 				'object_id' => $childEntity->id,
@@ -229,7 +244,7 @@ class ScopedRelationshipService
 					'belongs_to_id' => $parentObjectId,
 					'scope_type' => $scopeType,
 					'scope_id' => $scopeId,
-					'requires_authorization' => $grant->$grantField,
+					'requires_authorization' => $grant->$grantField ? true : false,
 					'authorized' => !$grant->$grantField,
 					'authorized_by_name' => !$grant->$grantField ? 'System' : null,
 					'authorization_timestamp' => !$grant->$grantField ? Carbon::now() : null,
@@ -318,9 +333,11 @@ class ScopedRelationshipService
 		$isClientScope = ($scopeType === 'App\Models\Client' || $scopeType === Client::class);
 
 		if ($isClientScope) {
-			// When scope is Client, search only in client scope
-			$query->where('scope_type', 'App\Models\Client')
-				->where('scope_id', $this->currentClientId);
+			if ($objectModel == 'App\Models\PBIWorkspace') {
+				$query->where('scope_type', 'App\Models\Client')->where('scope_id', $belongsTo->id);
+			} else {
+				$query->where('scope_type', 'App\Models\Client')->where('scope_id', $this->currentClientId);
+			}
 		} else {
 			// When scope is Account (default), search in both Account and Client scopes
 			$query->where(function ($subQuery) {
@@ -335,6 +352,8 @@ class ScopedRelationshipService
 		}
 
 		$relationships = $query->get()->keyBy('object_id');
+
+
 
 		return $objects->map(function ($object) use ($relationships) {
 			$relation = $relationships->get($object->id);
@@ -372,16 +391,6 @@ class ScopedRelationshipService
 			$query->where('scope_type', 'App\Models\Client')
 				->where('scope_id', $this->currentClientId);
 		} else {
-			// When scope is Account (default), search in both Account and Client scopes
-			// $query->where(function ($subQuery) {
-			// 	$subQuery->where(function ($q) {
-			// 		$q->where('scope_type', 'App\Models\Account')
-			// 			->where('scope_id', $this->currentAccountId);
-			// 	})->orWhere(function ($q) {
-			// 		$q->where('scope_type', 'App\Models\Client')
-			// 			->where('scope_id', $this->currentClientId);
-			// 	});
-			// });
 			$query->where('scope_type', 'App\Models\Account')
 				->where('scope_id', $this->currentAccountId);
 		}
@@ -447,7 +456,6 @@ class ScopedRelationshipService
 
 		if ($objectModel === Group::class) {
 
-
 			$groupsIds = ScopedRelationship::where('admin_scoped_relationships.object_type', 'App\Models\Group')
 				->where('admin_scoped_relationships.scope_type', 'App\Models\Account')
 				->where('admin_scoped_relationships.scope_id', $this->currentAccountId)
@@ -469,10 +477,38 @@ class ScopedRelationshipService
 
 			return $objectModel::select('admin_groups.id', 'name AS title')
 				->whereIn('id', $groupsIds)
+				->where('scope', 'permissions_group')
 				->where('is_active', true)
 				->orderBy('name')
 				->get();
 		}
+
+		if ($objectModel === Profile::class) {
+
+			$groupsIds = ScopedRelationship::where('admin_scoped_relationships.object_type', 'App\Models\Profile')
+				->where('admin_scoped_relationships.scope_type', 'App\Models\Client')
+				->where('admin_scoped_relationships.scope_id', $this->currentClientId)
+				->where('admin_scoped_relationships.belongs_to_type', 'App\Models\Client')
+				->where('admin_scoped_relationships.belongs_to_id', $this->currentClientId);
+
+			$groupsIds = $groupsIds->pluck('object_id');
+
+			return $objectModel::select('admin_groups.id', 'name AS title')
+				->whereIn('id', $groupsIds)
+				->where('group_type', 'profile_group')
+				->where('is_active', true)
+				->orderBy('name')
+				->get();
+		}
+
+		if ($objectModel == PBIWorkspace::class) {
+			return PBIWorkspace::select('id', 'local_name AS title')->where('account_id', $this->currentAccountId)->where('is_active', true)->orderBy('local_name')->get();
+		}
+
+		if ($objectModel == PBIObject::class) {
+			return $this->profileService->pbiObjects();
+		}
+
 		return collect();
 	}
 
@@ -484,12 +520,19 @@ class ScopedRelationshipService
 
 	protected function makeFlatReverseScopedListWithRelations(Model $object, string $belongsToModel, string $scopeType = Account::class)
 	{
+		$isInClient = false;
+		$ignoreClientScope = false;
 		$belongsToObjects = $this->getObjects($belongsToModel, $scopeType);
-		$userGlobalProperties = UserGlobalProperties::find($object->id);
-		$isInClient = UserClientProperties::where('user_id', $userGlobalProperties->user_id)
-			->where('client_id', $this->currentClientId)
-			->where('authorized', true)
-			->first();
+
+		if (get_class($object) == 'App\Models\UserGlobalProperties') {
+			$userGlobalProperties = UserGlobalProperties::find($object->id);
+			$isInClient = UserClientProperties::where('user_id', $userGlobalProperties->user_id)
+				->where('client_id', $this->currentClientId)
+				->where('authorized', true)
+				->first();
+		}
+
+		if (get_class($object) == 'App\Models\PBIWorkspace') $ignoreClientScope = true;
 
 		if ($belongsToModel == 'App\Models\Group' && $scopeType == 'App\Models\Account' && !$isInClient) {
 			$groupIds = $belongsToObjects->pluck('id');
@@ -505,18 +548,19 @@ class ScopedRelationshipService
 		$relationships = ScopedRelationship::where('object_type', get_class($object))
 			->where('object_id', $object->id)
 			->where('belongs_to_type', $belongsToModel)
-			->where(function ($query) {
+			->where(function ($query) use ($ignoreClientScope) {
 				$query->where(function ($q) {
-					$q->where('scope_type', 'App\Models\Account')
-						->where('scope_id', $this->currentAccountId);
-				})->orWhere(function ($q) {
-					$q->where('scope_type', 'App\Models\Client')
-						->where('scope_id', $this->currentClientId);
+					$q->where('scope_type', 'App\Models\Account')->where('scope_id', $this->currentAccountId);
+				})->orWhere(function ($q) use ($ignoreClientScope) {
+					if ($ignoreClientScope) {
+						$q->where('scope_type', 'App\Models\Client');
+					} else {
+						$q->where('scope_type', 'App\Models\Client')->where('scope_id', $this->currentClientId);
+					}
 				});
 			})
 			->get()
 			->keyBy('belongs_to_id');
-
 
 		return $belongsToObjects->map(function ($belongsToObject) use ($relationships) {
 			$relation = $relationships->get($belongsToObject->id);

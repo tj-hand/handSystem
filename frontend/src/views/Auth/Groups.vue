@@ -17,7 +17,6 @@
 		<div class="item-data">
 			<NoRecord v-if="isNoRecordVisible" />
 			<ObjectCard
-				width="50%"
 				:record="record"
 				title_db_name="name"
 				subtitle_db_name="id"

@@ -2,6 +2,7 @@
 	<label
 		class="label"
 		:class="[formSize == 'max' ? 'max' : '']"
+		:for="$t(params.label).replaceAll(' ', '_')"
 		>{{ $t(params.label) }}</label
 	>
 	<div class="form-element-row">
@@ -16,6 +17,7 @@
 				v-model="fieldValue"
 				:disabled="disabled"
 				:class="[disabled ? 'disabled' : '']"
+				:name="$t(params.label).replaceAll(' ', '_')"
 			/>
 		</div>
 		<div

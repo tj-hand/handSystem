@@ -1,3 +1,5 @@
+import Workspaces from '../views/Auth/Workspaces.vue';
+
 const endpoints = {
 	auth: {
 		revokeTokens: '/api/auth/revoke-tokens',
@@ -31,6 +33,7 @@ const endpoints = {
 		groups: 'api/account/groups',
 		upsert: 'api/account/upsert',
 		clients: 'api/account/clients',
+		workspaces: 'api/account/workspaces',
 	},
 	group: {
 		show: 'api/group/show',
@@ -39,16 +42,67 @@ const endpoints = {
 		associated_users: 'api/group/associated_users',
 		associated_actions: 'api/group/associated_actions',
 	},
+	profile: {
+		show: 'api/profile/show',
+		delete: 'api/profile/delete',
+		upsert: 'api/profile/upsert',
+		associated_users: 'api/profile/associated_users',
+		associated_objects: 'api/profile/associated_objects',
+	},
 	client: {
 		show: 'api/client/show',
+		files: 'api/client/files',
 		delete: 'api/client/delete',
 		upsert: 'api/client/upsert',
+		profiles: 'api/client/profiles',
+		signages: 'api/client/signages',
 		local_users: 'api/client/local_users',
-		associated_users: 'api/client/associated_users',
+		associated_users: 'api/client/associated-users',
+		associated_workspaces: 'api/client/associated-workspaces',
 	},
 	authorization: {
 		set: 'api/authorization/set',
 		queue: 'api/authorization/queue',
+	},
+	powerbi: {
+		sync: 'api/powerbi/sync',
+		workspace: {
+			show: 'api/powerbi/workspace/show',
+			upsert: 'api/powerbi/workspace/upsert',
+			delete: 'api/powerbi/workspace/delete',
+			associated_clients: 'api/powerbi/workspace/associated-clients',
+		},
+		bis: {
+			list: 'api/powerbi/bis/list',
+			show: 'api/powerbi/bis/show',
+			page: 'api/powerbi/bis/page',
+			pages: 'api/powerbi/bis/pages',
+			upsert: 'api/powerbi/bis/upsert',
+			render: 'api/powerbi/bis/render',
+			delete: 'api/powerbi/bis/delete',
+			bookmark: 'api/powerbi/bis/bookmark',
+			createImage: 'api/powerbi/bis/create-image',
+			destroyImage: 'api/powerbi/bis/destroy-image',
+			associated_profiles: 'api/powerbi/bis/associated-profiles',
+		},
+	},
+	repository: {
+		view: 'api/repository/view',
+		upload: 'api/repository/upload',
+		rename: 'api/repository/rename',
+		destroy: 'api/repository/destroy',
+		addToBroadcast: 'api/repository/add-to-broadcast',
+	},
+	signage: {
+		show: 'api/signage/show',
+		slides: 'api/signage/slides',
+		delete: 'api/signage/delete',
+		upsert: 'api/signage/upsert',
+		deleteSlide: 'api/signage/delete-slide',
+		moveSlideUp: 'api/signage/move-slide-up',
+		setSlideTime: 'api/signage/set-slide-time',
+		moveSlideDown: 'api/signage/move-slide-down',
+		addToBroadcast: 'api/signage/add-to-broadcast',
 	},
 };
 

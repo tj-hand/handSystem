@@ -109,7 +109,15 @@ export default defineComponent({
 		} = useRecordManagement({
 			apiService: apiService.client,
 			singularName: 'client',
-			defaultRecord: { is_active: false, group_users: false, group_actions: false, user_local_actions: false },
+			defaultRecord: {
+				is_active: false,
+				group_users: false,
+				group_actions: false,
+				profile_users: false,
+				profile_objects: false,
+				client_workspaces: false,
+				user_local_actions: false,
+			},
 			getListFn: getList,
 		});
 
