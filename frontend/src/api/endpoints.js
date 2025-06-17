@@ -104,6 +104,20 @@ const endpoints = {
 		moveSlideDown: 'api/signage/move-slide-down',
 		addToBroadcast: 'api/signage/add-to-broadcast',
 	},
+	log: {
+		emails: 'api/log/emails',
+		clients: 'api/log/clients',
+		getData: 'api/log/get-data',
+		messages: 'api/log/messages',
+		accounts: 'api/log/accounts',
+		usernames: 'api/log/usernames',
+		objectTypes: 'api/log/object-types',
+		objectNames: 'api/log/object-names',
+	},
+	welcome: {
+		bookmarks: 'api/welcome/bookmarks',
+		lastviews: 'api/welcome/lastviews',
+	},
 };
 
 export default endpoints;

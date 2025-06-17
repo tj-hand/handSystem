@@ -30,11 +30,11 @@ export function useRecordManagement(options) {
 		updateRouteParams({ ...route.params, id: null });
 	};
 
-	const getRecord = async (ignore = false) => {
+	const getRecord = async (ignore = false, ignore_id = false) => {
 		recordIsLoaded.value = false;
 		const hasValidId = isUUID(route.params.id);
 
-		if (!hasValidId && route.params.id !== 'new') return;
+		if (!hasValidId && route.params.id !== 'new' && !ignore_id) return;
 
 		let success = route.params.id === 'new';
 		let recordData = { ...defaultRecord };

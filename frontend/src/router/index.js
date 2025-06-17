@@ -68,6 +68,12 @@ const routes = [
 				meta: { requiresAuthentication: true },
 			},
 			{
+				path: 'logs',
+				name: 'Logs',
+				component: () => import('@/views/Auth/Logs.vue'),
+				meta: { requiresAuthentication: true },
+			},
+			{
 				path: 'logout',
 				name: 'Logout',
 				component: () => import('@/views/Auth/Logout.vue'),

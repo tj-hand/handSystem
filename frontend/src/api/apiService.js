@@ -256,6 +256,40 @@ const apiService = {
 			return apiRequest('POST', endpoints.signage.setSlideTime, data);
 		},
 	},
+	log: {
+		messages() {
+			return apiRequest('POST', endpoints.log.messages);
+		},
+		usernames() {
+			return apiRequest('POST', endpoints.log.usernames);
+		},
+		emails() {
+			return apiRequest('POST', endpoints.log.emails);
+		},
+		accounts() {
+			return apiRequest('POST', endpoints.log.accounts);
+		},
+		clients() {
+			return apiRequest('POST', endpoints.log.clients);
+		},
+		object_types() {
+			return apiRequest('POST', endpoints.log.objectTypes);
+		},
+		object_names() {
+			return apiRequest('POST', endpoints.log.objectNames);
+		},
+		getData(data) {
+			return apiRequest('POST', endpoints.log.getData, data);
+		},
+	},
+	welcome: {
+		bookmarks() {
+			return apiRequest('POST', endpoints.welcome.bookmarks);
+		},
+		lastviews() {
+			return apiRequest('POST', endpoints.welcome.lastviews);
+		},
+	},
 };
 
 export default apiService;

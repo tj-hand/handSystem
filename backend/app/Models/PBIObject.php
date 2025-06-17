@@ -36,4 +36,9 @@ class PBIObject extends Model
 			}
 		});
 	}
+
+	public function getLogName(): string
+	{
+		return $this->local_name ?? 'Unnamed';
+	}
 }

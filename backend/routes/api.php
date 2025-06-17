@@ -142,3 +142,23 @@ Route::prefix('signage')
         Route::post('/move-slide-down', 'SignageController@moveSlideDown')->name('signage.moveSlideDown')->middleware('auth:api');
         Route::post('/add-to-broadcast', 'SignageController@addToBroadcast')->name('signage.addToBroadcast')->middleware('auth:api');
     });
+Route::prefix('log')
+    ->name('api.')
+    ->namespace('App\Http\Controllers')
+    ->group(function () {
+        Route::post('/emails', 'LogController@emails')->name('log.emails')->middleware('auth:api');
+        Route::post('/clients', 'LogController@clients')->name('log.clients')->middleware('auth:api');
+        Route::post('/get-data', 'LogController@getData')->name('log.getData')->middleware('auth:api');
+        Route::post('/messages', 'LogController@messages')->name('log.messages')->middleware('auth:api');
+        Route::post('/accounts', 'LogController@accounts')->name('log.accounts')->middleware('auth:api');
+        Route::post('/usernames', 'LogController@usernames')->name('log.usernames')->middleware('auth:api');
+        Route::post('/object-types', 'LogController@objectTypes')->name('log.objectTypes')->middleware('auth:api');
+        Route::post('/object-names', 'LogController@objectNames')->name('log.objectNames')->middleware('auth:api');
+    });
+Route::prefix('welcome')
+    ->name('api.')
+    ->namespace('App\Http\Controllers')
+    ->group(function () {
+        Route::post('/bookmarks', 'WelcomeController@bookmarks')->name('welcome.bookmarks')->middleware('auth:api');
+        Route::post('/lastviews', 'WelcomeController@lastviews')->name('welcome.lastviews')->middleware('auth:api');
+    });

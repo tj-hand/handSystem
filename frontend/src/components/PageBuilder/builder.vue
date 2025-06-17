@@ -62,6 +62,8 @@ import TextField from '@/components/TextField.vue';
 import AreaField from '@/components/AreaField.vue';
 import SelectList from '@/components/SelectList.vue';
 import ObjectCard from '@/components/ObjectCard.vue';
+import MaskedField from '@/components/MaskedField.vue';
+import SelectField from '@/components/SelectField.vue';
 import ScopeSetter from '@/components/ScopeSetter.vue';
 import ButtonField from '@/components/ButtonField.vue';
 import FormSubtitle from '@/components/FormSubtitle.vue';
@@ -71,6 +73,7 @@ import CheckboxField from '@/components/CheckboxField.vue';
 import PBIObjectPages from '@/components/PBIObjectPages.vue';
 import CheckableItemList from '@/components/CheckableItemList.vue';
 import HorizontalSubmenu from '@/components/HorizontalSubmenu.vue';
+import ActionTypeSelector from '@/components/ActionTypeSelector.vue';
 
 export default defineComponent({
 	name: 'BuilderCore',
@@ -83,7 +86,9 @@ export default defineComponent({
 		SelectList,
 		ObjectCard,
 		ButtonField,
+		MaskedField,
 		ScopeSetter,
+		SelectField,
 		FormSubtitle,
 		PasswordField,
 		PowerBIViewer,
@@ -91,6 +96,7 @@ export default defineComponent({
 		PBIObjectPages,
 		CheckableItemList,
 		HorizontalSubmenu,
+		ActionTypeSelector,
 	},
 	props: {
 		formSize: { type: String, default: '' },

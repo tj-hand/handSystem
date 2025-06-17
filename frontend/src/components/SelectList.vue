@@ -54,11 +54,11 @@
 </template>
 <script>
 import { defineComponent } from 'vue';
+import { onMounted, nextTick } from 'vue';
 import { ref, computed, watch } from 'vue';
 import { is_mobile } from '@/tools/screenSizes';
 import { closest } from '@/tools/harmonize.js';
 import { useRouter, useRoute } from 'vue-router';
-import { onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 export default defineComponent({
 	name: 'SelectList',

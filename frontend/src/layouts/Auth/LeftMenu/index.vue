@@ -80,7 +80,7 @@ export default defineComponent({
 
 		const goHome = () => {
 			is_mobile() ? uiStore.setExpandedMenu(false) : null;
-			router.push({ name: authStore.enviroment.current_scope.home_page });
+			router.push({ name: 'Welcome' });
 		};
 
 		const clientSelected = computed(() => {
