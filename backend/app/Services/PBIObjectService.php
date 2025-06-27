@@ -103,30 +103,30 @@ class PBIObjectService
 
 	public function render($request)
 	{
-		try {
+		// try {
 
-			$this->objectId = $request->input('id');
+		$this->objectId = $request->input('id');
 
-			$validationAndLoad = $this->validateAndLoad('powerbi');
-			if ($validationAndLoad !== true) return $validationAndLoad;
+		$validationAndLoad = $this->validateAndLoad('powerbi');
+		if ($validationAndLoad !== true) return $validationAndLoad;
 
-			$grantOperation = $this->grantOperation('powerbi');
-			if ($grantOperation !== true) return $grantOperation;
+		$grantOperation = $this->grantOperation('powerbi');
+		if ($grantOperation !== true) return $grantOperation;
 
-			$this->objectType = $this->object->microsoft_type == 'Dashboard' ? 'dashboards' : 'reports';
-			$this->workspace = PBIWorkspace::find($this->object->workspace_id);
-			if (!$this->workspace) return 'Wokspace not found';
+		$this->objectType = $this->object->microsoft_type == 'Dashboard' ? 'dashboards' : 'reports';
+		$this->workspace = PBIWorkspace::find($this->object->workspace_id);
+		if (!$this->workspace) return 'Wokspace not found';
 
-			$params['dashboard'] = $this->object;
-			$params['type'] = mb_substr($this->objectType, 0, -1, 'UTF-8');
-			$params['url'] = $this->getObjectEmbedURL();
-			$params['token'] = $this->getObjectEmbedToken();
-			$params['bookmark'] = $this->getBookmark() ? true : false;
+		$params['dashboard'] = $this->object;
+		$params['type'] = mb_substr($this->objectType, 0, -1, 'UTF-8');
+		$params['url'] = $this->getObjectEmbedURL();
+		$params['token'] = $this->getObjectEmbedToken();
+		$params['bookmark'] = $this->getBookmark() ? true : false;
 
-			return Que::passa(true, 'auth.bis.rendered', '', null, ['params' => $params]);
-		} catch (Exception $e) {
-			return Que::passa(false, 'auth.bis.render.error', $request);
-		}
+		return Que::passa(true, 'auth.bis.rendered', '', null, ['params' => $params]);
+		// } catch (Exception $e) {
+		// 	return Que::passa(false, 'auth.bis.render.error', $request);
+		// }
 	}
 
 	public function associated_profiles($request)

@@ -78,9 +78,10 @@ class PowerBIController extends Controller
 	{
 
 		foreach ($objects as $workspaceId => $objectsGroup) {
-			foreach ($objectsGroup['value'] as $objetc) {
+			foreach ($objectsGroup['value'] as $object) {
 
-				$objectQuery = PBIObject::where('microsoft_id', $objetc['id'])
+
+				$objectQuery = PBIObject::where('microsoft_id', $object['id'])
 					->where('account_id', $this->currentAccountId)
 					->where('workspace_id', $workspaceId)
 					->first();
@@ -89,21 +90,23 @@ class PowerBIController extends Controller
 					$newObject = new PBIObject();
 					$newObject->account_id = $this->currentAccountId;
 					$newObject->workspace_id = $workspaceId;
-					$newObject->microsoft_id = $objetc['id'];
+					$newObject->microsoft_id = $object['id'];
 					if ($type == 'reports') {
-						$newObject->microsoft_type = $objetc['reportType'];
-						$newObject->microsoft_name = $objetc['name'];
+						$newObject->microsoft_type = $object['reportType'];
+						$newObject->microsoft_name = $object['name'];
+						$newObject->local_name = $object['name'];
 					} else {
 						$newObject->microsoft_type = "Dashboard";
-						$newObject->microsoft_name = $objetc['displayName'];
+						$newObject->microsoft_name = $object['displayName'];
+						$newObject->local_name = $object['displayName'];
 					}
 					$newObject->is_active = true;
 					$newObject->checked = true;
 					$newObject->save();
 				} else {
 					$type == 'reports' ?
-						$objectQuery->local_name = $objetc['name'] :
-						$objectQuery->local_name = $objetc['displayName'];
+						$objectQuery->local_name = $object['name'] :
+						$objectQuery->local_name = $object['displayName'];
 					$objectQuery->checked = true;
 					$objectQuery->save();
 				}

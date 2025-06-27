@@ -17,6 +17,7 @@ use App\Models\PBIRequest;
 use App\Models\Repository;
 use App\Models\PBIWorkspace;
 use App\Models\UserGlobalProperties;
+
 // Import Services
 use App\Services\PBIRequestService;
 use App\Services\SystemLogService as Que;
@@ -35,6 +36,7 @@ class SyncPBIImagesService
 
 		if ($request->attempts >= $request->max_attempts) {
 			$image = PBIImage::findOrFail($request->image_id);
+			PBIRequest::where('image_id', $request->image_id)->delete();
 			if ($image) $image->delete();
 			return "Max attempts reached";
 		}
@@ -92,13 +94,9 @@ class SyncPBIImagesService
 		$fileUuid = $image->repository_id ?? Uuid::uuid4();
 		$endpoint = config('powerbi.downloadExportedFile');
 		$directory = '/uploads/' . $request->client_id;
+		$fullPath = $directory . '/' . $fileUuid;
 
-		if (!Storage::disk('private')->exists($directory)) {
-			Storage::disk('private')->makeDirectory($directory);
-			$fullPath = Storage::disk('private')->path($directory);
-			shell_exec("sudo chmod 775 {$fullPath}");
-			shell_exec("sudo chown www-data:www-data {$fullPath}");
-		}
+		if (!Storage::disk('azure')->exists($directory)) Storage::disk('azure')->makeDirectory($directory, 0775, true);
 
 		$response = $this->pbiRequestService->makeRequest('GET', $endpoint, [
 			'accountId' => $request->account_id,
@@ -107,12 +105,7 @@ class SyncPBIImagesService
 			'exportId' => $request->export_id
 		]);
 
-		$imagePath = $directory . '/' . $fileUuid;
-		Storage::disk('private')->put($imagePath, $response['file']);
-
-		$fullFilePath = Storage::disk('private')->path($imagePath);
-		shell_exec("sudo chmod 775 {$fullFilePath}");
-		shell_exec("sudo chown www-data:www-data {$fullFilePath}");
+		Storage::disk('azure')->put($fullPath, $response['file']);
 
 		if (!$image->repository_id) {
 			$repository = Repository::create([
@@ -199,7 +192,6 @@ class SyncPBIImagesService
 		];
 
 		$response = $this->pbiRequestService->makeRequest('POST', $endpoint, $data, $requestData);
-
 
 		if (isset($response['status']) && isset($response['error'])) {
 			return response()->json([

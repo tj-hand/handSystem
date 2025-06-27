@@ -20,6 +20,8 @@ class ScheduledTasks extends Command
 
 	public function handle()
 	{
+
+
 		$requests = PBIRequest::where('status', 'pending')->get();
 
 		foreach ($requests as $request) {;

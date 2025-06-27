@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://hand.dotmkt.com.br'],
+    'allowed_origins' => ['https://hand.dotmkt.com.br', '*'],
 
     'allowed_origins_patterns' => [],
 

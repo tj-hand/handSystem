@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class Device extends Model
@@ -20,4 +21,14 @@ class Device extends Model
 		'signage_id',
 		'previous_signage_id'
 	];
+
+	protected static function boot()
+	{
+		parent::boot();
+		static::creating(function ($model) {
+			if (!$model->id) {
+				$model->id = (string) Str::uuid();
+			}
+		});
+	}
 }

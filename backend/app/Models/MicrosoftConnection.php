@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
@@ -44,4 +45,14 @@ class MicrosoftConnection extends Model
 		'client_id' => EncryptedCast::class,
 		'client_secret' => EncryptedCast::class,
 	];
+
+	protected static function boot()
+	{
+		parent::boot();
+		static::creating(function ($model) {
+			if (!$model->id) {
+				$model->id = (string) Str::uuid();
+			}
+		});
+	}
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\TrustProxies;
 use Illuminate\Foundation\Application;
 use App\Http\Middleware\AddRefreshTokenToForm;
 use App\Http\Middleware\AddBearerTokenFromCookies;
@@ -14,9 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->append(TrustProxies::class);
         $middleware->append(AddRefreshTokenToForm::class);
         $middleware->append(AddBearerTokenFromCookies::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->create();
