@@ -1,0 +1,114 @@
+{
+  "folders": [
+    {
+      "name": "🚀 Root",
+      "path": "."
+    },
+    {
+      "name": "🐘 Backend (Laravel)",
+      "path": "./backend"
+    },
+    {
+      "name": "🎨 Frontend (Vue)",
+      "path": "./frontend"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/vendor": true,
+      "**/storage/logs": true,
+      "**/storage/framework": true,
+      "**/.git": false,
+      "**/dist": true,
+      "**/coverage": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/vendor": true,
+      "**/storage/logs": true,
+      "**/dist": true
+    },
+    
+    // PHP Configuration (containerized - disable local validation)
+    "php.suggest.basic": false,
+    "php.validate.enable": false,
+    "intelephense.environment.phpVersion": "8.3",
+    
+    // JavaScript/TypeScript
+    "typescript.preferences.quoteStyle": "single",
+    "javascript.preferences.quoteStyle": "single",
+    
+    // Editor - Format on Save
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+      "source.organizeImports": "explicit"
+    },
+
+    // File-specific formatters
+    "[vue]": {
+      "editor.defaultFormatter": "Vue.volar"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[php]": {
+      "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+    },
+
+    
+    // Prettier configuration
+    "prettier.singleQuote": true,
+    "prettier.trailingComma": "es5",
+    "prettier.semi": false,
+    
+    // Emmet
+    "emmet.includeLanguages": {
+      "vue-html": "html",
+      "vue": "html"
+    },
+    
+    // File associations
+    "files.associations": {
+      "*.vue": "vue"
+    },
+    
+  },
+  
+  "extensions": {
+    "recommendations": [
+      "bmewburn.vscode-intelephense-client",
+      "Vue.volar",
+      "esbenp.prettier-vscode",
+      "redhat.vscode-yaml",
+      "formulahendry.auto-rename-tag",
+      "christian-kohler.path-intellisense"
+    ]
+  },
+    "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Docker: Start All Services",
+        "type": "shell",
+        "command": "docker-compose up -d",
+        "group": "build",
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        }
+      },
+      {
+        "label": "Docker: Stop All Services",
+        "type": "shell",
+        "command": "docker-compose down",
+        "group": "build"
+      }
+    ]
+  }
+}
+
