@@ -222,14 +222,10 @@ class UserService
 			return Que::passa(false, 'auth.account.users.add.error.unauthorized');
 
 		$validationResults = $this->validateUserUpdateDetails($data);
-		if (!$validationResults['success']) {
-			return $validationResults['response'];
-		}
+		if (!$validationResults['success']) return $validationResults['response'];
 
 		$emailValidation = $this->validateEmail($data);
-		if (!$emailValidation['success']) {
-			return $emailValidation['response'];
-		}
+		if (!$emailValidation['success']) return $emailValidation['response'];
 
 		$is_superuser = PermissionService::UserGlobalProperties()->is_superuser;
 

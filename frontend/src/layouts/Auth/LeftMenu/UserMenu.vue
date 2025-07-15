@@ -80,6 +80,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .user-menu {
+	z-index: 10;
 	display: flex;
 	align-items: center;
 	flex-direction: column;

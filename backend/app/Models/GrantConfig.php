@@ -15,6 +15,23 @@ class GrantConfig extends Model
 	protected $fillable = [
 		'object_type',
 		'object_id',
+		'profile_users',
+		'profile_objects',
+		'group_users',
+		'group_actions',
+		'client_workspaces',
+		'user_local_actions',
+	];
+
+	protected $casts = [
+		'object_type' => 'string',
+		'object_id' => 'string',
+		'profile_users' => 'boolean',
+		'profile_objects' => 'boolean',
+		'group_users' => 'boolean',
+		'group_actions' => 'boolean',
+		'client_workspaces' => 'boolean',
+		'user_local_actions' => 'boolean',
 	];
 
 	protected static function boot()

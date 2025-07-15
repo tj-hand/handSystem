@@ -67,7 +67,7 @@ class WelcomeController extends Controller
 	private function getUserLastViewedObjects()
 	{
 		$lastViewedIds = Log::where('success', true)
-			->where('log_message', 'auth.bi.show')
+			->where('log_message', 'auth.bis.rendered')
 			->where('user_id', $this->permissionService->user()->id)
 			->where('account_id', $this->currentAccountId)
 			->where('client_id', $this->currentClientId)

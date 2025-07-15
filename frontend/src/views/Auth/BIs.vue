@@ -44,8 +44,8 @@
 					</template>
 				</ObjectCard>
 				<PowerBIViewer
-					v-if="!can('show') && can('powerbi') && !isNoRecordVisible"
 					class="only-powerbi"
+					v-if="!can('show') && can('powerbi') && !isNoRecordVisible"
 				/>
 			</div>
 		</div>

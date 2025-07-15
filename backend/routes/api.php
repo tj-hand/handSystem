@@ -162,3 +162,14 @@ Route::prefix('welcome')
         Route::post('/bookmarks', 'WelcomeController@bookmarks')->name('welcome.bookmarks')->middleware('auth:api');
         Route::post('/lastviews', 'WelcomeController@lastviews')->name('welcome.lastviews')->middleware('auth:api');
     });
+
+Route::prefix('clientb')
+    ->name('api.')
+    ->namespace('App\Http\Controllers')
+    ->group(function () {
+        Route::post('/show', 'ClientBController@show')->name('client.show')->middleware('auth:api');
+        Route::post('/upsert', 'ClientBController@upsert')->name('client.upsert')->middleware('auth:api');
+        Route::post('/destroy', 'ClientBController@destroy')->name('client.destroy')->middleware('auth:api');
+        Route::post('/associated-users', 'ClientBController@associatedUsers')->name('client.associatedUsers')->middleware('auth:api');
+        Route::post('/associated-workspaces', 'ClientBController@associatedWorkspaces')->name('client.associatedWorkspaces')->middleware('auth:api');
+    });

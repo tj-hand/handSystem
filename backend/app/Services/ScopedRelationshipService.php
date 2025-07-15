@@ -471,13 +471,14 @@ class ScopedRelationshipService
 				});
 
 
+
 			if ($isClientScope) $groupsIds->where('belongs_to_type', 'App\Models\Client')->where('belongs_to_id', $this->currentClientId);
 
 			$groupsIds = $groupsIds->pluck('object_id');
 
 			return $objectModel::select('admin_groups.id', 'name AS title')
 				->whereIn('id', $groupsIds)
-				->where('scope', 'permissions_group')
+				->where('group_type', 'permissions_group')
 				->where('is_active', true)
 				->orderBy('name')
 				->get();
@@ -524,6 +525,7 @@ class ScopedRelationshipService
 		$ignoreClientScope = false;
 		$belongsToObjects = $this->getObjects($belongsToModel, $scopeType);
 
+
 		if (get_class($object) == 'App\Models\UserGlobalProperties') {
 			$userGlobalProperties = UserGlobalProperties::find($object->id);
 			$isInClient = UserClientProperties::where('user_id', $userGlobalProperties->user_id)
@@ -534,16 +536,17 @@ class ScopedRelationshipService
 
 		if (get_class($object) == 'App\Models\PBIWorkspace') $ignoreClientScope = true;
 
-		if ($belongsToModel == 'App\Models\Group' && $scopeType == 'App\Models\Account' && !$isInClient) {
-			$groupIds = $belongsToObjects->pluck('id');
-			$accountScopeGroupIds = Group::whereIn('id', $groupIds)
-				->where('scope', 'account')
-				->pluck('id');
+		// if ($belongsToModel == 'App\Models\Group' && $scopeType == 'App\Models\Account' && !$isInClient) {
+		// 	$groupIds = $belongsToObjects->pluck('id');
 
-			$belongsToObjects = $belongsToObjects->filter(function ($item) use ($accountScopeGroupIds) {
-				return !$accountScopeGroupIds->contains($item['id']);
-			});
-		}
+		// $accountScopeGroupIds = Group::whereIn('id', $groupIds)
+		// 	->where('scope', 'account')
+		// 	->pluck('id');
+
+		// $belongsToObjects = $belongsToObjects->filter(function ($item) use ($accountScopeGroupIds) {
+		// 	return !$accountScopeGroupIds->contains($item['id']);
+		// });
+		// }
 
 		$relationships = ScopedRelationship::where('object_type', get_class($object))
 			->where('object_id', $object->id)

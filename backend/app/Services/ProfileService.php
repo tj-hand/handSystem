@@ -78,6 +78,7 @@ class ProfileService
 			->where('admin_scoped_relationships.scope_type', 'App\Models\Client')
 			->where('admin_scoped_relationships.belongs_to_id', $this->currentClientId)
 			->where('admin_scoped_relationships.scope_id', $this->currentClientId)
+			->where('authorized', true)
 			->pluck('custom_pbi_workspaces.id');
 	}
 
