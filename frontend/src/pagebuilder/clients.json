@@ -1,0 +1,176 @@
+[
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "calc(62% - 1rem)",
+				"content": [
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "calc(62% - 1rem)",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "text-field",
+										"label": "auth.clients.label.client_name",
+										"db_name": "name",
+										"validations": ["required", "min:2"]
+									}
+								}
+							},
+							{
+								"width": "38%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkbox-field",
+										"label": "generic.active_o",
+										"db_name": "is_active"
+									}
+								}
+							}
+						]
+					},
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "90%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "area-field",
+										"label": "generic.description",
+										"db_name": "description",
+										"rows": 5
+									}
+								}
+							}
+						]
+					},
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "calc(50% - 1rem)",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkable-item-list",
+										"title": "auth.clients.label.associated_users",
+										"backend_request": "client.associated_users"
+									}
+								}
+							},
+							{
+								"width": "50%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkable-item-list",
+										"title": "auth.clients.label.associated_workspaces",
+										"backend_request": "client.associated_workspaces"
+									}
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"width": "38%",
+				"content": [
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "form-subtitle",
+										"label": "auth.account.label.required_authorizations"
+									}
+								}
+							},
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkbox-field",
+										"label": "auth.authorization_queue.profile_users",
+										"db_name": "profile_users",
+										"labelPosition": "right"
+									}
+								}
+							},
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkbox-field",
+										"label": "auth.authorization_queue.profile_objects",
+										"db_name": "profile_objects",
+										"labelPosition": "right"
+									}
+								}
+							},
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkbox-field",
+										"label": "auth.authorization_queue.group_users",
+										"db_name": "group_users",
+										"labelPosition": "right"
+									}
+								}
+							},
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkbox-field",
+										"label": "auth.authorization_queue.group_actions",
+										"db_name": "group_actions",
+										"labelPosition": "right"
+									}
+								}
+							},
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkbox-field",
+										"label": "auth.authorization_queue.client_workspaces",
+										"db_name": "client_workspaces",
+										"labelPosition": "right"
+									}
+								}
+							},
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkbox-field",
+										"label": "auth.authorization_queue.user_local_actions",
+										"db_name": "user_local_actions",
+										"labelPosition": "right"
+									}
+								}
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]

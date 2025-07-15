@@ -1,0 +1,101 @@
+@use 'variables';
+
+.page-builder {
+	.label {
+		display: block;
+		font-weight: 700;
+		color: variables.$text-color;
+		padding-left: 1rem * variables.$phi;
+		font-size: 1rem * variables.$phi-sr;
+
+		&.max {
+			font-size: calc(1rem - 2px);
+		}
+	}
+
+	.form-element-row {
+		margin-bottom: 1rem * variables.$phi;
+
+		&:has(.max) {
+			margin-bottom: 1rem * variables.$phi;
+		}
+
+		&:has(.form-error) {
+			.form-element-wrapper {
+				border-color: rgba(variables.$danger-color, 0.3);
+			}
+		}
+
+		.form-element-wrapper {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			border-radius: 0.25rem;
+			box-sizing: border-box;
+			transition: all 0.5s ease;
+			justify-content: space-between;
+			margin-top: 1rem * variables.$phi-down;
+			box-shadow: 2px 2px 5px inset rgba(0, 0, 0, 0.05);
+			background: variables.$form-wrapper-backgorund-color;
+			border: 1px solid variables.$form-wrapper-border-color;
+
+			&.max {
+				padding: 1rem * variables.$phi;
+				.input-text {
+					font-size: calc(1rem + 3px);
+				}
+			}
+
+			.input-text {
+				border: 0;
+				outline: 0;
+				width: 100%;
+				flex-grow: 1;
+				font-size: 1rem;
+				line-height: 1.25em;
+				color: variables.$text-color;
+				background-color: transparent;
+				padding: 1rem * variables.$phi-down;
+
+				&.disabled {
+					color: rgba(0, 0, 0, 0.38);
+					background-color: rgba(0, 0, 0, 0.1);
+				}
+			}
+
+			&:focus-within {
+				border-color: variables.$primary-color;
+			}
+
+			.text-area {
+				border: 0;
+				outline: 0;
+				width: 100%;
+				font-size: 1rem;
+				color: variables.$text-color;
+				border-radius: 1rem;
+				line-height: 1.25rem;
+				padding: 1rem * variables.$phi-down;
+				font-family: 'Fira Sans', sans-serif;
+			}
+		}
+
+		.form-element-error {
+			min-height: 1em;
+			line-height: 1em;
+			transition: all 0.5s ease;
+			font-size: calc(1rem - 6px);
+			width: 100% * variables.$phi;
+			background-color: transparent;
+			color: variables.$danger-color;
+			border-bottom-left-radius: 4px;
+			padding: (1rem * variables.$phi-down) 0;
+			clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%, 0 100%);
+			padding-left: 1rem;
+
+			&.form-error {
+				background-color: rgba(variables.$danger-color, 0.15);
+			}
+		}
+	}
+}

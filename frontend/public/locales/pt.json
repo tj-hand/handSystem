@@ -1,0 +1,398 @@
+{
+	"public": {
+		"token": {
+			"error": {
+				"invalid_credentials_format": "Formato Inválido",
+				"invalid_credentials_data": "Credenciais Inválidas"
+			}
+		},
+		"login": {
+			"welcome": "Boas-vindas ao",
+			"subtitle": "Para acessar, informe suas credenciais",
+			"label": {
+				"email": "Informe seu email",
+				"password": "Informe sua senha",
+				"access": "Acessar",
+				"forgotPassword": " Esqueci minha senha!"
+			}
+		},
+		"password": {
+			"error": {
+				"invalid_token": "Token inválido",
+				"invalid_reset_rules": "Dados inválidos"
+			}
+		},
+		"forgot_password": {
+			"title": "Esqueci minha senha!",
+			"label": {
+				"email": "Informe seu email",
+				"request_password_reset": "Solicitar redefinição de senha",
+				"back_to_login": "Voltar para o login"
+			},
+			"success": "Verifique seu email."
+		},
+		"reset_password": {
+			"title": "Redefinir senha",
+			"label": {
+				"password": "Informe sua nova senha",
+				"confirm_password": "Confirme sua nova senha",
+				"reset_password": "Redefinir senha"
+			},
+			"success": "Senha redefinida!",
+			"error": {
+				"invalid_password_reset_rules": "Senha inválida",
+				"invalid_password_reset_token": "Token inválido."
+			}
+		}
+	},
+	"auth": {
+		"login": {
+			"error": {
+				"user_blocked": " Usuário sem acesso",
+				"no_login_options": "Ambiente não identificado"
+			}
+		},
+		"logout": {
+			"exiting": "Saindo com segurança ..."
+		},
+		"left_menu": {
+			"collapse": "Recolher Menu",
+			"modules": {
+				"bis": "Power BI",
+				"data_profiles": "Perfis",
+				"scoped_users": "Usuários",
+				"devices": "Dispositivos",
+				"broadcast": "Transmissões",
+				"logs": "Logs",
+				"admin": "Administração",
+				"ais": "Inteligências",
+				"repository": "Arquivos"
+			},
+			"user_menu": {
+				"safely_logout": "Sair com segurança",
+				"access_settings": "Configurações de Acesso"
+			}
+		},
+		"welcome": {
+			"title": "Boas-vindas ao HandBi",
+			"bookmarks": "BIs Preferidos",
+			"lastviews": "Últimos BIs visualizados"
+		},
+		"settings": {
+			"title": "Administração",
+			"vertical_submenu": {
+				"title": "Opções"
+			}
+		},
+		"account": {
+			"new": "Adicionar Conta",
+			"title_placeholder": "Nome da Conta",
+			"subtitle_placeholder": "Identificador da conta",
+			"label": {
+				"account_name": "Nome da Conta",
+				"powerbi_connection": "Credenciais do PowerBI",
+				"powerbi_tenant": "Tenant",
+				"powerbi_client_id": "Client ID",
+				"powerbi_client_secret": "Client Secret",
+				"required_authorizations": "Filas de Authorizações"
+			},
+			"updated": "Conta Atualizada!"
+		},
+		"account_users": {
+			"module": "Acesso ao Módulo",
+			"list": "Listar Usuários",
+			"add": "Adicionar Usuário",
+			"show": "Visualizar Usuário",
+			"edit": "Atualizar Usuário",
+			"delete": "Exlcuir Usuário"
+		},
+		"user": {
+			"label": {
+				"name": "Nome",
+				"lastname": "Sobrenome",
+				"send_invite": "Enviar Convite",
+				"reset_password": "Redefinir senha",
+				"admin": "Administrador da Conta",
+				"account_user_associated_with_clients": "Clientes Associados ao Usuário",
+				"account_user_associated_with_groups": "Grupos Associados ao Usuário",
+				"account_user_associated_with_local_actions": "Permissões Locais e Individuais",
+				"account_user_associated_with_global_actions": "Permissões Globais e Individuais"
+			},
+			"modal": {
+				"in_account_title": "Usuário Existente",
+				"blocked_user_title": "Usuário Bloqueado",
+				"add_to_account_title": "Usuário já Cadastrado",
+				"in_account_text": "Usuário já cadastrado nessa conta.",
+				"in_account_add_client_text": "Usuário já cadastrado",
+				"blocked_user_text": "Usuário não pode ser adicionado à conta.",
+				"add_to_client_text": "Esse usuário já está cadastrano em nosso sistema. Deseja adicioná-lo a esse cliente?",
+				"add_to_account_text": "Esse usuário já está cadastrano em nosso sistema. Deseja adicioná-lo a essa conta?",
+				"confirm_invite_text": "Confirma o envio do convite para o usuário?",
+				"confirm_invite_title": "Confirmação de Convite"
+			},
+			"updated": "Usuário Atualizado!",
+			"created": "Novo Usuário Criado!",
+			"deleted": "Usuário Excluído!",
+			"title_placeholder": "Nome do Usuário",
+			"subtitle_placeholder": "Identificador do usuário",
+			"add_to_account": "Usuário Adicionado à Conta"
+		},
+		"users": {
+			"account_users": "Usuários da Conta",
+			"local_users": "Usuários Locais"
+		},
+		"local_users": {
+			"module": "Acesso ao Módulo",
+			"list": "Listar Usuários Locais",
+			"add": "Adicionar Usuário Local",
+			"show": "Visualizar Usuário Local",
+			"edit": "Atualizar Usuário Local",
+			"delete": "Exlcuir Usuário Local"
+		},
+		"groups": {
+			"list_title": "Grupos de Permissões",
+			"title_placeholder": "Nome do Grupo",
+			"subtitle_placeholder": "Identificador do grupo",
+			"label": {
+				"group_name": "Nome do Grupo",
+				"associated_users": "Usuários Associados",
+				"associated_actions": "Ações Associadas"
+			},
+			"created": "Novo Grupo Criado!",
+			"updated": "Grupo Atualizado!",
+			"module": "Acesso ao Módulo",
+			"list": "Listar Grupos",
+			"add": "Adicionar Grupo",
+			"show": "Visualizar Grupo",
+			"edit": "Atualizar Grupo",
+			"delete": "Exlcuir Grupo"
+		},
+		"clients": {
+			"list_title": "Clientes",
+			"title_placeholder": "Nome do Cliente",
+			"subtitle_placeholder": "Identificador do client",
+			"label": {
+				"client_name": "Nome do Cliente",
+				"associated_users": "Usuários Associados",
+				"associated_workspaces": "Workspaces Associados"
+			},
+			"created": "Novo Cliente Criado!",
+			"updated": "Cliente Atualizado!",
+			"module": "Acesso ao Módulo",
+			"list": "Listar Clientes",
+			"add": "Adicionar Cliente",
+			"show": "Visualizar Cliente",
+			"edit": "Atualizar Cliente",
+			"delete": "Exlcuir Cliente"
+		},
+		"authorization_queue": {
+			"title": "Autorizações",
+			"refuse_selected": "Recusar Selecionados",
+			"approve_selected": "Aprovar Selecionados",
+			"approve_all": "Aprovar Todos",
+			"client_users": "CLIENTE - Usuários Associados",
+			"client_workspaces": "CLIENTE - Workspaces Associados",
+			"group_users": "GRUPO - Usuários Associados",
+			"group_actions": "GRUPO - Ações Associadas",
+			"user_global_actions": "USUÁRIO - Permissões Globais e Individuais",
+			"user_local_actions": "USUÁRIO - Permissões Locais e Individuais",
+			"profile_users": "PERFIL - Usuários Associados",
+			"profile_objects": "PERFIL - BIs Associados",
+			"approved": "Authorizações concedidas",
+			"deleted": "Authorizações negadas!",
+			"no_records": "Nenhuma autorização pendente",
+			"relationships": "Autorizações"
+		},
+		"workspaces": {
+			"list_title": "Workspaces",
+			"sync_confirmation_title": "Syncronização de Ambiente",
+			"sync_confirmation_message": "Confirmar a sincronização com o PowerBI?",
+			"label": {
+				"workspace_name": "Nome do Workspace",
+				"microsoft_name": "Nome na Microsoft",
+				"microsoft_type": "Tipo de Objeto",
+				"microsoft_id": "Identificador do Objeto",
+				"associated_clients": "Clientes Associados"
+			},
+			"updated": "Workspace Atualizado",
+			"module": "Acesso ao Módulo",
+			"list": "Listar Workspaces",
+			"show": "Visualizar Workspace",
+			"edit": "Atualizar Workspace",
+			"delete": "Exlcuir Workspace",
+			"sync": "Sincronizar com PowerBI"
+		},
+		"powerbi": {
+			"sync": "Ambiente sincronizado"
+		},
+		"bis": {
+			"title": "Business Intelligence",
+			"list_title": "Painéis de BI",
+			"label": {
+				"roles": "Roles",
+				"dataset": "Dataset",
+				"bi_name": "Nome do BI",
+				"file_name": "Nome do Arquivo",
+				"microsoft_type": "Tipo de Objeto",
+				"microsoft_name": "Nome na Microsoft",
+				"microsoft_id": "Identificador do Objeto",
+				"associated_profiles": "Perfis Associados",
+				"update_time": "Tempo (s)"
+			},
+			"update": "Objeto Atualizado",
+			"list_pages": "Páginas do BI",
+			"without_pages": "Não existem páginas nesse BI",
+			"module": "Acesso ao Módulo",
+			"list": "Listar BIs",
+			"show": "Visualizar Dados do BI",
+			"edit": "Atualizar Dados do BI",
+			"delete": "Excluir BI",
+			"powerbi": "Visualizar Painel",
+			"ignore_profiles": "Ignorar Perfis de Acesso"
+		},
+		"profiles": {
+			"list_title": "Perfis de Acesso",
+			"title_placeholder": "Nome do Perfil",
+			"subtitle_placeholder": "Identificador do perfil",
+			"label": {
+				"group_name": "Nome do Perfil",
+				"associated_users": "Usuários Associados",
+				"associated_objects": "BIs Associados"
+			},
+			"created": "Novo Perfil Criado!",
+			"updated": "Perfil Atualizado!",
+			"module": "Acesso ao Módulo",
+			"list": "Listar Perfis",
+			"add": "Adicionar Perfil",
+			"show": "Visualizar Perfil",
+			"edit": "Atualizar Perfil",
+			"delete": "Exlcuir Perfil"
+		},
+		"repository": {
+			"title": "Arquivos",
+			"add_files": "Carregar Arquivos",
+			"no-files": "Nenhum arquivo encontrado",
+			"modal": {
+				"destroy_title": "Exclusão de Arquivo",
+				"destroy_text": "Confirma a exclusão do arquivo?"
+			}
+		},
+		"signage": {
+			"title": "Transmissões",
+			"list_title": "Transmissões Disponíveis",
+			"title_placeholder": "Nome da Transmissão",
+			"subtitle_placeholder": "Identificador da transmissão",
+			"created": "Nova Transmissão Criada!",
+			"updated": "Transmissão Atualizada!",
+			"selected-files": "Arquivos da Transmissão",
+			"modal": {
+				"destroy_title": "Exclusão de Arquivo",
+				"destroy_text": "Confirma a exclusão do arquivo?"
+			},
+			"slide-time": "Tempo de Slide (s)",
+			"move-up": "Subir",
+			"move-down": "Descer",
+			"add-to-broadcast": "Adicionar à Transmissão",
+			"test-slideshow": "Testar Transmissão"
+		},
+		"log": {
+			"object_types": "Tipo de Objecto",
+			"object_names": "Nome do Objeto",
+			"operation_id": "ID da Operação",
+			"result": "Resultado",
+			"ip_address": "Endereço IP",
+			"operation": "Operação",
+			"additional_information": "Informação Complementar",
+			"user_id": "ID do Usuário",
+			"user_name": "Nome do Usuário",
+			"user_email": "Email do Usuário",
+			"account_id": "ID da Conta",
+			"account_name": "Nome da Conta",
+			"client_id": "ID do Cliente",
+			"client_name": "Nome do Cliente",
+			"object_type": "Tipo de Objeto",
+			"object_name": "Nome do Objeto",
+			"operation_data": "Data da Operação",
+			"operation_time": "Hora da Operação"
+		}
+	},
+	"validation": {
+		"required": "Por favor, preencha esse campo",
+		"invalid_email": "Por favor, informe um email válido",
+		"min_required": "O campo {label} deve ter pelo menos {parameter} caracteres.",
+		"max_exceeded": "O campo {label} deve ter no máximo {parameter} caracteres.",
+		"invalid_CNPJ": "O campo {label} deve conter um CNPJ válido.",
+		"invalid_password": "A senha deve conter pelo menos 8 caracteres, sendo uma letra maiúscula, uma letra minúscula, um número e um símbolo.",
+		"confirm": "A confirmação está diferente da senha informada"
+	},
+	"generic": {
+		"OK": "OK",
+		"no": "Não",
+		"yes": "Sim",
+		"logs": "Logs",
+		"type": "Tipo",
+		"name": "Nome",
+		"both": "Ambos",
+		"error": "Erro",
+		"save": "Salvar",
+		"close": "Fechar",
+		"email": "E-mail",
+		"scope": "Escopo",
+		"groups": "Grupos",
+		"account": "Conta",
+		"filter": "Filtrar",
+		"client": "Cliente",
+		"users": "Usuários",
+		"active_a": "Ativa",
+		"active_o": "Ativo",
+		"delete": "Excluir",
+		"password": "Senha",
+		"success": "Sucesso",
+		"filters": "Filtros",
+		"view": "Visualizar",
+		"rename": "Renomear",
+		"search": "Procurar",
+		"cancel": "Cancelar",
+		"update": "Atualizar",
+		"clients": "Clientes",
+		"blocked": "Bloqueado",
+		"favorite": "Favorito",
+		"messages": "Mensagens",
+		"end_date": "Data Final",
+		"to_favorite": "Favoritar",
+		"description": "Descrição",
+		"transicions": "Transições",
+		"superuser": "Super-Usuário",
+		"start_date": "Data Inicial",
+		"ip_address": "Endereço IPV4",
+		"username": "Nome do Usuário",
+		"profiles": "Perfis de Acesso",
+		"server_error": "Erro no Servidor",
+		"invalid_email": "E-mail inválido",
+		"confirm_delete": "Confirmar exclusão",
+		"no_record": "Nenhum registro selecionado",
+		"user_not_found": "Usuário não encontrado",
+		"no_results_found": "Resultado não encontrado",
+		"no_items_available": "Nenhum item disponível",
+		"full_screen_view": "Tela Cheia",
+		"full_screen_exit": "Sair da Visualização em Tela Cheia",
+		"delete_confirmation": "Confirmar a exclusão desse registro?",
+		"add_or_select": "Por favor, adicione ou selecione um registro",
+		"unsavedData": "Você tem alguns dados ainda não salvos. Tem certeza que deseja sair dessa página",
+		"custom": {
+			"workspaces": "Workspaces"
+		}
+	},
+	"actions_set": {
+		"SidebarModules": "Módulos",
+		"AccountUsers": "Usuários de Conta",
+		"Groups": "Grupos de Permissões",
+		"Clients": "Clientes",
+		"SpecialPermissions": "Permissões Especiais",
+		"LocalUsers": "Usuários Locais",
+		"Workspaces": "Workspaces",
+		"BIs": "Paineis de BI",
+		"Profiles": "Perfis de Acesso aos BIs"
+	},
+	"actions": {}
+}

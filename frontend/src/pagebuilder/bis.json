@@ -1,0 +1,146 @@
+[
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "calc(33% - 1rem)",
+				"content": [
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "p-b-i-header"
+									}
+								}
+							}
+						]
+					},
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "calc(75% - 1rem)",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "text-field",
+										"label": "auth.bis.label.bi_name",
+										"db_name": "local_name",
+										"validations": ["required"]
+									}
+								}
+							},
+							{
+								"width": "25%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkbox-field",
+										"label": "generic.active_o",
+										"db_name": "is_active"
+									}
+								}
+							}
+						]
+					},
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "text-field",
+										"label": "auth.bis.label.roles",
+										"db_name": "roles"
+									}
+								}
+							}
+						]
+					},
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "text-field",
+										"label": "auth.bis.label.dataset",
+										"db_name": "dataset"
+									}
+								}
+							}
+						]
+					},
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "area-field",
+										"label": "generic.description",
+										"db_name": "description",
+										"rows": 5
+									}
+								}
+							}
+						]
+					},
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "100%",
+								"content": [
+									{
+										"type": "field",
+										"props": {
+											"component": "p-b-i-object-pages"
+										}
+									}
+								]
+							}
+						]
+					},
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "100%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkable-item-list",
+										"title": "auth.bis.label.associated_profiles",
+										"backend_request": "powerbi.bis.associated_profiles"
+									}
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"width": "66%",
+				"content": [
+					{
+						"type": "field",
+						"props": {
+							"component": "power-b-i-viewer"
+						}
+					}
+				]
+			}
+		]
+	}
+]

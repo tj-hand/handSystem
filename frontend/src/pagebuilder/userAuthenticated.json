@@ -1,0 +1,93 @@
+[
+	{
+		"type": "row",
+		"class": "grow",
+		"cols": [
+			{
+				"width": "100%",
+				"content": [
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "96%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "text-field",
+										"label": "generic.email",
+										"db_name": "email",
+										"validations": ["required", "email"],
+										"disabled": "onEdit"
+									}
+								}
+							}
+						]
+					},
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "47%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "text-field",
+										"label": "auth.user.label.name",
+										"db_name": "user_name",
+										"validations": ["required", "min:2"]
+									}
+								}
+							},
+							{
+								"width": "47%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "text-field",
+										"label": "auth.user.label.lastname",
+										"db_name": "user_lastname",
+										"validations": ["required", "min:2"]
+									}
+								}
+							}
+						]
+					},
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "47%",
+								"content": {
+									"type": "row",
+									"cols": []
+								}
+							},
+							{
+								"width": "47%",
+								"class": "top-space",
+								"content": {
+									"type": "row",
+									"cols": [
+										{
+											"width": "100%",
+											"content": {
+												"type": "field",
+												"props": {
+													"component": "password-field",
+													"label": "auth.user.label.reset_password",
+													"db_name": "password",
+													"validations": ["password:null"]
+												}
+											}
+										}
+									]
+								}
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]

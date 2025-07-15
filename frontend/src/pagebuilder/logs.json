@@ -1,0 +1,195 @@
+[
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "calc(50% - 1rem)",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "text-field",
+						"label": "generic.start_date",
+						"db_name": "start_date",
+						"mask": "Date"
+					}
+				}
+			},
+			{
+				"width": "50%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "text-field",
+						"label": "generic.end_date",
+						"db_name": "end_date",
+						"mask": "Date"
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "action-type-selector",
+						"db_name": "action_type"
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "text-field",
+						"label": "generic.ip_address",
+						"db_name": "ip_address"
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "select-field",
+						"label": "generic.messages",
+						"db_name": "message",
+						"endpoint": "log.messages",
+						"searchable": true,
+						"translate": false
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "select-field",
+						"label": "generic.username",
+						"db_name": "username",
+						"endpoint": "log.usernames",
+						"searchable": true,
+						"translate": false
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "select-field",
+						"label": "generic.email",
+						"db_name": "email",
+						"endpoint": "log.emails",
+						"searchable": true,
+						"translate": false
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "select-field",
+						"label": "generic.account",
+						"db_name": "account",
+						"endpoint": "log.accounts",
+						"searchable": true,
+						"translate": false
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "select-field",
+						"label": "generic.client",
+						"db_name": "client",
+						"endpoint": "log.clients",
+						"searchable": true,
+						"translate": false
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "select-field",
+						"label": "auth.log.object_types",
+						"db_name": "object_type",
+						"endpoint": "log.object_types",
+						"searchable": true,
+						"translate": false
+					}
+				}
+			}
+		]
+	},
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "100%",
+				"content": {
+					"type": "field",
+					"props": {
+						"component": "select-field",
+						"label": "auth.log.object_names",
+						"db_name": "object_name",
+						"endpoint": "log.object_names",
+						"searchable": true,
+						"translate": false
+					}
+				}
+			}
+		]
+	}
+]

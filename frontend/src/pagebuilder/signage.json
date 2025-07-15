@@ -1,0 +1,57 @@
+[
+	{
+		"type": "row",
+		"cols": [
+			{
+				"width": "50%",
+				"content": [
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "calc(62% - 1rem)",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "text-field",
+										"label": "auth.clients.label.client_name",
+										"db_name": "name",
+										"validations": ["required", "min:2"]
+									}
+								}
+							},
+							{
+								"width": "38%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "checkbox-field",
+										"label": "generic.active_o",
+										"db_name": "is_active"
+									}
+								}
+							}
+						]
+					},
+					{
+						"type": "row",
+						"cols": [
+							{
+								"width": "90%",
+								"content": {
+									"type": "field",
+									"props": {
+										"component": "area-field",
+										"label": "generic.description",
+										"db_name": "description",
+										"rows": 5
+									}
+								}
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]
